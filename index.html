@@ -1,0 +1,1584 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>業務アプリ制作のご案内｜アーチデザイン工房</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;800&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --paper: #faf7ee;
+        --surface: #fffdf7;
+        --surface-2: #efe8d8;
+        --ink: #26221a;
+        --ink-2: #5d574a;
+        --ink-3: #6f695b;
+        --line: #ddd2ba;
+        --blue: #1f66b0;
+        --blue-soft: #e2ecf8;
+        --red: #b3402a;
+        --a1: #2b7bbb;
+        --a1-soft: #e3eff9;
+        --b1: #1e56a8;
+        --b1-soft: #e1e9f6;
+        --c1: #2c3d63;
+        --c1-soft: #e3e7f0;
+        --stage: #1d4e89;
+        --stage-ink: #ffffff;
+        --stage-ink-2: #cfe0f2;
+        --phone-frame: #111114;
+        --phone-bg: #ffffff;
+        --phone-ink: #1f1c16;
+        --phone-ink2: #4f4b41;
+        --phone-line: #d5cfbd;
+        --radius: 12px;
+        --maxw: 1060px;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --paper: #17140f;
+          --surface: #211d16;
+          --surface-2: #29241b;
+          --ink: #ece6d6;
+          --ink-2: #bdb4a0;
+          --ink-3: #8f8672;
+          --line: #3d372a;
+          --blue: #82b4ea;
+          --blue-soft: #1b2740;
+          --red: #e08a76;
+          --a1: #7db9e8;
+          --a1-soft: #1c2a3a;
+          --b1: #8db1e8;
+          --b1-soft: #1d2942;
+          --c1: #a3b4d9;
+          --c1-soft: #232c40;
+          --stage: #132a47;
+          --stage-ink: #ffffff;
+          --stage-ink-2: #b9cfe8;
+          --phone-frame: #000000;
+          --phone-bg: #ffffff;
+          --phone-ink: #1f1c16;
+          --phone-ink2: #4f4b41;
+          --phone-line: #d5cfbd;
+        }
+      }
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
+        font-size: 16px;
+        line-height: 1.9;
+        -webkit-font-smoothing: antialiased;
+      }
+      .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 20px 96px; }
+
+      /* ---------- flyer header ---------- */
+      header.flyer { padding: 46px 0 10px; text-align: left; }
+      .flyer-top {
+        display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px 20px;
+        border-bottom: 3px double var(--ink); padding-bottom: 12px;
+        font-size: 13.5px; font-weight: 700; letter-spacing: .06em;
+      }
+      .flyer-top .shop { color: var(--blue); }
+      .flyer-top .kind { color: var(--ink-2); font-weight: 500; }
+      h1 {
+        font-family: "Shippori Mincho B1", "Noto Serif JP", serif;
+        font-weight: 800; font-size: clamp(31px, 6.6vw, 56px);
+        line-height: 1.4; margin: 30px 0 16px; letter-spacing: .01em;
+      }
+      h1 .hl { color: var(--blue); }
+      @media (max-width: 480px) {
+        h1 { font-size: 26px; line-height: 1.5; letter-spacing: 0; }
+      }
+      .lede { font-size: clamp(15.5px, 2.6vw, 17.5px); color: var(--ink-2); max-width: 44em; margin: 0 0 26px; }
+      .lede strong { color: var(--ink); }
+
+      .terms { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 8px; }
+      .term {
+        background: var(--surface); border: 1.5px solid var(--ink); border-radius: 999px;
+        padding: 7px 16px; font-weight: 700; font-size: 14.5px; line-height: 1.4;
+      }
+      .term small { font-weight: 500; color: var(--ink-2); font-size: 12.5px; margin-left: 4px; }
+      .term.hot { background: var(--blue); border-color: var(--blue); color: #fff; }
+      .term.hot small { color: #d7e7f8; }
+      @media (prefers-color-scheme: dark) { .term.hot { color: #17140f; } .term.hot small { color: #274a75; } }
+
+      /* ---------- 3 types overview ---------- */
+      .types { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 36px 0 10px; }
+      .types-panel { background: var(--blue-soft); border-radius: 18px; padding: 22px; }
+      @media (max-width: 760px) { .types-panel { padding: 14px; } }
+      @media (max-width: 760px) { .types { grid-template-columns: 1fr; } }
+      .type-card {
+        background: var(--surface); border: 1px solid var(--line); border-top: 5px solid var(--ink);
+        border-radius: var(--radius); padding: 22px 22px 16px;
+      }
+      .type-card.t-a { border-top-color: var(--a1); }
+      .type-card.t-b { border-top-color: var(--b1); }
+      .type-card.t-c { border-top-color: var(--c1); }
+      .type-card .t-name { font-weight: 900; font-size: 16.5px; margin: 0 0 2px; }
+      .type-card .t-for { font-size: 13.5px; color: var(--ink-3); margin: 0 0 6px; }
+      .type-card p { font-size: 14px; color: var(--ink-2); margin: 0 0 8px; line-height: 1.7; }
+      .type-card a { font-size: 13.5px; font-weight: 700; text-decoration: none; }
+      .t-a a { color: var(--a1); } .t-b a { color: var(--b1); } .t-c a { color: var(--c1); }
+
+      /* ---------- app sections ---------- */
+      section.app { margin-top: 116px; scroll-margin-top: 20px; }
+      .app-head {
+        display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px 18px;
+        border-bottom: 2px solid var(--ink); padding-bottom: 12px; margin-bottom: 34px;
+      }
+      .app-no {
+        font-family: "Shippori Mincho B1", serif; font-weight: 800; font-size: 15px;
+        color: #fff; border-radius: 8px; padding: 5px 12px; line-height: 1.3; flex: none;
+      }
+      #app-a1 .app-no { background: var(--a1); }
+      #app-b1 .app-no { background: var(--b1); }
+      #app-c1 .app-no { background: var(--c1); }
+      @media (prefers-color-scheme: dark) { .app-no { color: #17140f; } }
+      .app-head h2 {
+        font-family: "Shippori Mincho B1", "Noto Serif JP", serif;
+        font-weight: 800; font-size: clamp(24px, 5vw, 34px); margin: 0; line-height: 1.4;
+      }
+      .app-head .app-type { font-size: 13.5px; color: var(--ink-2); margin: 2px 0 0; }
+      .app-head .price { margin-left: auto; text-align: right; flex: none; }
+      .app-head .price .yen {
+        font-family: "Shippori Mincho B1", serif; font-weight: 800;
+        font-size: clamp(28px, 5.2vw, 38px); line-height: 1.2;
+      }
+      .app-head .price .yen small { font-size: .55em; font-weight: 600; }
+      .app-head .price .cap { font-size: 12.5px; color: var(--ink-3); }
+
+      .app-body { display: grid; grid-template-columns: minmax(0, 664px) 1fr; gap: 44px; align-items: start; }
+      @media (max-width: 1080px) { .app-body { grid-template-columns: 1fr; gap: 26px; } }
+      .phones {
+        display: flex; flex-wrap: wrap; gap: 24px;
+        background: var(--stage); border-radius: 22px; padding: 30px 22px 22px;
+      }
+      @media (max-width: 1080px) { .phones { justify-content: center; } }
+      .phones .phone-cap { color: var(--stage-ink-2); }
+      .phones .phone-cap b { color: var(--stage-ink); }
+      .phone-col { width: 300px; max-width: 88vw; flex: none; }
+
+      .app-info .for {
+        display: inline-block; font-weight: 700; font-size: 14.5px;
+        border-radius: 6px; padding: 4px 12px; margin: 0 0 16px;
+      }
+      #app-a1 .for { background: var(--a1-soft); color: var(--a1); }
+      #app-b1 .for { background: var(--b1-soft); color: var(--b1); }
+      #app-c1 .for { background: var(--c1-soft); color: var(--c1); }
+      .app-info > p { margin: 0 0 14px; }
+      .app-info h3 { font-size: 16px; font-weight: 900; margin: 24px 0 8px; }
+      .app-info h3:first-of-type { margin-top: 6px; }
+      ul.can { list-style: none; margin: 0; padding: 0; }
+      ul.can li { padding: 10px 0 10px 30px; position: relative; border-bottom: 1px dashed var(--line); font-size: 15px; }
+      ul.can li:last-child { border-bottom: none; }
+      ul.can li::before {
+        content: ""; position: absolute; left: 2px; top: 18px; width: 14px; height: 8px;
+        border-left: 3px solid var(--blue); border-bottom: 3px solid var(--blue);
+        transform: rotate(-45deg);
+      }
+      ul.can li strong { font-weight: 700; }
+      .ba {
+        background: var(--surface-2); border-radius: var(--radius); padding: 18px 22px; font-size: 14.5px;
+      }
+      .ba .row { display: flex; gap: 10px; align-items: baseline; padding: 3px 0; }
+      .ba .lab {
+        flex: none; font-size: 11.5px; font-weight: 900; letter-spacing: .08em;
+        border-radius: 4px; padding: 1px 8px; color: #fff;
+      }
+      .ba .lab.before { background: var(--ink-3); }
+      .ba .lab.after { background: var(--blue); }
+      @media (prefers-color-scheme: dark) { .ba .lab { color: #17140f; } }
+      .ba .arrow { color: var(--ink-3); text-align: center; font-size: 13px; line-height: 1.2; padding-left: 2px; }
+
+      /* ---------- phone mockup ---------- */
+      .phone-col .phone { width: 100%; }
+      .phone {
+        background: var(--phone-frame); border-radius: 40px; padding: 11px;
+        box-shadow: 0 18px 36px rgba(30, 25, 15, .28);
+      }
+      .screen-box {
+        background: var(--phone-bg); color: var(--phone-ink); border-radius: 30px;
+        overflow: hidden; display: flex; flex-direction: column; height: 560px;
+        font-size: 13px; line-height: 1.55;
+      }
+      .screen-box iframe.live {
+        flex: 1; width: 100%; min-height: 0; border: 0; display: block; background: #fff;
+      }
+      /* live sample: scroll shield until the reader chooses to operate */
+      .screen-box.live-box { position: relative; }
+      .screen-box.live-box iframe.live { pointer-events: none; }
+      .screen-box.live-box.live-on iframe.live { pointer-events: auto; }
+      .live-shield {
+        position: absolute; inset: 0; z-index: 3;
+        display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+        gap: 10px; padding: 0 16px 20px; background: transparent;
+      }
+      .live-box.live-on .live-shield { display: none; }
+      .live-note {
+        background: rgba(17, 17, 20, .82); color: #fff; font-size: 12px; font-weight: 700;
+        border-radius: 999px; padding: 4px 14px; line-height: 1.5; text-align: center;
+      }
+      .live-start {
+        appearance: none; -webkit-appearance: none; cursor: pointer;
+        border: none; font-family: inherit; text-align: center;
+        background: var(--blue); color: #fff; font-weight: 900; font-size: 16px;
+        border-radius: 999px; padding: 13px 30px 11px; line-height: 1.45;
+        box-shadow: 0 10px 24px rgba(15, 25, 45, .4);
+      }
+      .live-start small { display: block; font-weight: 500; font-size: 11.5px; color: #d7e7f8; }
+      .live-stop {
+        position: absolute; top: 10px; right: 10px; z-index: 4; display: none;
+        appearance: none; -webkit-appearance: none; cursor: pointer;
+        border: none; font-family: inherit;
+        background: rgba(17, 17, 20, .88); color: #fff; font-weight: 900; font-size: 12.5px;
+        border-radius: 999px; padding: 8px 16px; line-height: 1.4;
+        box-shadow: 0 6px 16px rgba(15, 25, 45, .35);
+      }
+      .live-box.live-on .live-stop { display: inline-block; }
+      /* quick how-to strip above the live phone frame */
+      .live-howto {
+        flex: 1 1 100%; text-align: left;
+        border: 1.5px solid rgba(255, 255, 255, .45); border-radius: 12px;
+        padding: 14px 18px 12px; color: var(--stage-ink);
+      }
+      .live-howto .lh-ttl { font-weight: 900; font-size: 15px; margin: 0 0 6px; }
+      .live-howto ol { margin: 0; padding-left: 1.35em; }
+      .live-howto li { font-size: 13.5px; line-height: 1.75; color: var(--stage-ink-2); margin: 0 0 2px; }
+      .live-howto li strong { color: var(--stage-ink); }
+      .live-tag {
+        display: inline-block; font-size: 12px; font-weight: 900; letter-spacing: .05em;
+        background: var(--red); color: #fff; border-radius: 999px; padding: 3px 12px;
+        vertical-align: 3px; margin-left: 8px; white-space: nowrap;
+      }
+      /* why the live sample sits in its own frame, stated before the frame */
+      .sample-why {
+        font-size: 15.5px; line-height: 1.9; color: var(--ink-2);
+        max-width: 46em; margin: 0 0 32px;
+      }
+      .sample-why strong { color: var(--ink); }
+      .statusbar {
+        display: flex; justify-content: space-between; padding: 8px 18px 2px;
+        font-size: 11px; font-weight: 700; color: var(--phone-ink2);
+      }
+      .appbar {
+        padding: 8px 16px 10px; border-bottom: 1px solid var(--phone-line);
+        display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
+      }
+      .appbar .ttl { font-weight: 900; font-size: 15px; }
+      .appbar .sub { font-size: 11px; color: var(--phone-ink2); }
+      .screens { flex: 1; position: relative; overflow: hidden; }
+      /* static mocks are still images: no inner scroll, touches flow to the page */
+      .screens, .pscreen { touch-action: pan-y; }
+      .pscreen { position: absolute; inset: 0; overflow: hidden; padding: 12px 14px 14px; display: none; }
+      .pscreen.on { display: block; }
+      .tabbar {
+        display: flex; border-top: 1px solid var(--phone-line); background: #fff;
+      }
+      .tabbar .tab {
+        flex: 1; text-align: center;
+        font-size: 11.5px; font-weight: 700; color: var(--phone-ink2);
+        padding: 10px 2px 12px; border-top: 2.5px solid transparent;
+      }
+      .tabbar .tab.on { color: var(--phone-ink); border-top-color: currentColor; }
+      .phone-cap { text-align: center; font-size: 13px; color: var(--ink-3); margin: 10px 0 0; }
+      .phone-cap b { color: var(--ink-2); }
+
+      /* phone inner parts */
+      .p-member { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+      .p-avatar {
+        width: 38px; height: 38px; border-radius: 50%; flex: none;
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 900; font-size: 15px; color: #fff;
+      }
+      .p-member .nm { font-weight: 900; font-size: 14.5px; line-height: 1.35; }
+      .p-member .dt { font-size: 11px; color: var(--phone-ink2); }
+      .p-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+      .p-val {
+        background: #fff; border: 1px solid var(--phone-line); border-radius: 10px; padding: 8px 10px;
+      }
+      .p-val .k { font-size: 10.5px; color: var(--phone-ink2); font-weight: 700; }
+      .p-val .v { font-size: 19px; font-weight: 900; line-height: 1.3; }
+      .p-val .v small { font-size: 11px; font-weight: 700; color: var(--phone-ink2); }
+      .p-val .d { font-size: 10.5px; font-weight: 700; }
+      .down { color: #2b7bbb; } .up { color: #b3402a; }
+      .p-memo {
+        background: #fff; border: 1px solid var(--phone-line); border-radius: 10px; padding: 9px 11px; margin-bottom: 10px;
+      }
+      .p-memo .k { font-size: 10.5px; font-weight: 700; color: var(--phone-ink2); margin-bottom: 2px; }
+      .p-sec { font-size: 11px; font-weight: 900; letter-spacing: .06em; color: var(--phone-ink2); margin: 12px 0 6px; }
+      .p-row {
+        display: flex; justify-content: space-between; align-items: baseline; gap: 8px;
+        background: #fff; border: 1px solid var(--phone-line); border-radius: 9px;
+        padding: 7px 10px; margin-bottom: 6px;
+      }
+      .p-row .l { font-weight: 700; }
+      .p-row .r { font-size: 11.5px; color: var(--phone-ink2); text-align: right; }
+      .p-row .r b { color: var(--phone-ink); }
+      .p-btn {
+        display: block; text-align: center; color: #fff; font-weight: 900; font-size: 13px;
+        border-radius: 10px; padding: 10px; margin-top: 10px;
+      }
+      .p-avg { display: flex; gap: 8px; margin-bottom: 10px; }
+      .p-avg .p-val { flex: 1; }
+      .p-chart {
+        background: #fff; border: 1px solid var(--phone-line); border-radius: 10px; padding: 10px 10px 4px; margin-bottom: 10px;
+      }
+      .p-chart .k { font-size: 10.5px; font-weight: 700; color: var(--phone-ink2); margin-bottom: 4px; }
+      .p-search {
+        background: #fff; border: 1px solid var(--phone-line); border-radius: 999px;
+        padding: 7px 14px; color: var(--phone-ink2); font-size: 12px; margin-bottom: 10px;
+      }
+      .chip {
+        display: inline-block; font-size: 10px; font-weight: 900; line-height: 1;
+        padding: 3px 7px; border-radius: 999px; vertical-align: 1px; white-space: nowrap;
+      }
+      .chip.g { background: #e3eff9; color: #2b7bbb; }
+      .chip.a { background: #e1e9f6; color: #1e56a8; }
+      .chip.b { background: #e3e7f0; color: #2c3d63; }
+      .chip.r { background: #f7e3dd; color: #b3402a; }
+      .chip.n { background: #ece7d7; color: #4f4b41; }
+      .p-ticket { margin-top: 3px; }
+      .p-bar { height: 7px; border-radius: 99px; background: #e9e4d4; overflow: hidden; margin-top: 4px; }
+      .p-bar i { display: block; height: 100%; border-radius: 99px; }
+      .p-tl { position: relative; margin: 2px 0 0 6px; padding-left: 16px; border-left: 2px solid var(--phone-line); }
+      .p-tl .ev { position: relative; padding: 0 0 10px; }
+      .p-tl .ev::before {
+        content: ""; position: absolute; left: -22px; top: 5px; width: 9px; height: 9px;
+        border-radius: 50%; background: #fff; border: 2.5px solid var(--phone-ink2);
+      }
+      .p-tl .ev .when { font-size: 10.5px; color: var(--phone-ink2); font-weight: 700; }
+      .p-tl .ev .what { font-weight: 700; }
+      .p-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+      .p-card { background: #fff; border: 1px solid var(--phone-line); border-radius: 10px; overflow: hidden; }
+      .p-card .art { height: 62px; position: relative; }
+      .p-card .bd { padding: 7px 9px 8px; }
+      .p-card .t { font-weight: 900; font-size: 12px; line-height: 1.4; }
+      .p-card .no { font-size: 10px; color: var(--phone-ink2); }
+      .p-alert {
+        border-radius: 10px; padding: 9px 11px; margin-bottom: 10px; font-weight: 700; font-size: 12px;
+        background: #f7e3dd; color: #8f3120;
+      }
+      .p-hero { border-radius: 10px; overflow: hidden; border: 1px solid var(--phone-line); margin-bottom: 10px; }
+      .p-hero .art { height: 110px; position: relative; }
+      .p-hero .bd { background: #fff; padding: 9px 11px; }
+      .p-hero .t { font-weight: 900; font-size: 14px; }
+
+      /* ---------- price tiers ---------- */
+      .type-card .t-price {
+        font-family: "Shippori Mincho B1", serif; font-weight: 800; font-size: 22px;
+        line-height: 1.3; margin: 0 0 2px; color: var(--ink);
+      }
+      .type-card .t-price small { font-size: .58em; font-weight: 600; }
+      .tier-phones {
+        display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 26px;
+        margin: 6px 0 36px;
+        background: var(--stage); border-radius: 22px; padding: 32px 26px 26px;
+      }
+      .tier-phones .tier-price { color: var(--stage-ink); }
+      .tier-phones .tier-name { color: var(--stage-ink-2); }
+      .tier-phones .tier-note { color: var(--stage-ink-2); }
+      .tier-phones .tier-note b { color: var(--stage-ink); }
+      @media (max-width: 900px) { .tier-phones { grid-template-columns: 1fr; } }
+      .tier-col { width: 100%; max-width: 300px; margin: 0 auto; }
+      .tier-col .phone { width: 100%; }
+      .tier-price {
+        font-family: "Shippori Mincho B1", serif; font-weight: 800; font-size: 31px;
+        line-height: 1.2; margin: 0; text-align: center;
+      }
+      .tier-price span { font-size: .55em; font-weight: 600; }
+      .tier-name { text-align: center; font-weight: 900; font-size: 14.5px; color: var(--ink-2); margin: 0 0 12px; }
+      .phone.mini .screen-box { height: 412px; }
+      .tier-note { font-size: 13.5px; color: var(--ink-2); margin: 10px 2px 0; line-height: 1.7; }
+      .tier-note b { color: var(--ink); }
+      .tier-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+      @media (max-width: 760px) { .tier-cards { grid-template-columns: 1fr; } }
+      .tier-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px 22px 16px; }
+      .tier-card .tp { font-family: "Shippori Mincho B1", serif; font-weight: 800; font-size: 27px; line-height: 1.25; margin: 0; }
+      .tier-card .tp small { font-size: .55em; font-weight: 600; }
+      .tier-card .tn { font-weight: 900; font-size: 15.5px; margin: 0 0 4px; }
+      .tier-card .diff { font-size: 13.5px; font-weight: 700; color: var(--blue); margin: 0 0 6px; line-height: 1.65; }
+      .tier-card h4 { font-size: 12.5px; font-weight: 900; letter-spacing: .06em; color: var(--ink-2); margin: 14px 0 2px; }
+      .tier-card ul.can li { font-size: 14px; padding: 5px 0 5px 28px; }
+      .tier-card ul.can li::before { top: 13px; }
+      .tier-card ul.can li.no { color: var(--ink-2); }
+      .tier-card ul.can li.no::before {
+        content: "✕"; border: none; transform: none; width: auto; height: auto;
+        left: 3px; top: 5px; font-size: 13px; font-weight: 900; color: var(--red); line-height: 1.4;
+      }
+      .tier-card .tnote { font-size: 13px; color: var(--ink-3); margin: 10px 0 4px; line-height: 1.65; }
+
+      /* ---------- cumulative comparison table ---------- */
+      .cmp-lead { font-size: 14.5px; color: var(--ink-2); margin: 2px 0 12px; line-height: 1.75; }
+      .cmp-box {
+        border: 1.5px solid var(--ink); border-radius: var(--radius);
+        overflow: hidden; background: var(--surface);
+      }
+      .cmp { width: 100%; border-collapse: collapse; font-size: 14px; line-height: 1.6; }
+      .cmp th, .cmp td { padding: 13px 16px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: middle; }
+      .cmp tbody tr:last-child td { border-bottom: none; }
+      .cmp thead th { background: var(--surface-2); border-bottom: 2px solid var(--ink); }
+      .cmp th.pc, .cmp td.pc { text-align: center; width: 128px; }
+      .cmp thead .amt {
+        display: block; font-family: "Shippori Mincho B1", serif; font-weight: 800;
+        font-size: 21px; line-height: 1.25;
+      }
+      .cmp thead .amt small { font-size: .55em; font-weight: 600; }
+      .cmp thead .pl { display: block; font-size: 11.5px; font-weight: 700; color: var(--ink-2); line-height: 1.4; }
+      .cmp tr.grp td {
+        background: var(--blue-soft); color: var(--blue);
+        font-weight: 900; font-size: 13px; letter-spacing: .03em; padding: 8px 14px;
+      }
+      .cmp tr.grp.ng td { background: var(--surface-2); color: var(--ink-2); }
+      .cmp td.new-cell { background: var(--blue-soft); }
+      .ck { color: var(--blue); font-weight: 900; font-size: 16px; line-height: 1; }
+      .ck.new {
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 24px; height: 24px; border-radius: 50%;
+        background: var(--blue); color: #fff; font-size: 13px; vertical-align: middle;
+      }
+      @media (prefers-color-scheme: dark) { .ck.new { color: #17140f; } }
+      .na { color: var(--ink-3); font-size: 14px; }
+      .nx { color: var(--red); font-weight: 900; font-size: 13px; }
+      .cmp-legend { font-size: 13.5px; color: var(--ink-2); margin: 10px 2px 0; line-height: 1.7; }
+      .cmp-legend .ck.new { width: 20px; height: 20px; font-size: 11px; margin-right: 2px; }
+      @media (max-width: 640px) {
+        .cmp { font-size: 12.5px; }
+        .cmp th, .cmp td { padding: 8px 8px; }
+        .cmp th.pc, .cmp td.pc { width: auto; }
+        .cmp thead .amt { font-size: 15.5px; }
+        .cmp thead .pl { font-size: 10px; }
+        .cmp tr.grp td { padding: 7px 8px; font-size: 12px; }
+        .ck.new { width: 21px; height: 21px; font-size: 11.5px; }
+      }
+
+      /* ---------- LP additions ---------- */
+      .target-label {
+        display: inline-block; font-size: 13px; font-weight: 700; color: var(--blue);
+        border: 1.5px solid var(--blue); border-radius: 999px; padding: 3px 14px;
+        margin: 28px 0 0; background: var(--blue-soft);
+      }
+      .target-label + h1 { margin-top: 16px; }
+      .cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin: 22px 0 4px; }
+      .btn {
+        display: inline-block; text-decoration: none; font-weight: 900; font-size: 15.5px;
+        border-radius: 999px; padding: 12px 28px; line-height: 1.4; text-align: center;
+      }
+      .btn.main { background: var(--blue); border: 1.5px solid var(--blue); color: #fff; }
+      .btn.sub { background: var(--surface); border: 1.5px solid var(--ink); color: var(--ink); }
+      @media (prefers-color-scheme: dark) { .btn.main { color: #17140f; } }
+      .cta-note { font-size: 13.5px; color: var(--ink-2); margin: 10px 0 0; line-height: 1.7; }
+
+      .pains { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+      @media (max-width: 760px) { .pains { grid-template-columns: 1fr; } }
+      .pains li {
+        background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+        padding: 17px 18px 17px 46px; position: relative; font-size: 15px; line-height: 1.75;
+      }
+      .pains li::before {
+        content: ""; position: absolute; left: 18px; top: 25px; width: 12px; height: 12px;
+        border-radius: 3px; border: 2px solid var(--ink-3);
+      }
+      .pains-lead { font-size: 15px; color: var(--ink-2); margin: 18px 2px 0; line-height: 1.8; }
+      .pains-lead strong { color: var(--ink); }
+
+      .steps { list-style: none; margin: 0; padding: 0; }
+      .steps li { display: flex; gap: 18px; padding: 22px 0; border-bottom: 1px dashed var(--line); }
+      .steps li:last-child { border-bottom: none; }
+      .step-no {
+        flex: none; width: 40px; height: 40px; border-radius: 50%;
+        background: var(--blue); color: #fff;
+        font-family: "Shippori Mincho B1", serif; font-weight: 800; font-size: 18px;
+        display: flex; align-items: center; justify-content: center;
+      }
+      @media (prefers-color-scheme: dark) { .step-no { color: #17140f; } }
+      .steps h3 { margin: 4px 0 4px; font-size: 16.5px; font-weight: 900; }
+      .steps p { margin: 0; font-size: 14.5px; color: var(--ink-2); line-height: 1.75; }
+      .steps p strong { color: var(--ink); }
+
+      .migrate {
+        background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+        padding: 24px 26px 14px; margin-top: 22px;
+      }
+      .migrate h3 { margin: 0 0 8px; font-size: 16px; font-weight: 900; }
+      .migrate ul { margin: 0; padding-left: 1.25em; }
+      .migrate li { font-size: 14.5px; color: var(--ink-2); margin-bottom: 9px; line-height: 1.75; }
+      .migrate li strong { color: var(--ink); }
+
+      .faq-item {
+        border: 1px solid var(--line); border-radius: var(--radius);
+        background: var(--surface); margin-bottom: 14px;
+      }
+      .faq-item summary {
+        cursor: pointer; font-weight: 900; font-size: 15.5px; line-height: 1.6;
+        padding: 18px 22px; list-style: none;
+      }
+      .faq-item summary::-webkit-details-marker { display: none; }
+      .faq-item summary::after { content: "＋"; float: right; color: var(--ink-3); font-weight: 700; }
+      .faq-item[open ] summary::after { content: "－"; }
+      .faq-item .a { padding: 2px 22px 20px; font-size: 15px; color: var(--ink-2); line-height: 1.9; }
+      .faq-item .a p { margin: 0 0 8px; }
+      .faq-item .a p:last-child { margin-bottom: 0; }
+      .faq-item .a .lead { font-weight: 900; color: var(--ink); }
+      .faq-item .a a { color: var(--blue); font-weight: 700; }
+
+      .cta-final {
+        margin-top: 116px; background: var(--stage); border: 1.5px solid var(--stage);
+        border-radius: 16px; padding: 48px 34px 42px; text-align: center;
+      }
+      .cta-final h2 {
+        font-family: "Shippori Mincho B1", "Noto Serif JP", serif; font-weight: 800;
+        font-size: clamp(22px, 4.4vw, 30px); margin: 0 0 14px; line-height: 1.55;
+        color: var(--stage-ink);
+      }
+      .cta-final p { max-width: 42em; margin: 0 auto 10px; color: var(--stage-ink-2); font-size: 15px; line-height: 1.85; }
+      .cta-final .btn.sub { background: transparent; border-color: var(--stage-ink); color: var(--stage-ink); }
+      .cta-final .cta-row { justify-content: center; margin-top: 18px; }
+
+      /* ---------- install guide ---------- */
+      .install-lead { font-size: 15px; color: var(--ink-2); line-height: 1.85; margin: 0 0 18px; max-width: 46em; }
+      .install-lead strong { color: var(--ink); }
+      .install-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+      @media (max-width: 760px) { .install-grid { grid-template-columns: 1fr; } }
+      .install-card {
+        background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+        overflow: hidden;
+      }
+      .install-card-head { padding: 16px 18px 12px; border-bottom: 1px solid var(--line); }
+      .install-os {
+        display: inline-flex; align-items: center; gap: 8px;
+        font-weight: 900; font-size: 17px; line-height: 1.3;
+      }
+      .install-os .os-badge {
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 34px; height: 34px; border-radius: 9px; flex: none;
+      }
+      .install-os .os-badge.android { background: #e3eff9; color: #2b7bbb; }
+      .install-os .os-badge.iphone { background: var(--surface-2); color: var(--ink); border: 1px solid var(--line); }
+      .install-browser { font-size: 13px; color: var(--ink-2); margin: 6px 0 0; line-height: 1.6; }
+      .install-browser strong { color: var(--ink); }
+      .install-visual { background: var(--blue-soft); padding: 20px 26px 16px; }
+      .mini-browser {
+        background: #fff; color: #2b2822; border: 1px solid #ddd6c2; border-radius: 12px;
+        overflow: hidden; font-size: 12px; line-height: 1.5; max-width: 320px; margin: 0 auto;
+      }
+      .mini-bar {
+        display: flex; align-items: center; gap: 8px; padding: 8px 10px;
+        border-bottom: 1px solid #eee9da; font-weight: 700;
+      }
+      .mini-bar .url {
+        flex: 1; background: #f3efe3; border-radius: 999px; padding: 3px 10px;
+        font-size: 11px; color: #6f6a5e; font-weight: 500; white-space: nowrap; overflow: hidden;
+      }
+      .mini-bar .dots { font-weight: 900; font-size: 16px; line-height: 1; padding: 2px 5px; border-radius: 6px; }
+      .mini-bar .dots.hl, .mini-share.hl { background: #fff3c4; outline: 2px solid #d9a441; }
+      .mini-menu { padding: 8px 10px 10px; }
+      .mini-menu .mi { padding: 7px 9px; border-radius: 7px; color: #5d574a; }
+      .mini-menu .mi.hl { background: #e2ecf8; color: #1f66b0; font-weight: 900; outline: 1.5px solid #1f66b0; }
+      .mini-body { padding: 10px; color: #6f6a5e; font-size: 11.5px; }
+      .mini-bottombar {
+        display: flex; justify-content: space-around; align-items: center;
+        border-top: 1px solid #eee9da; padding: 8px 10px 10px;
+      }
+      .mini-bottombar span { font-size: 15px; color: #6f6a5e; line-height: 1; padding: 4px 8px; border-radius: 6px; }
+      .mini-share { font-weight: 900; }
+      .install-visual-cap { text-align: center; font-size: 12.5px; color: var(--ink-3); margin: 10px 0 0; line-height: 1.6; }
+      ol.install-steps { list-style: none; counter-reset: ist; margin: 0; padding: 20px 26px 10px; }
+      ol.install-steps li {
+        counter-increment: ist; position: relative; padding: 0 0 12px 38px;
+        font-size: 14.5px; line-height: 1.75; color: var(--ink-2);
+      }
+      ol.install-steps li::before {
+        content: counter(ist); position: absolute; left: 0; top: 2px;
+        width: 26px; height: 26px; border-radius: 50%;
+        background: var(--blue); color: #fff; font-weight: 900; font-size: 13.5px;
+        display: flex; align-items: center; justify-content: center; line-height: 1;
+      }
+      @media (prefers-color-scheme: dark) { ol.install-steps li::before { color: #17140f; } }
+      ol.install-steps li strong { color: var(--ink); }
+      .install-note {
+        margin: 0 26px 20px; background: var(--blue-soft); border-radius: 10px;
+        padding: 11px 13px; font-size: 13.5px; line-height: 1.7; color: var(--ink-2);
+      }
+      .install-note strong { color: var(--blue); }
+      .install-links { margin: 16px 2px 0; font-size: 14px; color: var(--ink-2); line-height: 1.8; }
+      .install-links a { color: var(--blue); font-weight: 700; }
+      .install-done {
+        margin-top: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+        padding: 15px 18px; font-size: 14.5px; color: var(--ink-2); line-height: 1.8;
+      }
+      .install-done strong { color: var(--ink); }
+
+      /* install guide as accordion (closed by default) */
+      .install-item {
+        border: 1px solid var(--line); border-radius: 14px;
+        background: var(--surface); margin-bottom: 14px; overflow: hidden;
+      }
+      .install-item summary {
+        cursor: pointer; list-style: none; padding: 18px 22px;
+        display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px;
+      }
+      .install-item summary::-webkit-details-marker { display: none; }
+      .install-item summary::after {
+        content: "＋"; margin-left: auto; color: var(--ink-3); font-weight: 700; font-size: 18px;
+      }
+      .install-item[open ] summary::after { content: "－"; }
+      .install-item .install-browser { margin: 0; }
+      .install-body { border-top: 1px solid var(--line); }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+
+      <header class="flyer">
+        <div class="flyer-top">
+          <span class="shop">アーチデザイン工房</span>
+          <span class="kind">業務アプリ制作のご案内</span>
+        </div>
+        <span class="target-label">個人事業主・小さなお店・事務所の方へ</span>
+        <h1>紙とExcelの記録仕事を、<br /><span class="hl">スマホで済む形</span>にします。</h1>
+        <p class="lede">施術の記録、顧客カルテ、作品や商品の状態管理など、日々の「記録の仕事」をスマホで済ませるためのアプリを制作するサービスです。まず<strong>すぐ下の実物</strong>に触ってみてください。そのあと、型ごとの<strong>画面イメージ</strong>と<strong>できること</strong>、<strong>料金と進め方</strong>をご案内します。</p>
+      </header>
+
+      <!-- ================= live sample ================= -->
+      <section class="app" id="sample" style="margin-top:40px">
+        <div class="app-head">
+          <span class="app-no" style="background:var(--red)">実物</span>
+          <div>
+            <h2>実物サンプル ― バイタル記録ノート<span class="live-tag">実際に動いています</span></h2>
+            <p class="app-type">こちらから、実際の表示の見本をご確認いただけます。イメージ図ではなく、毎日使われているアプリそのものです</p>
+          </div>
+        </div>
+
+        <p class="sample-why">この枠は、ほかの見本とは置き方が違います。ほかの画面は、どんなことができるかを示すために作った<strong>例</strong>です。こちらは、すでに完成している<strong>本物のアプリそのもの</strong>で、機能の量では<strong>8万円〜10万円の段階</strong>にあたります。そのため、ほかの例とは分けて、このページの一番上に置きました。まず実物に触れてみて、「自分の仕事の記録も、こういう形にできるのか」と確かめてみてください。</p>
+
+        <div class="app-body">
+          <div class="phones" style="justify-content:center">
+            <div class="live-howto">
+              <p class="lh-ttl">簡単な使い方</p>
+              <ol>
+                <li>枠の中の青い<strong>「このアプリを使う」</strong>を押すと、その場で操作できるようになります</li>
+                <li>押さない間は、枠の上からでも<strong>ページのスクロールがそのまま流れます</strong></li>
+                <li>続きを読みたくなったら、枠の右上の<strong>「✕ 操作をやめる」</strong>を押してください</li>
+              </ol>
+            </div>
+            <div class="phone-col">
+            <div class="phone">
+              <div class="screen-box live-box" id="liveBox">
+                <iframe class="live" src="https://butti0108-spec.github.io/vital-record-notebook/index.html?test=1" title="バイタル記録ノート（実物サンプル）" loading="lazy" tabindex="-1"></iframe>
+                <div class="live-shield" id="liveShield">
+                  <span class="live-note">表示されている記録は、見本のデータです</span>
+                  <button type="button" class="live-start" id="liveStart">このアプリを使う<small>押すと、枠の中で操作できるようになります</small></button>
+                </div>
+                <button type="button" class="live-stop" id="liveStop">✕ 操作をやめる</button>
+              </div>
+            </div>
+            <p class="phone-cap">実物サンプル｜イメージ図ではなく、<b>実際に使われているアプリの画面</b>です</p>
+            </div>
+          </div>
+
+          <div class="app-info">
+            <p class="for" style="background:var(--blue-soft); color:var(--blue)">完全無料 ― 実際にお使いいただいて構いません</p>
+            <p>この枠の中の画面は、ほかの画面のようなイメージ図ではありません。血圧・脈拍・体重・体温を記録する健康記録アプリ<strong>「バイタル記録ノート」の実物</strong>を、そのまま表示しています。<strong>完全無料ですので、ご自身の記録用にそのままお使いいただいて構いません。</strong></p>
+            <h3>お使いになる前に</h3>
+            <ul class="can">
+              <li><strong>見本のデータで表示しています</strong> ― 最初から入っている記録は、動きを試すための見本です。実際の誰かの記録ではありません。消して、ご自身の記録に置き換えてお使いいただけます</li>
+              <li><strong>入力した数字は、あなたの端末にだけ残ります</strong> ― 外部のサーバーへ送信されることはありません</li>
+              <li><strong>表示される画面は時間帯で切り替わります</strong> ― 15時を境に「朝用」と「夜用」の画面に切り替わります。体重など、朝だけ測れる項目もありますので、いまの時刻によって見える画面が変わります</li>
+            </ul>
+            <p>お仕事用のアプリも、この実物と同じ仕組みを土台に、項目と画面をお仕事に合わせて差し替えて作ります。</p>
+            <p><a href="https://butti0108-spec.github.io/vital-record-notebook/index.html?test=1" target="_blank" rel="noopener" style="color:var(--blue);font-weight:700">大きな画面で開く →</a></p>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ================= pains ================= -->
+      <section class="app" id="pains">
+        <div class="app-head">
+          <span class="app-no" style="background:var(--ink-2)">お悩み</span>
+          <div>
+            <h2>こんな管理のしかた、続けていませんか</h2>
+            <p class="app-type">紙やExcelでの管理は、件数が増えるほど、探す手間と見落としが増えていきます。当てはまるものがあるか、見てみてください</p>
+          </div>
+        </div>
+        <ul class="pains">
+          <li>紙のカルテや記録カードが増え続け、探すだけで時間がかかっている</li>
+          <li>「前回どうしたか」が、店主や担当者の記憶頼みになっている</li>
+          <li>Excelのファイルが何枚にも分かれ、どれが最新か分からなくなる</li>
+          <li>回数券やチケットの残り回数を、その都度数え直している</li>
+          <li>しばらく来ていないお客様に気づけず、声をかけそびれている</li>
+          <li>作品や商品の「今の状態」が、頭の中とメモにしか残っていない</li>
+        </ul>
+        <p class="pains-lead">一つでも当てはまるようでしたら、そのお仕事はアプリの形に移せます。解決策は大がかりなシステムではなく、<strong>次の3つの型から選ぶ、小さなアプリ</strong>です。</p>
+      </section>
+
+      <div class="types types-panel" aria-label="3つの型">
+        <div class="type-card t-a">
+          <p class="t-name">型A｜記録</p>
+          <p class="t-price">50,000<small>円</small></p>
+          <p class="t-for">日々の施術・レッスンの記録を残す仕事に</p>
+          <p>その日の施術やセッションの内容を記録して、一覧と検索で見返す型です。集計や印刷を含まない、最小限の形です。</p>
+          <a href="#app-a1">→ 01 施術・セッション記録</a>
+        </div>
+        <div class="type-card t-b">
+          <p class="t-name">型B｜台帳＋履歴</p>
+          <p class="t-price">80,000<small>円</small></p>
+          <p class="t-for">お客様一人ひとりの記録が財産の仕事に</p>
+          <p>お客様の台帳に来店履歴が積み上がる型です。前回の内容と好みを、接客の前にすぐ確認できます。集計と印刷レポートも付く標準形です。</p>
+          <a href="#app-b1">→ 02 顧客カルテ＆来店履歴</a>
+        </div>
+        <div class="type-card t-c">
+          <p class="t-name">型C｜状態管理</p>
+          <p class="t-price">100,000<small>円</small></p>
+          <p class="t-for">モノの「今どうなっているか」を追う仕事に</p>
+          <p>一点ごとの状態（展示中・交渉中・売約済など）と履歴を管理し、動きの止まっているものを拾い上げる型です。</p>
+          <a href="#app-c1">→ 03 作品管理</a>
+        </div>
+      </div>
+
+      <!-- ================= A1 ================= -->
+      <section class="app" id="app-a1">
+        <div class="app-head">
+          <span class="app-no">アプリ 01</span>
+          <div>
+            <h2>施術・セッション記録</h2>
+            <p class="app-type">型A｜記録 ― 施術やレッスンの内容を、その日のうちに残していく型</p>
+          </div>
+          <div class="price">
+            <div class="yen">50,000<small>円</small></div>
+            <div class="cap">記録プラン／買い切り・月額なし</div>
+          </div>
+        </div>
+
+        <div class="app-body">
+          <div class="phones">
+            <div class="phone-col">
+            <div class="phone">
+              <div class="screen-box">
+                <div class="statusbar"><span>9:41</span><span>5G ▂▄▆</span></div>
+                <div class="appbar"><span class="ttl">施術記録</span><span class="sub">整体院・サンプル</span></div>
+                <div class="screens">
+                  <div class="pscreen on">
+                    <div class="p-member">
+                      <div class="p-avatar" style="background:#2b7bbb">田</div>
+                      <div><div class="nm">田中 美咲 さん</div><div class="dt">2026年10月27日（火）来院</div></div>
+                    </div>
+                    <div class="p-grid">
+                      <div class="p-val"><div class="k">コース</div><div class="v">全身<small> 60分</small></div><div class="d">肩・腰 重点</div></div>
+                      <div class="p-val"><div class="k">担当</div><div class="v">店主</div><div class="d">指名あり</div></div>
+                      <div class="p-val"><div class="k">来院回数</div><div class="v">12<small> 回目</small></div><div class="d">前回 10/20</div></div>
+                      <div class="p-val"><div class="k">次回の目安</div><div class="v">2<small> 週間後</small></div><div class="d">11/10 ごろ</div></div>
+                    </div>
+                    <div class="p-memo">
+                      <div class="k">本日の施術メモ</div>
+                      肩・腰を中心に60分。右肩の可動域が前回より改善。自宅では壁押しストレッチを継続してもらう。
+                    </div>
+                    <div class="p-sec">最近の施術</div>
+                    <div class="p-row"><span class="l">10/20</span><span class="r">全身コース <b>60分</b></span></div>
+                    <div class="p-row"><span class="l">10/13</span><span class="r">全身コース <b>60分</b></span></div>
+                    <div class="p-row"><span class="l">10/6</span><span class="r">部分コース <b>45分</b></span></div>
+                    <span class="p-btn" style="background:#2b7bbb">＋ 今日の施術を記録</span>
+                  </div>
+                </div>
+                <div class="tabbar" aria-hidden="true">
+                  <span class="tab on">記録</span><span class="tab">会員一覧</span>
+                </div>
+              </div>
+            </div>
+            <p class="phone-cap">画面1｜今日の記録を入力する</p>
+            </div>
+            <div class="phone-col">
+            <div class="phone">
+              <div class="screen-box">
+                <div class="statusbar"><span>9:41</span><span>5G ▂▄▆</span></div>
+                <div class="appbar"><span class="ttl">施術記録</span><span class="sub">整体院・サンプル</span></div>
+                <div class="screens">
+                  <div class="pscreen on">
+                    <div class="p-search">会員名で検索…（例：たなか）</div>
+                    <div class="p-sec" style="margin-top:0">会員一覧（12名）</div>
+                    <div class="p-row"><span class="l">田中 美咲 さん</span><span class="r">前回 10/27<br />全身コース <b>60分</b></span></div>
+                    <div class="p-row"><span class="l">佐々木 健 さん</span><span class="r">前回 10/25<br />部分コース <b>45分</b></span></div>
+                    <div class="p-row"><span class="l">小林 葵 さん</span><span class="r">前回 10/24<br />全身コース <b>60分</b></span></div>
+                    <div class="p-row"><span class="l">中村 翔 さん</span><span class="r">前回 10/21<br />全身コース <b>60分</b></span></div>
+                    <div class="p-row"><span class="l">山田 恵 さん</span><span class="r">前回 10/20<br />部分コース <b>30分</b></span></div>
+                    <span class="p-btn" style="background:#2b7bbb">＋ 新しい会員を登録</span>
+                  </div>
+                </div>
+                <div class="tabbar" aria-hidden="true">
+                  <span class="tab">記録</span><span class="tab on">会員一覧</span>
+                </div>
+              </div>
+            </div>
+            <p class="phone-cap">画面2｜会員の一覧と検索</p>
+            </div>
+          </div>
+
+          <div class="app-info">
+            <p class="for">整体院・パーソナルジム・各種教室の先生に</p>
+            <p>会員ごとに、その日の施術・セッションの内容を残していく記録アプリです。「前回はどのコースで、どこを重点的に施術したか」を、<strong>紙のメモと記憶の中から、名前で引ける形に</strong>移すのがこの型です。記録する項目（コース・時間・部位・メモなど）は、お仕事に合わせて決めます。</p>
+            <h3>できること</h3>
+            <ul class="can">
+              <li><strong>会員ごとの施術記録</strong> ― コース・施術時間・重点部位と、その日の気づきを同じ画面にメモ。項目は仕事に合わせて変更可</li>
+              <li><strong>会員一覧と名前検索</strong> ― 誰の記録かは一覧から名前で引く。前回いつ来て、どのコースだったかが並んで見える</li>
+              <li><strong>過去の記録を時系列で見返す</strong> ― 前回・前々回のコースと施術メモがそのまま残る。「前回どうだったか」がその場で分かる</li>
+              <li><strong>CSVで書き出し・読み込み</strong> ― バックアップや端末の買い替えにも対応</li>
+            </ul>
+            <h3>こう変わる</h3>
+            <div class="ba">
+              <div class="row"><span class="lab before">いま</span><span>紙の施術メモやノートに手書き。前回の内容は、記憶とメモ探し頼み</span></div>
+              <div class="arrow">▼</div>
+              <div class="row"><span class="lab after">導入後</span><span>施術の合間にスマホで入力。前回のコースとメモが、名前で引けばすぐ出る</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= B1 ================= -->
+      <section class="app" id="app-b1">
+        <div class="app-head">
+          <span class="app-no">アプリ 02</span>
+          <div>
+            <h2>顧客カルテ＆来店履歴</h2>
+            <p class="app-type">型B｜台帳＋履歴 ― お客様の台帳に、来店の記録が積み上がっていく型</p>
+          </div>
+          <div class="price">
+            <div class="yen">80,000<small>円</small></div>
+            <div class="cap">標準プラン／買い切り・月額なし</div>
+          </div>
+        </div>
+
+        <div class="app-body">
+          <div class="phones">
+            <div class="phone-col">
+            <div class="phone">
+              <div class="screen-box">
+                <div class="statusbar"><span>9:41</span><span>5G ▂▄▆</span></div>
+                <div class="appbar"><span class="ttl">顧客カルテ</span><span class="sub">美容室・サンプル</span></div>
+                <div class="screens">
+                  <div class="pscreen on">
+                    <div class="p-search">名前で検索…（例：さとう）</div>
+                    <div class="p-row"><span class="l">佐藤 健一 さん</span><span class="r">前回 10/12<br />回数券 <b>残り3回</b></span></div>
+                    <div class="p-row"><span class="l">鈴木 葉子 さん</span><span class="r">前回 10/25<br />回数券 <b>残り6回</b></span></div>
+                    <div class="p-row"><span class="l">高橋 誠 さん</span><span class="r">前回 8/30<br /><span class="chip r">ご無沙汰 58日</span></span></div>
+                    <div class="p-row"><span class="l">伊藤 あかり さん</span><span class="r">前回 10/18<br />回数券 <b>残り1回</b></span></div>
+                    <div class="p-row"><span class="l">渡辺 翔太 さん</span><span class="r">前回 9/15<br /><span class="chip r">ご無沙汰 42日</span></span></div>
+                    <div class="p-sec">絞り込み</div>
+                    <span class="chip a">ご無沙汰のお客様だけ表示</span>
+                    <span class="chip n">回数券が残り1回以下</span>
+                    <span class="p-btn" style="background:#1e56a8">＋ 新規のお客様を登録</span>
+                  </div>
+                </div>
+                <div class="tabbar" aria-hidden="true">
+                  <span class="tab on">顧客一覧</span><span class="tab">カルテ</span>
+                </div>
+              </div>
+            </div>
+            <p class="phone-cap">画面1｜顧客の一覧と検索</p>
+            </div>
+            <div class="phone-col">
+            <div class="phone">
+              <div class="screen-box">
+                <div class="statusbar"><span>9:41</span><span>5G ▂▄▆</span></div>
+                <div class="appbar"><span class="ttl">顧客カルテ</span><span class="sub">美容室・サンプル</span></div>
+                <div class="screens">
+                  <div class="pscreen on">
+                    <div class="p-member">
+                      <div class="p-avatar" style="background:#1e56a8">佐</div>
+                      <div><div class="nm">佐藤 健一 さん</div><div class="dt">お客様になって 2年4ヶ月 ／ 来店 23回</div></div>
+                    </div>
+                    <div class="p-memo">
+                      <div class="k">前回の内容（10/12）</div>
+                      カット＋カラー（アッシュ系）。次回は少し短め希望。
+                    </div>
+                    <div class="p-memo">
+                      <div class="k">好み・注意メモ</div>
+                      静かな席を希望。シャンプーは強めが好み。仕事は土日休み。
+                    </div>
+                    <div class="p-memo" style="margin-bottom:4px">
+                      <div class="k">回数券（カット 6回券）</div>
+                      <div style="font-weight:900">残り 3回</div>
+                      <div class="p-bar"><i style="width:50%;background:#1e56a8"></i></div>
+                    </div>
+                    <div class="p-sec">来店履歴</div>
+                    <div class="p-tl">
+                      <div class="ev"><div class="when">2026/10/12</div><div class="what">カット＋カラー</div></div>
+                      <div class="ev"><div class="when">2026/8/29</div><div class="what">カット＋カラー</div></div>
+                      <div class="ev"><div class="when">2026/7/18</div><div class="what">カットのみ</div></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="tabbar" aria-hidden="true">
+                  <span class="tab">顧客一覧</span><span class="tab on">カルテ</span>
+                </div>
+              </div>
+            </div>
+            <p class="phone-cap">画面2｜お客様のカルテと来店履歴</p>
+            </div>
+          </div>
+
+          <div class="app-info">
+            <p class="for">美容室・サロン・治療院など、リピート客で成り立つお店に</p>
+            <p>お客様一人ひとりの台帳（カルテ）に、来店履歴が積み上がっていくアプリです。「前回どうしたか」を覚えていることは、お店の信用そのものです。その記憶を、<strong>紙のカルテと店主の記憶の中から、名前で検索できる形に</strong>移します。</p>
+            <h3>できること</h3>
+            <ul class="can">
+              <li><strong>名前で検索、その場でカルテが開く</strong> ― 前回いつ来て、何をして、何が好みか。接客の前に30秒で確認</li>
+              <li><strong>来店履歴が時系列で残る</strong> ― 施術・購入の内容を回ごとに記録。言った・言わないの行き違いも減る</li>
+              <li><strong>回数券・チケットの残数管理</strong> ― 残り回数がカルテと同じ画面に。使い切り・期限の見落とし防止に</li>
+              <li><strong>月ごとの集計と印刷</strong> ― 来店回数や回数券の消化が月単位で集計でき、必要な記録は紙で出せる</li>
+              <li><strong>「ご無沙汰」の絞り込み</strong> ― 前回からの日数が一覧に出て、来店が空いたお客様だけに絞り込める。ハガキやLINEでの声かけリストにそのまま使える</li>
+            </ul>
+            <h3>こう変わる</h3>
+            <div class="ba">
+              <div class="row"><span class="lab before">いま</span><span>紙カルテを探す／前回の内容を思い出す／ご無沙汰客に気づけない</span></div>
+              <div class="arrow">▼</div>
+              <div class="row"><span class="lab after">導入後</span><span>名前で引けば前回がすぐ出る。声をかけるべきお客様も一覧で分かる</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= C1 ================= -->
+      <section class="app" id="app-c1">
+        <div class="app-head">
+          <span class="app-no">アプリ 03</span>
+          <div>
+            <h2>作品管理</h2>
+            <p class="app-type">型C｜状態管理 ― 一点ごとの「今どうなっているか」と履歴を追う型</p>
+          </div>
+          <div class="price">
+            <div class="yen">100,000<small>円</small></div>
+            <div class="cap">業務ルールプラン／買い切り・月額なし</div>
+          </div>
+        </div>
+
+        <div class="app-body">
+          <div class="phones">
+            <div class="phone-col">
+            <div class="phone">
+              <div class="screen-box">
+                <div class="statusbar"><span>9:41</span><span>5G ▂▄▆</span></div>
+                <div class="appbar"><span class="ttl">作品管理</span><span class="sub">画廊・工房 サンプル</span></div>
+                <div class="screens">
+                  <div class="pscreen on">
+                    <div class="p-alert">動きが止まっている作品が 3点 あります</div>
+                    <div class="p-search">作品番号・タイトルで検索…</div>
+                    <div class="p-cards">
+                      <div class="p-card">
+                        <div class="art" style="background:#7d94a6"><svg viewBox="0 0 120 62" width="100%" height="100%" preserveAspectRatio="none" aria-hidden="true"><circle cx="88" cy="16" r="9" fill="#e8ddba"/><path d="M0 46 L34 22 L58 40 L84 26 L120 44 L120 62 L0 62 Z" fill="#4c6172"/></svg></div>
+                        <div class="bd"><div class="t">海辺の記憶</div><div class="no">No. A-102</div><span class="chip r">売約済</span></div>
+                      </div>
+                      <div class="p-card">
+                        <div class="art" style="background:#c9b48a"><svg viewBox="0 0 120 62" width="100%" height="100%" preserveAspectRatio="none" aria-hidden="true"><circle cx="34" cy="30" r="16" fill="#8a6d3f"/><circle cx="80" cy="24" r="10" fill="#a5854f"/></svg></div>
+                        <div class="bd"><div class="t">土の器 No.7</div><div class="no">No. B-031</div><span class="chip b">展示中</span></div>
+                      </div>
+                      <div class="p-card">
+                        <div class="art" style="background:#93a487"><svg viewBox="0 0 120 62" width="100%" height="100%" preserveAspectRatio="none" aria-hidden="true"><path d="M0 52 Q30 20 60 38 T120 30 L120 62 L0 62 Z" fill="#5d7050"/></svg></div>
+                        <div class="bd"><div class="t">緑の稜線</div><div class="no">No. A-097</div><span class="chip a">交渉中</span></div>
+                      </div>
+                      <div class="p-card">
+                        <div class="art" style="background:#b08d7a"><svg viewBox="0 0 120 62" width="100%" height="100%" preserveAspectRatio="none" aria-hidden="true"><rect x="26" y="12" width="30" height="38" fill="#7c5a48"/><rect x="64" y="20" width="24" height="30" fill="#8f6a56"/></svg></div>
+                        <div class="bd"><div class="t">街角の午後</div><div class="no">No. A-088</div><span class="chip n">貸出中</span></div>
+                      </div>
+                    </div>
+                    <span class="p-btn" style="background:#2c3d63">＋ 作品を登録</span>
+                  </div>
+                </div>
+                <div class="tabbar" aria-hidden="true">
+                  <span class="tab on">作品一覧</span><span class="tab">詳細</span>
+                </div>
+              </div>
+            </div>
+            <p class="phone-cap">画面1｜作品の一覧</p>
+            </div>
+            <div class="phone-col">
+            <div class="phone">
+              <div class="screen-box">
+                <div class="statusbar"><span>9:41</span><span>5G ▂▄▆</span></div>
+                <div class="appbar"><span class="ttl">作品管理</span><span class="sub">画廊・工房 サンプル</span></div>
+                <div class="screens">
+                  <div class="pscreen on">
+                    <div class="p-hero">
+                      <div class="art" style="background:#7d94a6"><svg viewBox="0 0 272 110" width="100%" height="100%" preserveAspectRatio="none" aria-hidden="true"><circle cx="212" cy="28" r="15" fill="#e8ddba"/><path d="M0 82 L78 40 L132 70 L196 48 L272 78 L272 110 L0 110 Z" fill="#4c6172"/></svg></div>
+                      <div class="bd"><div class="t">海辺の記憶 <span class="chip r">売約済</span></div><div style="font-size:11px;color:#6f6a5e">No. A-102 ／ 油彩・F20 ／ 2025年制作</div></div>
+                    </div>
+                    <div class="p-sec" style="margin-top:0">この作品の履歴</div>
+                    <div class="p-tl">
+                      <div class="ev"><div class="when">2026/10/20</div><div class="what">売約 ― 納品は11月上旬</div></div>
+                      <div class="ev"><div class="when">2026/9/28</div><div class="what">額装が完了</div></div>
+                      <div class="ev"><div class="when">2026/9/2 〜 9/27</div><div class="what">個展に出展（横浜）</div></div>
+                      <div class="ev"><div class="when">2026/8/15</div><div class="what">作品登録</div></div>
+                    </div>
+                    <div class="p-row"><span class="l">次の作業</span><span class="r"><b>納品書の発行</b></span></div>
+                  </div>
+                </div>
+                <div class="tabbar" aria-hidden="true">
+                  <span class="tab">作品一覧</span><span class="tab on">詳細</span>
+                </div>
+              </div>
+            </div>
+            <p class="phone-cap">画面2｜作品の詳細と履歴</p>
+            </div>
+          </div>
+
+          <div class="app-info">
+            <p class="for">画廊・作家事務所・一点ものを扱う工房やお店に</p>
+            <p>作品や商品を一点ごとに登録し、「今どうなっているか」（状態）と「これまで何があったか」（履歴）を追うアプリです。台帳が何枚ものシートや紙に散らばっていると起きやすい、<strong>二重の約束や、止まったまま忘れられる案件</strong>を防ぐための型です。</p>
+            <h3>できること</h3>
+            <ul class="can">
+              <li><strong>作品番号・タイトルで即検索</strong> ― 問い合わせが来たその場で、その作品の今が出る</li>
+              <li><strong>状態の管理</strong> ― 在庫／展示中／交渉中／売約済／貸出中など、状態の種類は実態に合わせて設定</li>
+              <li><strong>履歴を一点ごとに記録</strong> ― 額装・出展・貸出・納品の経緯が時系列で残る</li>
+              <li><strong>止まっている作品の抽出</strong> ― 一定期間動きのないものだけを一覧化。抜け漏れと機会損失を防ぐ</li>
+            </ul>
+            <h3>こう変わる</h3>
+            <div class="ba">
+              <div class="row"><span class="lab before">いま</span><span>台帳・作品リスト・納品控えが別々のシートと紙に散らばっている</span></div>
+              <div class="arrow">▼</div>
+              <div class="row"><span class="lab after">導入後</span><span>一点引けば状態と履歴が全部出る。止まっている作品も自動で拾える</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= price tiers ================= -->
+      <section class="app" id="price-tiers">
+        <div class="app-head">
+          <span class="app-no" style="background:var(--blue)">価格</span>
+          <div>
+            <h2>金額は3段階、固定です</h2>
+            <p class="app-type">段階ごとの違いは「できること」と「画面」です。アプリ01の整体院の施術記録を題材に、3段階の画面を並べました</p>
+          </div>
+        </div>
+
+        <div class="tier-phones">
+          <div class="tier-col">
+            <p class="tier-price">50,000<span>円</span></p>
+            <p class="tier-name">記録プラン</p>
+            <div class="phone mini">
+              <div class="screen-box">
+                <div class="statusbar"><span>9:41</span><span>5G ▂▄▆</span></div>
+                <div class="appbar"><span class="ttl">施術記録</span><span class="sub">整体院・サンプル</span></div>
+                <div class="screens">
+                  <div class="pscreen on">
+                    <div class="p-search">会員名で検索…</div>
+                    <div class="p-row"><span class="l">田中 美咲 さん</span><span class="r">前回 10/27<br />全身コース <b>60分</b></span></div>
+                    <div class="p-row"><span class="l">佐々木 健 さん</span><span class="r">前回 10/25<br />部分コース <b>45分</b></span></div>
+                    <div class="p-row"><span class="l">小林 葵 さん</span><span class="r">前回 10/24<br />全身コース <b>60分</b></span></div>
+                    <div class="p-row"><span class="l">中村 翔 さん</span><span class="r">前回 10/21<br />全身コース <b>60分</b></span></div>
+                    <span class="p-btn" style="background:#2b7bbb">＋ 今日の施術を記録</span>
+                  </div>
+                </div>
+                <div class="tabbar" aria-hidden="true">
+                  <span class="tab on">記録</span><span class="tab">会員一覧</span>
+                </div>
+              </div>
+            </div>
+            <p class="tier-note">あるのは<b>記録・一覧・検索</b>の画面だけ。<b>集計グラフや印刷レポートの画面はありません</b>。</p>
+          </div>
+
+          <div class="tier-col">
+            <p class="tier-price">80,000<span>円</span></p>
+            <p class="tier-name">標準プラン</p>
+            <div class="phone mini">
+              <div class="screen-box">
+                <div class="statusbar"><span>9:41</span><span>5G ▂▄▆</span></div>
+                <div class="appbar"><span class="ttl">施術記録</span><span class="sub">整体院・サンプル</span></div>
+                <div class="screens">
+                  <div class="pscreen on">
+                    <div class="p-sec" style="margin-top:0">期間集計（2026年10月）</div>
+                    <div class="p-avg">
+                      <div class="p-val"><div class="k">来院回数</div><div class="v">26<small> 回</small></div></div>
+                      <div class="p-val"><div class="k">施術時間（延べ）</div><div class="v">24.5<small> 時間</small></div></div>
+                    </div>
+                    <div class="p-chart">
+                      <div class="k">月ごとの来院回数（回）</div>
+                      <svg viewBox="0 0 240 92" width="100%" role="img" aria-label="来院回数が月18回から26回へ増える推移グラフ">
+                        <line x1="8" y1="20" x2="232" y2="20" stroke="#d5cfbd" stroke-width="1" />
+                        <line x1="8" y1="48" x2="232" y2="48" stroke="#d5cfbd" stroke-width="1" />
+                        <line x1="8" y1="76" x2="232" y2="76" stroke="#d5cfbd" stroke-width="1" />
+                        <polyline points="16,68 72,58 128,46 184,34 224,26" fill="none" stroke="#2b7bbb" stroke-width="2.5" stroke-linecap="round" />
+                        <circle cx="16" cy="68" r="3.5" fill="#2b7bbb" /><circle cx="72" cy="58" r="3.5" fill="#2b7bbb" />
+                        <circle cx="128" cy="46" r="3.5" fill="#2b7bbb" /><circle cx="184" cy="34" r="3.5" fill="#2b7bbb" />
+                        <circle cx="224" cy="26" r="3.5" fill="#2b7bbb" />
+                        <text x="16" y="84" font-size="9" fill="#4f4b41">18回</text>
+                        <text x="204" y="16" font-size="9" font-weight="700" fill="#2b7bbb">26回</text>
+                      </svg>
+                    </div>
+                    <span class="p-btn" style="background:#2b7bbb">月次レポートを印刷する</span>
+                  </div>
+                </div>
+                <div class="tabbar" aria-hidden="true">
+                  <span class="tab">記録</span><span class="tab">会員一覧</span><span class="tab on">集計</span>
+                </div>
+              </div>
+            </div>
+            <p class="tier-note">5万円版の全部に、<b>＋集計グラフ</b>と<b>＋印刷レポート</b>の画面が付きます。下のナビにも「集計」が増えています。</p>
+          </div>
+
+          <div class="tier-col">
+            <p class="tier-price">100,000<span>円</span></p>
+            <p class="tier-name">業務ルールプラン</p>
+            <div class="phone mini">
+              <div class="screen-box">
+                <div class="statusbar"><span>9:41</span><span>5G ▂▄▆</span></div>
+                <div class="appbar"><span class="ttl">施術記録</span><span class="sub">整体院・サンプル</span></div>
+                <div class="screens">
+                  <div class="pscreen on">
+                    <div class="p-alert">来院が止まっている会員が 2名 います</div>
+                    <div class="p-row"><span class="l">田中 美咲 さん</span><span class="r"><span class="chip g">通院中</span><br />前回 10/27</span></div>
+                    <div class="p-row"><span class="l">佐々木 健 さん</span><span class="r"><span class="chip g">通院中</span><br /><span class="chip r">21日 来院なし</span></span></div>
+                    <div class="p-row"><span class="l">小林 葵 さん</span><span class="r"><span class="chip n">休止中</span><br />前回 10/24</span></div>
+                    <div class="p-row"><span class="l">中村 翔 さん</span><span class="r"><span class="chip g">通院中</span><br /><span class="chip r">34日 来院なし</span></span></div>
+                    <div class="p-sec">絞り込み</div>
+                    <span class="chip r">止まっている会員だけ表示</span>
+                    <span class="chip n">状態：休止中</span>
+                  </div>
+                </div>
+                <div class="tabbar" aria-hidden="true">
+                  <span class="tab">記録</span><span class="tab">会員一覧</span><span class="tab">集計</span><span class="tab on">状態</span>
+                </div>
+              </div>
+            </div>
+            <p class="tier-note">8万円版の全部に、<b>＋状態管理</b>（通院中・休止中…）と<b>＋「止まっている人」の自動抽出</b>が付きます。</p>
+          </div>
+        </div>
+
+        <p class="cmp-lead">できることを金額ごとに積み上げた比較表です。右の金額になるほど、左の金額でできることが全部入ったうえに、できることが増えていきます。</p>
+        <div class="cmp-box">
+          <table class="cmp">
+            <thead>
+              <tr>
+                <th scope="col" class="feat-h">できること</th>
+                <th scope="col" class="pc"><span class="amt">50,000<small>円</small></span><span class="pl">記録プラン</span></th>
+                <th scope="col" class="pc"><span class="amt">80,000<small>円</small></span><span class="pl">標準プラン</span></th>
+                <th scope="col" class="pc"><span class="amt">100,000<small>円</small></span><span class="pl">業務ルールプラン</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="grp"><td colspan="4">5万円から ― まずは記録を紙から移す</td></tr>
+              <tr>
+                <td>その日の記録を入力・保存</td>
+                <td class="pc new-cell"><span class="ck new">✓</span></td>
+                <td class="pc"><span class="ck">✓</span></td>
+                <td class="pc"><span class="ck">✓</span></td>
+              </tr>
+              <tr>
+                <td>一覧表示と、名前・番号での検索</td>
+                <td class="pc new-cell"><span class="ck new">✓</span></td>
+                <td class="pc"><span class="ck">✓</span></td>
+                <td class="pc"><span class="ck">✓</span></td>
+              </tr>
+              <tr>
+                <td>過去の記録を時系列で見返す</td>
+                <td class="pc new-cell"><span class="ck new">✓</span></td>
+                <td class="pc"><span class="ck">✓</span></td>
+                <td class="pc"><span class="ck">✓</span></td>
+              </tr>
+              <tr>
+                <td>CSVでの書き出し・読み込み（控え・機種変更に）</td>
+                <td class="pc new-cell"><span class="ck new">✓</span></td>
+                <td class="pc"><span class="ck">✓</span></td>
+                <td class="pc"><span class="ck">✓</span></td>
+              </tr>
+              <tr class="grp"><td colspan="4">8万円から増える ― 集計と印刷で「見える形」に</td></tr>
+              <tr>
+                <td>期間集計と推移グラフ</td>
+                <td class="pc"><span class="na">―</span></td>
+                <td class="pc new-cell"><span class="ck new">✓</span></td>
+                <td class="pc"><span class="ck">✓</span></td>
+              </tr>
+              <tr>
+                <td>月次レポートの印刷</td>
+                <td class="pc"><span class="na">―</span></td>
+                <td class="pc new-cell"><span class="ck new">✓</span></td>
+                <td class="pc"><span class="ck">✓</span></td>
+              </tr>
+              <tr>
+                <td>お客様ごとの履歴の積み上げ（カルテ）</td>
+                <td class="pc"><span class="na">―</span></td>
+                <td class="pc new-cell"><span class="ck new">✓</span></td>
+                <td class="pc"><span class="ck">✓</span></td>
+              </tr>
+              <tr>
+                <td>前回からの日数表示と、条件での絞り込み</td>
+                <td class="pc"><span class="na">―</span></td>
+                <td class="pc new-cell"><span class="ck new">✓</span></td>
+                <td class="pc"><span class="ck">✓</span></td>
+              </tr>
+              <tr class="grp"><td colspan="4">10万円から増える ― 情報の連携と、仕事のルール</td></tr>
+              <tr>
+                <td>状態管理（展示中・交渉中・売約済など）</td>
+                <td class="pc"><span class="na">―</span></td>
+                <td class="pc"><span class="na">―</span></td>
+                <td class="pc new-cell"><span class="ck new">✓</span></td>
+              </tr>
+              <tr>
+                <td>止まっているものの自動抽出とアラート表示</td>
+                <td class="pc"><span class="na">―</span></td>
+                <td class="pc"><span class="na">―</span></td>
+                <td class="pc new-cell"><span class="ck new">✓</span></td>
+              </tr>
+              <tr>
+                <td>状態に応じた「次の作業」の提示など、仕事固有のルール</td>
+                <td class="pc"><span class="na">―</span></td>
+                <td class="pc"><span class="na">―</span></td>
+                <td class="pc new-cell"><span class="ck new">✓</span></td>
+              </tr>
+              <tr class="grp ng"><td colspan="4">どの金額にも含まれないもの ― 別の設計・お見積もりになります</td></tr>
+              <tr>
+                <td>複数人での同時編集・共有</td>
+                <td class="pc"><span class="nx">✕</span></td>
+                <td class="pc"><span class="nx">✕</span></td>
+                <td class="pc"><span class="nx">✕</span></td>
+              </tr>
+              <tr>
+                <td>予約・決済そのものの仕組み</td>
+                <td class="pc"><span class="nx">✕</span></td>
+                <td class="pc"><span class="nx">✕</span></td>
+                <td class="pc"><span class="nx">✕</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="cmp-legend"><span class="ck new">✓</span> の付いたマスは、その金額から新しく使えるようになる機能です。右の金額にも、そのまま入っています。</p>
+        <p style="font-size:14.5px; color:var(--ink-2); margin:18px 0 0">「うちの仕事は、この枠で作れるだろうか」——そのご相談から始められます。記録したい項目や状態の種類をお聞きしながら、どの段階に収まるかを一緒に決めていきます。</p>
+        <div class="cta-row">
+          <a class="btn main" href="#contact">ご相談・ご質問はこちら</a>
+        </div>
+      </section>
+
+      <!-- ================= reasons ================= -->
+      <section class="app" id="reasons">
+        <div class="app-head">
+          <span class="app-no" style="background:var(--blue)">理由</span>
+          <div>
+            <h2>この条件でお引き受けできる理由</h2>
+            <p class="app-type">金額と納期を先にお約束できるのは、作り方の仕組みが決まっているからです</p>
+          </div>
+        </div>
+
+        <div class="types" style="margin-top:0">
+          <div class="type-card">
+            <p class="t-name">金額が先に決まっています</p>
+            <p>できることを3段階に分け、金額を固定しました。お見積もりをお待ちいただく必要はなく、ご相談の時点で総額が分かります。</p>
+          </div>
+          <div class="type-card">
+            <p class="t-name">月額費用がかかりません</p>
+            <p>データはお使いの端末の中に保存され、サーバーを使いません。そのため、毎月の利用料や保守契約なしで使い続けられます。</p>
+          </div>
+          <div class="type-card">
+            <p class="t-name">土台は、実績のある仕組みです</p>
+            <p>記録の仕組みは、実際に日常で使われているアプリが土台です。その実物は、このページの<a href="#sample" style="color:var(--blue);font-weight:700">実物サンプル</a>でそのままご覧いただけます。一から作らない分、短期間でお渡しできます。</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= flow ================= -->
+      <section class="app" id="flow">
+        <div class="app-head">
+          <span class="app-no" style="background:var(--blue)">進め方</span>
+          <div>
+            <h2>ご相談からお渡しまでの流れ</h2>
+            <p class="app-type">制作に進むかどうかは、仕様と金額が確定したあとでお決めいただけます</p>
+          </div>
+        </div>
+
+        <ol class="steps">
+          <li>
+            <span class="step-no">1</span>
+            <div>
+              <h3>ご相談</h3>
+              <p>いまの管理のしかた（紙／Excel／ほかのシステム）と、困っていらっしゃることをお聞かせください。質問がまとまっていなくても大丈夫です。</p>
+            </div>
+          </li>
+          <li>
+            <span class="step-no">2</span>
+            <div>
+              <h3>ヒアリング</h3>
+              <p>記録したい項目や状態の種類をお聞きし、3つの型のどれに収まるかを一緒に確認します。今お使いの台帳の形式（紙か、Excelか）も、この時点で確認します。</p>
+            </div>
+          </li>
+          <li>
+            <span class="step-no">3</span>
+            <div>
+              <h3>仕様と金額の確定</h3>
+              <p>金額は段階ごとに固定です。範囲を超える内容がある場合は、着手前に内容と追加料金をご説明し、ご承諾いただいてから進めます。<strong>ご承諾なく追加料金が発生することはありません。</strong></p>
+            </div>
+          </li>
+          <li>
+            <span class="step-no">4</span>
+            <div>
+              <h3>制作</h3>
+              <p>仕様が確定してから、2〜3日で制作します。着手する日は受注時にご相談のうえ決めます。遅れる場合は、分かった時点でご連絡します。</p>
+            </div>
+          </li>
+          <li>
+            <span class="step-no">5</span>
+            <div>
+              <h3>ご確認・お渡し（インストールまでご一緒します）</h3>
+              <p>画面をご確認いただき、仕様の範囲内で調整を行います。今のデータの移行が必要な場合は、形式の変換まで行ってお渡しします。<strong>最後に、お使いのスマホのホーム画面へアプリを入れる（インストールする）ところまで、その場でご一緒します。</strong>ホーム画面にアイコンが付けば、その日から普通のアプリと同じようにタップして開けます。</p>
+            </div>
+          </li>
+        </ol>
+      </section>
+
+      <!-- ================= install guide ================= -->
+      <section class="app" id="install">
+        <div class="app-head">
+          <span class="app-no" style="background:var(--blue)">入れ方</span>
+          <div>
+            <h2>アプリの入れ方</h2>
+            <p class="app-type">インストール方法 ― アプリストアからのダウンロードは不要です。ホーム画面にアイコンを置くまでが「インストール」です</p>
+          </div>
+        </div>
+
+        <p class="install-lead">お渡しするアプリは、ブラウザで開くアドレスから<strong>ホーム画面に追加</strong>して使います。一度追加すれば、アイコンをタップするだけで開け、<strong>一度読み込んだあとは電波のない場所でも使えます</strong>。</p>
+        <p class="install-lead">お渡しの際はその場でご一緒に設定しますので、こちらの手順は<strong>「あとから自分で入れ直したいとき」</strong>のための控えとしてご覧ください。お使いの機種に合わせて、AndroidとiPhoneで手順が分かれますので、該当するほうを押して開いてください。</p>
+
+        <div class="install-acc">
+          <!-- Android -->
+          <details class="install-item">
+            <summary>
+              <span class="install-os"><span class="os-badge android" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.2 9.2a.7.7 0 0 0-.7.7v6.3c0 .4.3.7.7.7h.6v2.7c0 .8.6 1.4 1.4 1.4.8 0 1.4-.6 1.4-1.4v-2.7h4.8v2.7c0 .8.6 1.4 1.4 1.4.8 0 1.4-.6 1.4-1.4v-2.7h.6c.4 0 .7-.3.7-.7V9.9a.7.7 0 0 0-.7-.7H6.2Zm11.4-1.4 1-.6c.3-.2.4-.6.2-.9a.6.6 0 0 0-.9-.2l-1 .6a11.6 11.6 0 0 0-9.8 0l-1-.6a.6.6 0 0 0-.9.2c-.2.3-.1.7.2.9l1 .6C5 8.5 4.2 9.7 4.1 11h15.8c-.1-1.3-.9-2.5-2.3-3.2ZM8.6 6.4a.95.95 0 1 1 0 1.9.95.95 0 0 1 0-1.9Zm6.8 0a.95.95 0 1 1 0 1.9.95.95 0 0 1 0-1.9ZM3.6 10.2c-.7 0-1.2.6-1.2 1.3v3.7c0 .8.5 1.3 1.2 1.3.7 0 1.2-.6 1.2-1.3v-3.7c0-.8-.5-1.3-1.2-1.3Zm16.8 0c-.7 0-1.2.6-1.2 1.3v3.7c0 .8.5 1.3 1.2 1.3.7 0 1.2-.6 1.2-1.3v-3.7c0-.8-.5-1.3-1.2-1.3Z"/></svg></span>Android の方はこちら</span>
+              <span class="install-browser">使うブラウザ：<strong>Chrome（クローム）</strong></span>
+            </summary>
+            <div class="install-body">
+            <div class="install-visual" aria-hidden="true">
+              <div class="mini-browser">
+                <div class="mini-bar"><span class="url">アプリのアドレス</span><span class="dots hl">⋮</span></div>
+                <div class="mini-menu">
+                  <div class="mi">新しいタブ</div>
+                  <div class="mi hl">アプリをインストール ／ ホーム画面に追加</div>
+                  <div class="mi">設定</div>
+                </div>
+              </div>
+              <p class="install-visual-cap">イメージ図：右上の「⋮」メニューから追加します</p>
+            </div>
+            <ol class="install-steps">
+              <li><strong>Chromeで、アプリのアドレスを開きます。</strong>お渡ししたアドレス（またはQRコード）から開いてください。</li>
+              <li>画面右上の<strong>メニュー「⋮」</strong>をタップします。</li>
+              <li><strong>「アプリをインストール」</strong>または<strong>「ホーム画面に追加」</strong>をタップします。表示される文言は機種によって異なります。</li>
+              <li>確認画面で<strong>「インストール」／「追加」</strong>をタップします。ホーム画面にアイコンが追加されれば完了です。次回からは、そのアイコンをタップして開いてください。</li>
+            </ol>
+            <p class="install-note"><strong>自動で案内が出る場合：</strong>アドレスを開いたとき、画面の下などに「ホーム画面に追加」の案内が出る機種もあります。その場合は、案内をタップするだけで同じように追加できます。</p>
+            </div>
+          </details>
+
+          <!-- iPhone -->
+          <details class="install-item">
+            <summary>
+              <span class="install-os"><span class="os-badge iphone" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.7 12.9c0-2.4 2-3.6 2.1-3.7-1.1-1.7-2.9-1.9-3.5-1.9-1.5-.2-2.9.9-3.7.9-.8 0-1.9-.9-3.2-.9-1.6 0-3.1 1-4 2.4-1.7 2.9-.4 7.3 1.2 9.7.8 1.2 1.8 2.5 3 2.4 1.2 0 1.6-.7 3-.7s1.8.7 3 .7c1.3 0 2.1-1.2 2.9-2.4.9-1.3 1.3-2.6 1.3-2.7-.1 0-2.6-1-2.7-3.8ZM14.2 5.6c.7-.8 1.1-1.9 1-3-1 0-2.1.6-2.8 1.4-.6.7-1.2 1.9-1 3 1 .1 2.1-.6 2.8-1.4Z"/></svg></span>iPhone の方はこちら</span>
+              <span class="install-browser">使うブラウザ：<strong>Safari（サファリ）</strong> ― Chromeなど他のブラウザでは追加できません</span>
+            </summary>
+            <div class="install-body">
+            <div class="install-visual" aria-hidden="true">
+              <div class="mini-browser">
+                <div class="mini-bar"><span class="url">アプリのアドレス</span></div>
+                <div class="mini-body">アプリの画面が表示されている状態で、画面下の共有ボタンをタップします。</div>
+                <div class="mini-bottombar"><span>‹</span><span>›</span><span class="mini-share hl">□↑</span><span>▣</span><span>⧉</span></div>
+                <div class="mini-menu" style="border-top:1px solid #eee9da">
+                  <div class="mi hl">＋ ホーム画面に追加</div>
+                  <div class="mi">ブックマークに追加</div>
+                </div>
+              </div>
+              <p class="install-visual-cap">イメージ図：共有ボタン「□↑」から「ホーム画面に追加」を選びます</p>
+            </div>
+            <ol class="install-steps">
+              <li><strong>Safariで、アプリのアドレスを開きます。</strong>LINEなどで受け取った場合は、リンクをSafariで開き直してから進めてください。</li>
+              <li>画面下（機種により上）の<strong>共有ボタン「□↑」</strong>をタップします。</li>
+              <li>メニューを少し下へ送り、<strong>「ホーム画面に追加」</strong>をタップします。</li>
+              <li>右上の<strong>「追加」</strong>をタップします。ホーム画面にアイコンが追加されれば完了です。次回からは、そのアイコンをタップして開いてください。</li>
+            </ol>
+            <p class="install-note"><strong>ご注意：</strong>iPhoneでは自動でインストールの案内は出ません。必ずSafariの共有ボタンから追加してください。</p>
+            </div>
+          </details>
+        </div>
+
+        <div class="install-done">
+          <strong>追加できたら：</strong>ホーム画面のアイコンから開くと、ブラウザのアドレス欄のない、通常のアプリのような画面で使えます。データはこれまでどおり端末の中に保存されます。機種変更のときは、新しい端末でも同じ手順で追加し直し、CSVの控えから記録を読み込みます（方法はお渡し時にご説明します）。
+        </div>
+
+        <p class="install-links">公式の手順もあわせてご覧いただけます：
+          <a href="https://support.google.com/chrome/answer/9658361?hl=ja" target="_blank" rel="noopener">Google Chrome ヘルプ「プログレッシブ ウェブアプリをインストールする」</a>／
+          <a href="https://support.apple.com/ja-jp/guide/iphone/iph42ab2f3a7/ios" target="_blank" rel="noopener">Apple サポート「iPhoneでWebサイトをブックマークする（ホーム画面に追加）」</a>
+        </p>
+      </section>
+
+      <!-- ================= common terms ================= -->
+      <section class="app" id="common">
+        <div class="app-head">
+          <span class="app-no" style="background:var(--blue)">共通</span>
+          <div>
+            <h2>どの型にも共通する条件</h2>
+            <p class="app-type">3つの型すべてに共通する、価格・納期・データの置き場所についてまとめました</p>
+          </div>
+        </div>
+
+        <div class="types" style="margin-top:0">
+          <div class="type-card">
+            <p class="t-name">買い切り価格（3段階・固定）</p>
+            <p>金額は5万円・8万円・10万円の3段階で固定です。買い切りのため、月額費用はありません。</p>
+          </div>
+          <div class="type-card">
+            <p class="t-name">納期は「仕様確定から」</p>
+            <p>ヒアリングで仕様が決まった時点から、制作は2〜3日です。着手する日は受注時にご相談のうえ決めます。遅れる場合は、分かった時点でご連絡します。</p>
+          </div>
+          <div class="type-card">
+            <p class="t-name">データは端末の中</p>
+            <p>記録は使うスマホ・PCの中に保存され、サーバーは不要です。スマホ・タブレット・PCで使え、スマホではホーム画面にアイコンを追加して、通常のアプリのように開けます（<a href="#install" style="color:var(--blue);font-weight:700">入れ方はこちら</a>）。</p>
+          </div>
+        </div>
+
+        <div class="migrate">
+          <h3>今お使いのデータの移行について</h3>
+          <ul>
+            <li><strong>Excel・スプレッドシートで管理されている方</strong> ― ファイルは今の形のままお預かりし、アプリの形式への変換はこちらで行います。お客様に、整形やCSVへの書き出しをお願いすることはありません。</li>
+            <li><strong>紙の台帳で管理されている方</strong> ― まずは、いまお付き合いのあるお客様の分から入力していく進め方をご提案します。全件の転記をご希望の場合は、件数に応じて別途ご相談となります。</li>
+            <li><strong>お預かりしたデータの取り扱い</strong> ― 変換作業のためだけに使用し、作業が終わりましたら、こちらのコピーは削除いたします。第三者へ渡すことはありません。取り扱いの内容を記したメモをお渡しします。</li>
+            <li><strong>データをお見せになりたくない方</strong> ― 無理にお預かりはいたしません。「今日から記録を始める」「来店された方から順に入力する」進め方もお選びいただけます。</li>
+          </ul>
+        </div>
+
+        <div class="ba" style="margin-top:18px">
+          <p style="margin:0 0 6px"><strong>対象外のもの</strong>（この価格と納期では承っておりません）</p>
+          <p style="margin:0; font-size:14.5px; color:var(--ink-2)">複数人で同時に同じデータを見て編集する共有型／予約や決済そのものが本体の仕組み／医療の診断に使うもの／数十人規模で使うシステム。これらは別の設計とお見積もりになります。</p>
+        </div>
+      </section>
+
+      <!-- ================= FAQ ================= -->
+      <section class="app" id="faq">
+        <div class="app-head">
+          <span class="app-no" style="background:var(--blue)">質問</span>
+          <div>
+            <h2>よくあるご質問</h2>
+            <p class="app-type">ご相談の前に、多くの方が気にされる点へ先にお答えします</p>
+          </div>
+        </div>
+
+        <details class="faq-item">
+          <summary>Q．本当にこの金額だけですか？追加料金は発生しませんか？</summary>
+          <div class="a">
+            <p class="lead">はい。お支払いは、この金額だけです。</p>
+            <p>価格は5万円・8万円・10万円の3段階で固定、買い切りのため月額費用もかかりません。範囲を超えるご希望がある場合は、着手前に金額をご説明し、ご承諾いただいてから進めます。ご承諾なく追加料金が発生することはありません。</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Q．パソコンやスマホが苦手でも使えますか？</summary>
+          <div class="a">
+            <p class="lead">大丈夫です。設定は、こちらで済ませてお渡しします。</p>
+            <p>項目はお仕事に合わせて設定済みです。ホーム画面への追加も、お渡しの際にその場でご一緒しますので、ご自身で設定していただく必要はありません。あとから入れ直す場合の手順は<a href="#install">「アプリの入れ方」</a>にまとめています。</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Q．アプリはどうやってスマホに入れるのですか？アプリストアで探すのですか？</summary>
+          <div class="a">
+            <p class="lead">アプリストアは使いません。</p>
+            <p>お渡ししたアドレスをブラウザで開き、ホーム画面にアイコンを追加するのが「インストール」です。詳しい手順と図は<a href="#install">「アプリの入れ方」</a>をご覧ください。お渡しの際は、その場でご一緒に設定します。</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Q．電波のない場所でも使えますか？</summary>
+          <div class="a">
+            <p class="lead">はい、使えます。</p>
+            <p>一度開いて読み込みが終われば、あとは端末の中だけで動きます。通信が必要なのは、初めて開くときと、端末へ入れ直すときだけです。</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Q．今のデータ（紙・Excel）はどうなりますか？</summary>
+          <div class="a">
+            <p class="lead">そのままお預かりします。整形は不要です。</p>
+            <p>Excelなどのファイルは、今の形のままで大丈夫です。アプリの形式への変換はこちらで行います。紙の台帳の場合は、今お付き合いのあるお客様の分から入力していく進め方をご提案します。詳しくは<a href="#common">「今お使いのデータの移行について」</a>をご覧ください。</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Q．お客様の個人情報を預けることになりませんか？</summary>
+          <div class="a">
+            <p class="lead">データは、端末の中だけに保存されます。</p>
+            <p>外部のサーバーへ送られることはありません。移行でファイルをお預かりする場合も、変換のためだけに使い、作業後はこちらのコピーを削除します（取り扱いの内容を記したメモをお渡しします）。お見せになりたくない場合は、無理にお預かりしません。</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Q．納期はどれくらいですか？</summary>
+          <div class="a">
+            <p class="lead">仕様が決まってから、2〜3日です。</p>
+            <p>着手する日は受注時にご相談のうえ決めます。遅れる場合は、分かった時点でご連絡します。</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Q．使い始めてから、項目を増やしたり直したりできますか？</summary>
+          <div class="a">
+            <p class="lead">お渡し前の調整は、仕様の範囲内で対応します。</p>
+            <p>使い始めてからの項目追加は、内容に応じて別途ご相談となります。</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Q．保守契約は必要ですか？</summary>
+          <div class="a">
+            <p class="lead">必要ありません。</p>
+            <p>買い切りで、月額費用はかかりません。記録はCSVで書き出して、控えを取ることもできます。</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Q．うちの仕事が対象外になることはありますか？</summary>
+          <div class="a">
+            <p class="lead">次のような場合は、この価格では承っておりません。</p>
+            <p>複数人で同時に同じデータを編集する使い方／予約や決済そのものが本体の仕組み／医療の診断に使うもの／数十人規模で使うシステム。対象かどうか迷われる場合は、ご相談の際にご確認ください。</p>
+          </div>
+        </details>
+      </section>
+
+      <!-- ================= final CTA ================= -->
+      <section class="cta-final" id="contact">
+        <h2>まずは、今の管理のしかたをお聞かせください</h2>
+        <p>「うちの仕事はこの枠で作れるだろうか」という段階のご相談で大丈夫です。質問がまとまっていなくても構いません。無理におすすめすることはございません。</p>
+        <p>ご相談・ご質問は、このページをお送りした連絡先（LINE・メールなど）へ、そのままご返信ください。</p>
+        <div class="cta-row">
+          <a class="btn sub" href="#price-tiers">料金をもう一度見る</a>
+          <a class="btn sub" href="#faq">よくある質問を見る</a>
+        </div>
+      </section>
+
+      <footer style="margin-top:64px; border-top:1px solid var(--line); padding-top:16px; font-size:13.5px; color:var(--ink-3)">
+        <p style="margin:0 0 4px">アーチデザイン工房 ― ホームページ制作／業務アプリ制作</p>
+        <p style="margin:0">実物サンプル（バイタル記録ノート）の画面を除き、このページの画面はイメージ図で、表示されている名前・数値はサンプルです。実際の項目・状態の種類は、仕事の内容に合わせて決めます。</p>
+      </footer>
+
+    </div>
+
+    <script>
+      (function () {
+        var box = document.getElementById('liveBox');
+        if (!box) return;
+        var start = document.getElementById('liveStart');
+        var stop = document.getElementById('liveStop');
+        if (start) {
+          start.addEventListener('click', function () {
+            box.classList.add('live-on');
+          });
+        }
+        if (stop) {
+          stop.addEventListener('click', function () {
+            box.classList.remove('live-on');
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>
