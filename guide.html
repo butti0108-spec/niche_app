@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <link rel="icon" href="data:," />
+    <title>アプリの使い方・データの移し方｜アーチデザイン工房</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;800&family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --paper: #faf7ee;
+        --surface: #fffdf7;
+        --ink: #26221a;
+        --ink-2: #5d574a;
+        --ink-3: #6f695b;
+        --line: #ddd2ba;
+        --navy: #1d4e89;
+        --navy-deep: #122a5c;
+        --friend-bg: #e2ecf8;
+        --radius: 14px;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "M PLUS Rounded 1c", "Hiragino Maru Gothic ProN", "Noto Sans JP", sans-serif;
+        font-size: 16px;
+        line-height: 1.9;
+        -webkit-font-smoothing: antialiased;
+      }
+      .wrap { max-width: 760px; margin: 0 auto; padding: 0 20px 72px; }
+
+      header.page-head { padding: 40px 0 6px; }
+      .shop-line {
+        border-bottom: 3px double var(--ink);
+        padding-bottom: 10px;
+        font-size: 13.5px; font-weight: 700; letter-spacing: .06em;
+        color: var(--navy);
+      }
+      h1 {
+        font-family: "Shippori Mincho B1", "Hiragino Mincho ProN", serif;
+        font-weight: 800; font-size: clamp(26px, 5.6vw, 38px);
+        line-height: 1.45; margin: 26px 0 14px; color: var(--navy-deep);
+      }
+      .scene-head { color: var(--ink-2); font-size: 14.5px; margin: 0 0 10px; }
+      .scene-head a { color: var(--navy); font-weight: 700; }
+      .cast {
+        background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+        padding: 14px 18px; font-size: 14.5px; color: var(--ink-2); margin: 18px 0 8px;
+      }
+      .cast strong { color: var(--ink); }
+
+      h2 {
+        font-family: "Shippori Mincho B1", "Hiragino Mincho ProN", serif;
+        font-weight: 800; font-size: clamp(21px, 4.4vw, 27px);
+        color: var(--navy-deep); line-height: 1.5;
+        margin: 56px 0 6px; padding-bottom: 8px;
+        border-bottom: 2px solid var(--navy);
+      }
+      .scene-note { color: var(--ink-2); font-size: 14.5px; margin: 0 0 14px; }
+
+      /* ---------- dialogue ---------- */
+      .talk { display: flex; flex-direction: column; gap: 14px; margin: 20px 0 6px; }
+      .msg { display: flex; gap: 10px; align-items: flex-start; max-width: 92%; }
+      .msg .avatar {
+        flex: none; width: 40px; height: 40px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 800; font-size: 16px; color: #fff; margin-top: 20px;
+      }
+      .msg .who { font-size: 12.5px; font-weight: 700; color: var(--ink-3); margin: 0 0 3px; }
+      .msg .bubble {
+        border-radius: 16px; padding: 10px 16px; font-size: 16px; line-height: 1.85;
+      }
+      .msg .bubble p { margin: 0 0 8px; }
+      .msg .bubble p:last-child { margin-bottom: 0; }
+      /* owner: left, white */
+      .msg.owner { align-self: flex-start; }
+      .msg.owner .avatar { background: var(--navy); }
+      .msg.owner .bubble { background: var(--surface); border: 1px solid var(--line); border-top-left-radius: 4px; }
+      /* friend: right, soft blue */
+      .msg.friend { align-self: flex-end; flex-direction: row-reverse; }
+      .msg.friend .avatar { background: #7ba7d9; }
+      .msg.friend .who { text-align: right; }
+      .msg.friend .bubble { background: var(--friend-bg); border-top-right-radius: 4px; }
+
+      /* ---------- step cards ---------- */
+      .steps {
+        background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+        padding: 18px 22px 10px; margin: 18px 0 8px;
+      }
+      .steps h3 {
+        margin: 0 0 8px; font-size: 16.5px; font-weight: 800; color: var(--navy-deep);
+      }
+      .steps ol { margin: 0 0 10px; padding-left: 1.4em; }
+      .steps li { margin-bottom: 6px; font-size: 15.5px; }
+      .steps p { font-size: 15px; color: var(--ink-2); margin: 0 0 10px; }
+      .steps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 18px 0 8px; }
+      .steps-grid .steps { margin: 0; }
+      @media (max-width: 640px) { .steps-grid { grid-template-columns: 1fr; } }
+
+      .note {
+        background: #f3edda; border-radius: var(--radius);
+        padding: 12px 18px; font-size: 14.5px; color: var(--ink-2); margin: 16px 0 8px;
+      }
+      .note strong { color: var(--ink); }
+
+      /* ---------- closing ---------- */
+      .closing {
+        background: var(--navy-deep); color: #fff; border-radius: var(--radius);
+        padding: 26px 24px; margin: 56px 0 0; text-align: center;
+      }
+      .closing h2 { font-family: "Shippori Mincho B1", "Hiragino Mincho ProN", serif; font-size: 20px; margin: 0 0 10px; color: #fff; border: none; padding: 0; }
+      .closing p { margin: 0 0 10px; color: #e8eefb; }
+      .closing .mail {
+        display: inline-block; background: #fff; color: var(--navy-deep); font-weight: 800;
+        border-radius: 999px; padding: 16px 30px; font-size: 19px; text-decoration: none; margin-top: 6px;
+        word-break: break-all;
+      }
+
+      /* ---------- back link / footer ---------- */
+      .back { text-align: center; margin: 64px 0 0; }
+      .back a {
+        display: inline-block; color: var(--navy); font-weight: 700; font-size: 15.5px;
+        text-decoration: none; border: 1.5px solid var(--navy); border-radius: 999px;
+        padding: 10px 26px; background: var(--surface);
+      }
+      footer {
+        margin-top: 44px; padding-top: 14px; border-top: 1px solid var(--line);
+        text-align: center; font-size: 13px; color: var(--ink-3); letter-spacing: .06em;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="page-head">
+        <div class="shop-line">アーチデザイン工房 ― カスタムアプリ工房</div>
+        <h1>アプリの使い方・データの移し方</h1>
+        <p class="scene-head">マンガで、友人が店主に記録アプリを見せる場面の、続きの会話です。</p>
+        <div class="cast">
+          <strong>登場する二人</strong><br />
+          店主 ― 整体院を営む人。記録は紙とファイルで管理していて、探す手間に困っている<br />
+          友人 ― 店主の同業者の友人。記録アプリを先に使い始めていて、店主に見せた人
+        </div>
+      </header>
+
+      <!-- ================= Scene 1 ================= -->
+      <h2>アプリの入れ方</h2>
+      <p class="scene-note">アプリは、アプリストアから入れるものではありません。</p>
+      <div class="talk">
+        <div class="msg owner">
+          <div class="avatar">店</div>
+          <div>
+            <p class="who">整体院の店主</p>
+            <div class="bubble"><p>ねえ、そのアプリ、私も使ってみたいんだけど、どこで手に入るの？アプリストアで探せばいいの？</p></div>
+          </div>
+        </div>
+        <div class="msg friend">
+          <div class="avatar">友</div>
+          <div>
+            <p class="who">友人</p>
+            <div class="bubble"><p>ストアは使わないのよ。アドレスをブラウザで開いて、ホーム画面に追加するだけだよ。それが、このアプリの「インストール」なの。</p></div>
+          </div>
+        </div>
+        <div class="msg owner">
+          <div class="avatar">店</div>
+          <div>
+            <p class="who">整体院の店主</p>
+            <div class="bubble"><p>私、こういうの苦手で……。一人でできるかな。</p></div>
+          </div>
+        </div>
+        <div class="msg friend">
+          <div class="avatar">友</div>
+          <div>
+            <p class="who">友人</p>
+            <div class="bubble"><p>大丈夫だよ。私の時は、作ってくれた人がその場で一緒に設定してくれたよ。一人でやらなくて済んだの。あとから入れ直すことになった時のために、手順だけここに置いておくね。</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="steps-grid">
+        <div class="steps">
+          <h3>Android（Chrome）の場合</h3>
+          <ol>
+            <li>お渡ししたアドレスを、Chromeで開きます</li>
+            <li>右上のメニュー（︙）を押します</li>
+            <li>「ホーム画面に追加」または「アプリをインストール」を押します</li>
+            <li>ホーム画面にアイコンが出たら完了です</li>
+          </ol>
+        </div>
+        <div class="steps">
+          <h3>iPhone（Safari）の場合</h3>
+          <ol>
+            <li>お渡ししたアドレスを、Safariで開きます</li>
+            <li>画面下の「共有」ボタン（四角に上向き矢印）を押します</li>
+            <li>「ホーム画面に追加」を押します</li>
+            <li>ホーム画面にアイコンが出たら完了です</li>
+          </ol>
+        </div>
+      </div>
+      <div class="note">一度ホーム画面に入れておけば、次からはアイコンを押すだけで開きます。<strong>お渡しの際はその場でご一緒に設定します</strong>ので、この手順は「あとから入れ直す時」のためのものです。</div>
+
+      <!-- ================= Scene 2 ================= -->
+      <h2>CSVと、データの移し方</h2>
+      <p class="scene-note">記録は、お使いの端末の中に保存されます。だからこそ、移し方の備えが大切です。</p>
+      <div class="talk">
+        <div class="msg owner">
+          <div class="avatar">店</div>
+          <div>
+            <p class="who">整体院の店主</p>
+            <div class="bubble"><p>「データの移し方」の話で出てきたCSVって、何のこと？</p></div>
+          </div>
+        </div>
+        <div class="msg friend">
+          <div class="avatar">友</div>
+          <div>
+            <p class="who">友人</p>
+            <div class="bubble"><p>CSVというのは、記録をまとめたファイルのこと。表計算ソフト（Excelなど）で開ける形になっているの。</p></div>
+          </div>
+        </div>
+        <div class="msg friend">
+          <div class="avatar">友</div>
+          <div>
+            <p class="who">友人</p>
+            <div class="bubble"><p>記録そのものは、スマホやパソコンの中だけに保存される仕組みだから、外に控えを取りたい時は、このファイルに「書き出し」をするのよ。</p></div>
+          </div>
+        </div>
+        <div class="msg owner">
+          <div class="avatar">店</div>
+          <div>
+            <p class="who">整体院の店主</p>
+            <div class="bubble"><p>ホーム画面に入れたり、機種を変えたりする時は、どうしたらいいの？</p></div>
+          </div>
+        </div>
+        <div class="msg friend">
+          <div class="avatar">友</div>
+          <div>
+            <p class="who">友人</p>
+            <div class="bubble"><p>その前に、記録をファイルに書き出して、控えを残しておくと安心だよ。もし記録が引き継がれていなかったら、残しておいたファイルを「読み込み」で戻せるの。</p></div>
+          </div>
+        </div>
+        <div class="msg friend">
+          <div class="avatar">友</div>
+          <div>
+            <p class="who">友人</p>
+            <div class="bubble"><p>普段から時々書き出しておけば、それ自体が自分の控え（バックアップ）にもなるよ。</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="steps">
+        <h3>書き出し・読み込みの流れ</h3>
+        <ol>
+          <li>アプリの画面にある「書き出し」を押して、記録をファイルに保存します</li>
+          <li>保存したファイルは、メールで自分に送るなどして、手元に残しておきます</li>
+          <li>移した先のアプリで「読み込み」を押し、保存したファイルを選ぶと、記録が戻ります</li>
+        </ol>
+        <p>ホーム画面へのインストールの前や、機種変更の前には、先に「書き出し」をしておくことをおすすめします。</p>
+      </div>
+
+      <div class="closing">
+        <h2>ご相談だけでも大丈夫です</h2>
+        <p>「うちの仕事はこの枠で作れるだろうか」――そんな段階のご相談で大丈夫です。ご質問がまとまっていなくても構いません。無理におすすめすることはございません。</p>
+        <p>ご相談・ご質問は、このページをお送りした連絡先（LINE・メールなど）へ、そのままご返信ください。</p>
+        <a class="mail" href="mailto:atsushi.masubuchi.work@gmail.com?subject=%E6%A5%AD%E5%8B%99%E3%82%A2%E3%83%97%E3%83%AA%E3%81%AE%E3%81%94%E7%9B%B8%E8%AB%87">atsushi.masubuchi.work@gmail.com</a>
+      </div>
+
+      <div class="back">
+        <a href="https://butti0108-spec.github.io/niche_app/">業務アプリ制作のご案内へ戻る</a>
+      </div>
+
+      <footer>アーチデザイン工房</footer>
+    </div>
+  </body>
+</html>

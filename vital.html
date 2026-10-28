@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <link rel="icon" href="data:," />
+    <title>バイタル記録ノート｜アーチデザイン工房</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;800&family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --paper: #faf7ee;
+        --surface: #fffdf7;
+        --ink: #26221a;
+        --ink-2: #5d574a;
+        --ink-3: #6f695b;
+        --line: #ddd2ba;
+        --navy: #1d4e89;
+        --navy-deep: #122a5c;
+        --radius: 14px;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "M PLUS Rounded 1c", "Hiragino Maru Gothic ProN", "Noto Sans JP", sans-serif;
+        font-size: 16px;
+        line-height: 1.9;
+        -webkit-font-smoothing: antialiased;
+      }
+      .wrap { max-width: 760px; margin: 0 auto; padding: 0 20px 72px; }
+
+      header.page-head { padding: 40px 0 6px; }
+      .shop-line {
+        border-bottom: 3px double var(--ink);
+        padding-bottom: 10px;
+        font-size: 13.5px; font-weight: 700; letter-spacing: .06em;
+        color: var(--navy);
+      }
+      h1 {
+        font-family: "Shippori Mincho B1", "Hiragino Mincho ProN", serif;
+        font-weight: 800; font-size: clamp(26px, 5.6vw, 38px);
+        line-height: 1.45; margin: 26px 0 12px; color: var(--navy-deep);
+      }
+      .lede { font-size: clamp(15.5px, 2.8vw, 17.5px); color: var(--ink-2); margin: 0 0 18px; }
+      .lede strong { color: var(--ink); }
+      .origin {
+        background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+        padding: 16px 20px; margin: 20px 0 8px;
+      }
+      .origin p { margin: 0; }
+
+      .demo { text-align: center; margin: 34px 0 6px; }
+      .demo a.btn {
+        display: inline-block; background: var(--navy); color: #fff;
+        font-weight: 800; font-size: 17.5px; text-decoration: none;
+        border-radius: 999px; padding: 14px 40px;
+      }
+      .demo .cap { font-size: 13.5px; color: var(--ink-3); margin: 10px 0 0; }
+
+      h2 {
+        font-family: "Shippori Mincho B1", "Hiragino Mincho ProN", serif;
+        font-weight: 800; font-size: clamp(21px, 4.4vw, 27px);
+        color: var(--navy-deep); line-height: 1.5;
+        margin: 56px 0 14px; padding-bottom: 8px;
+        border-bottom: 2px solid var(--navy);
+      }
+      ul.can { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+      ul.can li {
+        background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+        padding: 12px 18px 12px 46px; position: relative; font-size: 15.5px;
+      }
+      ul.can li::before {
+        content: "✓"; position: absolute; left: 16px; top: 12px;
+        color: var(--navy); font-weight: 800;
+      }
+      ul.can li small { display: block; color: var(--ink-2); font-size: 13.5px; line-height: 1.7; }
+
+      .guide-link {
+        margin: 30px 0 0; background: #f3edda; border-radius: var(--radius);
+        padding: 14px 20px; font-size: 15px;
+      }
+      .guide-link a { color: var(--navy); font-weight: 700; }
+
+      .bridge p { margin: 0 0 12px; }
+      .bridge p:last-child { margin-bottom: 0; }
+      .bridge strong { color: var(--navy-deep); }
+
+      .banner {
+        display: block; margin: 56px 0 0; background: var(--navy-deep);
+        border-radius: 14px; padding: 30px 26px; text-align: center;
+        text-decoration: none; color: #fff;
+      }
+      .banner .b-main {
+        font-family: "Shippori Mincho B1", "Hiragino Mincho ProN", serif;
+        font-weight: 800; font-size: clamp(0.5rem, 2.5vw, 1.45rem); white-space: nowrap;
+        letter-spacing: -0.03em; line-height: 1.5; margin: 0 0 8px;
+      }
+      .banner .b-sub { margin: 0; font-size: 14.5px; color: #cfe0f2; }
+
+      footer {
+        margin-top: 44px; padding-top: 14px; border-top: 1px solid var(--line);
+        text-align: center; font-size: 13px; color: var(--ink-3); letter-spacing: .06em;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="page-head">
+        <div class="shop-line">アーチデザイン工房 ― カスタムアプリ工房</div>
+        <h1>バイタル記録ノート</h1>
+        <p class="lede"><strong>血圧・脈拍・体重・体温</strong>を、朝と晩で記録するアプリです。大きな文字で見やすく、毎日の記録が続けやすい形にしました。</p>
+        <div class="origin">
+          <p>きっかけは、母の言葉でした。「血圧の記録を印刷して、お医者さんに見せたい」。紙のノートでは見せにくかった記録を、スマホで記録して、印刷して渡せる形にしたのが、このアプリです。</p>
+        </div>
+      </header>
+
+      <div class="demo">
+        <a class="btn" href="https://butti0108-spec.github.io/vital-record-notebook/index.html?test=1" target="_blank" rel="noopener">実物を触ってみる</a>
+        <p class="cap">※サンプルの記録が入った状態で開きます。登録は不要です。</p>
+      </div>
+
+      <h2>できること</h2>
+      <ul class="can">
+        <li>血圧・脈拍・体重・体温の記録
+          <small>朝の記録か晩の記録かは、時刻で自動的に判定します（15時を境に切り替わり、体重は朝の記録だけです）。</small>
+        </li>
+        <li>期間の平均を表示
+          <small>朝・晩それぞれの期間平均が確認できます。</small>
+        </li>
+        <li>グラフとカレンダーで見る
+          <small>変化の流れをグラフで、記録した日をカレンダーで確認できます。</small>
+        </li>
+        <li>印刷用レポート
+          <small>お医者さんへの提示などに、そのまま印刷して使えます。</small>
+        </li>
+        <li>大きくて見やすい画面
+          <small>ご高齢の方にも使いやすいよう、文字とボタンを大きくしています。</small>
+        </li>
+        <li>ホーム画面に入れて、アプリとして使えます
+          <small>最初に読み込んでおけば、電波のない場所でも使えます。</small>
+        </li>
+        <li>記録は、お使いの端末の中に保存されます
+          <small>外部のサーバーへ送られることはありません。</small>
+        </li>
+        <li>CSVの書き出し・読み込み
+          <small>記録をファイルに書き出して控えを取り、必要な時に読み込んで戻せます。</small>
+        </li>
+      </ul>
+
+      <div class="guide-link">
+        アプリの入れ方や、データの移し方（CSVの書き出し・読み込み）は、会話形式でまとめたページにあります。→ <a href="guide.html">使い方・データの移し方を見る</a>
+      </div>
+
+      <h2>この仕組みが、あなたの仕事だと</h2>
+      <div class="bridge">
+        <p>このアプリは、血圧を記録するためのものです。でも、中の仕組み――<strong>その日の内容を残して、あとから名前で探して、まとめて見返す</strong>――は、記録の仕事でしたら、どのお仕事にも置き換えられます。</p>
+        <p>たとえば、施術やレッスンのお仕事でしたら、前回のお客様に何をしたかが、その場で分かります。作品や商品を一点ずつ扱うお仕事でしたら、いま何がどうなっているかが、手元ですぐに確かめられます。記録を探す手間と、「前回どうしたか」の見落としが、ぐっと減ります。</p>
+        <p>「うちの記録も、こんなふうにできたら」――そう思われましたら、制作のご案内をご覧ください。まずは無料の試作品で、実際に使ってみてからご判断いただけます。</p>
+      </div>
+
+      <a class="banner" href="https://butti0108-spec.github.io/niche_app/">
+        <p class="b-main">あなた専用の業務アプリで、紙から卒業を。制作は5万円から</p>
+        <p class="b-sub">カスタムアプリ工房 ― このアプリの仕組みを、あなたの仕事の記録に合わせて作ります</p>
+      </a>
+
+      <footer>アーチデザイン工房</footer>
+    </div>
+  </body>
+</html>
