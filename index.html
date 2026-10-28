@@ -1179,7 +1179,7 @@
       }
       .mock-note p { margin: 0 0 8px; }
       .mock-note a { color: var(--blue); font-weight: 700; }
-      .qa-block { margin: 0 0 26px; }
+      .qa-block { margin: 0 0 26px; scroll-margin-top: 20px; }
       .qa-q { display: flex; align-items: flex-start; gap: 10px; }
       .qa-badge {
         flex: none; width: 28px; height: 28px; border-radius: 50%; margin-top: 9px;
@@ -1210,6 +1210,8 @@
       .qa-link-wrap { margin: 10px 0 4px 38px; }
       .qa-answer-link { display: inline-block; font-weight: 900; font-size: 18px; color: var(--blue); background: var(--blue-soft); border: 1.5px solid var(--blue); border-radius: 999px; padding: 9px 22px; text-decoration: underline; text-underline-offset: 3px; line-height: 1.5; }
       .qa-answer-link:hover { background: var(--surface); }
+      @keyframes qa-land-bubble { 0%, 60% { background-color: var(--blue-soft); border-color: var(--blue); box-shadow: inset 4px 0 0 var(--blue), 0 2px 6px rgba(30, 25, 15, .07); } 100% { background-color: var(--surface); border-color: var(--line); box-shadow: inset 4px 0 0 rgba(29, 78, 137, 0), 0 2px 6px rgba(30, 25, 15, .07); } }
+      .qa-block:target .qa-q-text { animation: qa-land-bubble 2.8s ease-out both; }
       .base-note { font-size: 16px; color: var(--ink-3); margin: 8px 0 0; line-height: 1.7; }
       .sakurei-head { margin-top: 64px; }
     </style>
@@ -1421,7 +1423,7 @@
           </div>
         </div>
 
-        <div class="qa-block">
+        <div class="qa-block" id="from-q10">
           <div class="qa-q">
             <span class="qa-badge q" aria-hidden="true">Q</span>
             <p class="qa-q-text">お客様の個人情報を預けることになりませんか？</p>
@@ -1947,35 +1949,35 @@
         </div>
 
         <h3 class="qa-sub">料金と契約のご質問</h3>
-        <div class="qa-block">
+        <div class="qa-block" id="from-q1">
           <div class="qa-q">
             <span class="qa-badge q" aria-hidden="true">Q</span>
             <p class="qa-q-text">本当にこの金額だけですか？追加料金は発生しませんか？</p>
           </div>
           <p class="qa-link-wrap"><a class="qa-answer-link" href="faq.html#q1">答えを見る</a></p>
         </div>
-        <div class="qa-block">
+        <div class="qa-block" id="from-q13">
           <div class="qa-q">
             <span class="qa-badge q" aria-hidden="true">Q</span>
             <p class="qa-q-text">保守契約は必要ですか？</p>
           </div>
           <p class="qa-link-wrap"><a class="qa-answer-link" href="faq.html#q13">答えを見る</a></p>
         </div>
-        <div class="qa-block">
+        <div class="qa-block" id="from-q11">
           <div class="qa-q">
             <span class="qa-badge q" aria-hidden="true">Q</span>
             <p class="qa-q-text">納期はどれくらいですか？</p>
           </div>
           <p class="qa-link-wrap"><a class="qa-answer-link" href="faq.html#q11">答えを見る</a></p>
         </div>
-        <div class="qa-block">
+        <div class="qa-block" id="from-q12">
           <div class="qa-q">
             <span class="qa-badge q" aria-hidden="true">Q</span>
             <p class="qa-q-text">使い始めてから、項目を増やしたり直したりできますか？</p>
           </div>
           <p class="qa-link-wrap"><a class="qa-answer-link" href="faq.html#q12">答えを見る</a></p>
         </div>
-        <div class="qa-block">
+        <div class="qa-block" id="from-q14">
           <div class="qa-q">
             <span class="qa-badge q" aria-hidden="true">Q</span>
             <p class="qa-q-text">うちの仕事が対象外になることはありますか？</p>
@@ -2029,7 +2031,7 @@
             <p>紙やExcelでの記録で困っていることをお聞きし、3つのプランのどれに収まるかを一緒に確認します。ご質問がまとまっていなくても大丈夫です。</p>
           </div>
         </div>
-        <div class="qa-block">
+        <div class="qa-block" id="from-q9">
           <div class="qa-q">
             <span class="qa-badge q" aria-hidden="true">Q</span>
             <p class="qa-q-text">今のデータ（紙・Excel）はどうなりますか？</p>
@@ -2044,14 +2046,14 @@
             <p>仕様確定から最短2〜3日で試作品を作り、Webで公開してアドレスをお渡しします。</p>
           </div>
         </div>
-        <div class="qa-block">
+        <div class="qa-block" id="from-q2">
           <div class="qa-q">
             <span class="qa-badge q" aria-hidden="true">Q</span>
             <p class="qa-q-text">本当に無料で作ってもらえるのですか？</p>
           </div>
           <p class="qa-link-wrap"><a class="qa-answer-link" href="faq.html#q2">答えを見る</a></p>
         </div>
-        <div class="qa-block">
+        <div class="qa-block" id="from-q5">
           <div class="qa-q">
             <span class="qa-badge q" aria-hidden="true">Q</span>
             <p class="qa-q-text">なぜ無料で作れるのですか？</p>
@@ -2066,7 +2068,7 @@
             <p>試用期間は7日間です。ふだんのお仕事の中で、実際に使ってみてください。</p>
           </div>
         </div>
-        <div class="qa-block">
+        <div class="qa-block" id="from-q3">
           <div class="qa-q">
             <span class="qa-badge q" aria-hidden="true">Q</span>
             <p class="qa-q-text">試用中に直してほしいところがあったら？</p>
@@ -2089,7 +2091,7 @@
             <p>ご入金確認後、同じアプリを正規版に更新します。ホーム画面への追加と初回の設定は、その場でご一緒にします。</p>
           </div>
         </div>
-        <div class="qa-block">
+        <div class="qa-block" id="from-q4">
           <div class="qa-q">
             <span class="qa-badge q" aria-hidden="true">Q</span>
             <p class="qa-q-text">購入したら、データはどうなりますか？</p>
@@ -2100,21 +2102,21 @@
         <p class="guide-note"><a href="guide.html">アプリの入れ方と、記録データの移し方はこちら</a></p>
 
         <h3 class="qa-sub">お渡しと使い方のご質問</h3>
-        <div class="qa-block">
+        <div class="qa-block" id="from-q6">
           <div class="qa-q">
             <span class="qa-badge q" aria-hidden="true">Q</span>
             <p class="qa-q-text">パソコンやスマホが苦手でも使えますか？</p>
           </div>
           <p class="qa-link-wrap"><a class="qa-answer-link" href="faq.html#q6">答えを見る</a></p>
         </div>
-        <div class="qa-block">
+        <div class="qa-block" id="from-q7">
           <div class="qa-q">
             <span class="qa-badge q" aria-hidden="true">Q</span>
             <p class="qa-q-text">アプリはどうやってスマホに入れるのですか？アプリストアで探すのですか？</p>
           </div>
           <p class="qa-link-wrap"><a class="qa-answer-link" href="faq.html#q7">答えを見る</a></p>
         </div>
-        <div class="qa-block">
+        <div class="qa-block" id="from-q8">
           <div class="qa-q">
             <span class="qa-badge q" aria-hidden="true">Q</span>
             <p class="qa-q-text">電波のない場所でも使えますか？</p>

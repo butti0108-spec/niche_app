@@ -21,6 +21,7 @@
         --radius: 14px;
       }
       * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
       body {
         margin: 0;
         background: var(--paper);
@@ -71,7 +72,10 @@
       .qa {
         background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
         padding: 16px 20px 8px; margin: 16px 0;
+        scroll-margin-top: 20px;
       }
+      @keyframes qa-land { 0%, 60% { background-color: #e2ecf8; box-shadow: inset 4px 0 0 #1d4e89; } 100% { background-color: var(--surface); box-shadow: inset 4px 0 0 rgba(29, 78, 137, 0); } }
+      .qa:target { animation: qa-land 2.8s ease-out both; }
       .qa-q { font-weight: 800; font-size: 18px; color: var(--navy-deep); margin: 0 0 8px; }
       .qa-a p { margin: 0 0 10px; }
       .qa-a ul { margin: 0 0 10px; padding-left: 1.3em; }
@@ -144,7 +148,7 @@
         <div class="qa-a">
           <p>はい。お支払いは、この金額だけです。買い切りで、月額費用もかかりません。</p>
           <p>範囲を超えるご希望がある場合は、着手前に金額をご説明し、ご承諾いただいてから進めます。ご承諾なく追加料金が発生することはありません。段階ごとの違いは<a href="index.html#price">料金のご案内</a>をご覧ください。</p>
-          <p class="qa-back"><a href="index.html#price">← 本文のこの場所に戻る</a></p>
+          <p class="qa-back"><a href="index.html#from-q1">← 本文のこの場所に戻る</a></p>
         </div>
       </div>
 
@@ -156,7 +160,7 @@
           <p>はい。購入されなければ、制作費は発生しません。試作品を実際に使っていただいてから、購入されるかどうかをご判断いただけます。</p>
           <p>一つだけ条件があります。購入されなかった場合、当工房が保有するお客様固有の情報を除去し、一般化したアプリを制作サンプルとして再利用させていただきます。</p>
           <p>この条件は、制作を始める前に明示して、ご同意いただいてから作ります。</p>
-          <p class="qa-back"><a href="index.html#flow">← 本文のこの場所に戻る</a></p>
+          <p class="qa-back"><a href="index.html#from-q2">← 本文のこの場所に戻る</a></p>
         </div>
       </div>
 
@@ -166,7 +170,7 @@
           <p>正常に使えない不具合は、無料で修正します。</p>
           <p>ページが開かない、ボタンが動かない、記録が表示されないなど、試すこと自体に支障がある不具合は無料で修正します。</p>
           <p>表示文字の変更や画面配置など、個別の変更・調整のご希望は、ご入金確認後に対応します。</p>
-          <p class="qa-back"><a href="index.html#flow">← 本文のこの場所に戻る</a></p>
+          <p class="qa-back"><a href="index.html#from-q3">← 本文のこの場所に戻る</a></p>
         </div>
       </div>
 
@@ -175,7 +179,7 @@
         <div class="qa-a">
           <p>記録は、そのまま引き継がれます。</p>
           <p>記録はお使いの端末の中に保存され、購入後も同じアプリのまま正規版に更新されます。端末へのインストールの前には、記録をファイルに保存するバックアップの方法をご案内します。</p>
-          <p class="qa-back"><a href="index.html#flow">← 本文のこの場所に戻る</a></p>
+          <p class="qa-back"><a href="index.html#from-q4">← 本文のこの場所に戻る</a></p>
         </div>
       </div>
 
@@ -184,7 +188,7 @@
         <div class="qa-a">
           <p>購入されなかった試作品も、工房の資産になるからです。</p>
           <p>お客様固有の情報を除去し、一般化したアプリは、次のお客様への制作サンプル（カタログ）に加わります。実際に操作できるサンプルが増えることが、工房にとっても意味があるため、無料でお作りできます。</p>
-          <p class="qa-back"><a href="index.html#flow">← 本文のこの場所に戻る</a></p>
+          <p class="qa-back"><a href="index.html#from-q5">← 本文のこの場所に戻る</a></p>
         </div>
       </div>
 
@@ -196,7 +200,7 @@
           <p>大丈夫です。設定は、こちらで済ませてお渡しします。</p>
           <p>項目はお仕事に合わせて設定済みです。ホーム画面への追加も、お渡しの際にその場でご一緒しますので、ご自身で設定していただく必要はありません。</p>
           <p>あとから入れ直す場合の手順は<a href="guide.html">「アプリの入れ方・データの移し方」</a>にまとめています。</p>
-          <p class="qa-back"><a href="index.html#flow">← 本文のこの場所に戻る</a></p>
+          <p class="qa-back"><a href="index.html#from-q6">← 本文のこの場所に戻る</a></p>
         </div>
       </div>
 
@@ -205,7 +209,7 @@
         <div class="qa-a">
           <p>アプリストアは使いません。</p>
           <p>お渡ししたアドレスをブラウザで開き、ホーム画面にアイコンを追加するのが「インストール」です。詳しい手順は<a href="guide.html">「アプリの入れ方・データの移し方」</a>をご覧ください。お渡しの際は、その場でご一緒に設定します。</p>
-          <p class="qa-back"><a href="index.html#flow">← 本文のこの場所に戻る</a></p>
+          <p class="qa-back"><a href="index.html#from-q7">← 本文のこの場所に戻る</a></p>
         </div>
       </div>
 
@@ -214,7 +218,7 @@
         <div class="qa-a">
           <p>はい、ご利用いただけます。</p>
           <p>最初にアプリを読み込んでおけば、地下や山間部、電波の届きにくい建物の中など、インターネットにつながらない場所でも、記録の入力や確認ができます。記録はお使いの端末の中に保存されます。</p>
-          <p class="qa-back"><a href="index.html#flow">← 本文のこの場所に戻る</a></p>
+          <p class="qa-back"><a href="index.html#from-q8">← 本文のこの場所に戻る</a></p>
         </div>
       </div>
 
@@ -226,7 +230,7 @@
           <p>個人情報を消した形で、お渡しいただくのが基本です。</p>
           <p>Excelなどのファイルは、見出しだけが分かるようにして、お客様情報が入っていないコピーを共有いただくか、スクリーンショットをお送りください。紙の台帳の場合は、様式（テンプレート）そのものか、それを写真に撮ったものをお送りいただければ結構です。</p>
           <p>もしご要望があれば、お客様の許可をいただいた上で、データをそのままお預かりすることも可能です。詳しくは<a href="terms.html">「お申し込み前にご確認いただきたいこと」</a>の「今お使いのデータの移し方について」をご覧ください。</p>
-          <p class="qa-back"><a href="index.html#flow">← 本文のこの場所に戻る</a></p>
+          <p class="qa-back"><a href="index.html#from-q9">← 本文のこの場所に戻る</a></p>
         </div>
       </div>
 
@@ -235,7 +239,7 @@
         <div class="qa-a">
           <p>データは、お使いの端末の中に保存されます。外部のサーバーへ送られることはありません。</p>
           <p>データの移し方も、見出しだけが分かる形でお渡しいただくのが基本です。ご要望があれば、許可をいただいた上でそのままお預かりすることもできます。その場合も、変換のためだけに使い、作業後はこちらのコピーを削除します。お見せになりたくない場合は、無理にお預かりしません。</p>
-          <p class="qa-back"><a href="index.html#setsumei">← 本文のこの場所に戻る</a></p>
+          <p class="qa-back"><a href="index.html#from-q10">← 本文のこの場所に戻る</a></p>
         </div>
       </div>
 
@@ -247,7 +251,7 @@
           <p>試作品は、仕様が決まってから最短2〜3日でお渡しします。</p>
           <p>この2〜3日は試作品をお渡しするまでの目安で、完成・納品までの日数ではありません。</p>
           <p>その後の確認と修正を含めた全体の期間は、ご要望の内容によって変わります。着手する日は受注時にご相談のうえ決めます。</p>
-          <p class="qa-back"><a href="index.html#price">← 本文のこの場所に戻る</a></p>
+          <p class="qa-back"><a href="index.html#from-q11">← 本文のこの場所に戻る</a></p>
         </div>
       </div>
 
@@ -257,7 +261,7 @@
           <p>購入後は、当初に合意した仕様の範囲内で、回数の上限なく対応します。</p>
           <p>無料試用中は、正常に使えない不具合を無料で修正します。表示の変更や個別の調整は、ご入金確認後の対応となります。</p>
           <p>新しい項目や機能の追加は、当初の範囲を超えるため、内容に応じて別途ご相談となります。</p>
-          <p class="qa-back"><a href="index.html#price">← 本文のこの場所に戻る</a></p>
+          <p class="qa-back"><a href="index.html#from-q12">← 本文のこの場所に戻る</a></p>
         </div>
       </div>
 
@@ -266,7 +270,7 @@
         <div class="qa-a">
           <p>必要ありません。</p>
           <p>買い切りで、月額費用はかかりません。記録はCSVで書き出して、控えを取ることもできます。</p>
-          <p class="qa-back"><a href="index.html#price">← 本文のこの場所に戻る</a></p>
+          <p class="qa-back"><a href="index.html#from-q13">← 本文のこの場所に戻る</a></p>
         </div>
       </div>
 
@@ -281,7 +285,7 @@
             <li>数十人規模で使うシステム</li>
           </ul>
           <p>対象かどうか迷われる場合は、ご相談の際にご確認ください。</p>
-          <p class="qa-back"><a href="index.html#price">← 本文のこの場所に戻る</a></p>
+          <p class="qa-back"><a href="index.html#from-q14">← 本文のこの場所に戻る</a></p>
         </div>
       </div>
 
