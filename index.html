@@ -1176,16 +1176,6 @@
       }
       .mock-note p { margin: 0 0 8px; }
       .mock-note a { color: var(--blue); font-weight: 700; }
-      .shop-band {
-        margin-top: 30px; background: #122a5c; border-radius: 14px;
-        padding: 34px 24px 30px; text-align: center;
-      }
-      .shop-band .sb-name {
-        font-family: "Shippori Mincho B1", "Noto Serif JP", serif; font-weight: 800;
-        font-size: clamp(32px, 6.4vw, 46px); line-height: 1.35; letter-spacing: .04em;
-        color: #fff; margin: 0;
-      }
-      .shop-band .sb-sub { color: #cfe0f2; font-size: 14px; margin: 8px 0 0; line-height: 1.6; }
       .qa-block { margin: 0 0 26px; }
       .qa-q { display: flex; align-items: flex-start; gap: 10px; }
       .qa-badge {
@@ -1214,6 +1204,11 @@
       .qa-a-card li { margin-bottom: 4px; }
       .qa-a-card a { color: var(--blue); font-weight: 700; }
       .qa-a-card .qa-lead { font-weight: 900; color: var(--ink); }
+      .qa-link-wrap { margin: 10px 0 4px 38px; }
+      .qa-answer-link { display: inline-block; font-weight: 900; font-size: 15.5px; color: var(--blue); background: var(--blue-soft); border: 1.5px solid var(--blue); border-radius: 999px; padding: 9px 22px; text-decoration: underline; text-underline-offset: 3px; line-height: 1.5; }
+      .qa-answer-link:hover { background: var(--surface); }
+      .base-note { font-size: 13.5px; color: var(--ink-3); margin: 8px 0 0; line-height: 1.7; }
+      .sakurei-head { margin-top: 64px; }
     </style>
   </head>
   <body>
@@ -1288,7 +1283,7 @@
         <div class="paper-fit">
           <h3>こんな方には、紙のままが向いています</h3>
           <p>記録を机に広げて、全体を眺めながら確かめるのが合っている方。記録の件数が少なく、いまの紙やExcelで困っていない方。手で書く時間そのものが、お仕事の振り返りになっている方。そういう方には、無理にアプリへ移すことはおすすめしません。紙の良さが、そのままお仕事の助けになっているからです。</p>
-          <p class="pf-small">また、複数人で同時に同じデータを編集する使い方や、予約・決済そのものが本体の仕組みは、この価格では承っておりません。詳しくは<a href="#price">料金のご案内</a>をご覧ください。</p>
+          <p class="pf-small">また、複数人で同時に同じデータを編集する使い方や、予約・決済そのものが本体の仕組みは、この金額の枠には含まれません。必要な場合は、別の設計としてお見積もりします。詳しくは<a href="#price">料金のご案内</a>をご覧ください。</p>
         </div>
 
         <p class="pains-lead">いかがでしたか。一つでも当てはまるようでしたら、そのお仕事はアプリの形に移せます。</p>
@@ -1307,8 +1302,8 @@
       </div>
 
         <div class="examples">
-          <h3>たとえば、こんな記録です</h3>
-          <p class="ex-lead">こうした困りごとの元になっているのは、日々の記録そのものです。まずは題名だけでもご覧ください。だいたいの感じが伝われば十分です。細かい説明は、このあとのプランごとの案内でお伝えします。</p>
+          <h3>こんなお困りごとに対応できます</h3>
+          <p class="ex-lead">マンガは整体院の店主の話でしたが、記録にまつわる困りごとは、ほかのお仕事にもあります。</p>
           <ul class="ex-grid">
             <li><svg class="ex-ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="10" y="7" width="28" height="34" rx="4"/><path d="M17 16h14M17 23h14M17 30h9"/></svg>施術・レッスン記録<small>その日の内容とメモ</small></li>
             <li><svg class="ex-ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><circle cx="24" cy="16" r="6"/><path d="M11 39c2-8 7-11 13-11s11 3 13 11"/></svg>顧客カルテ<small>前回の内容と好み</small></li>
@@ -1330,7 +1325,7 @@
           <li><a href="#reasons">選ばれる理由</a></li>
           <li><a href="#flow">依頼の流れ</a></li>
         </ol>
-        <p class="toc-extra">別ページのご案内 ― <a href="faq.html">Q&Aまとめ（全14問）</a>／<a href="terms.html">ご契約時の注意・お申し込み前に見ておいていただきたいこと</a>／<a href="guide.html">アプリの入れ方とデータの移し方</a></p>
+        <p class="toc-extra">別ページのご案内 ― <a href="faq.html">Q&Aまとめ（全14問）</a>／<a href="terms.html">ご契約時の注意・お申し込み前にご確認いただきたいこと</a>／<a href="guide.html">アプリの入れ方とデータの移し方</a></p>
       </nav>
 
       <!-- ================= product: dialogue (manga continuation) ================= -->
@@ -1428,13 +1423,7 @@
             <span class="qa-badge q" aria-hidden="true">Q</span>
             <p class="qa-q-text">お客様の個人情報を預けることになりませんか？</p>
           </div>
-          <div class="qa-a">
-            <span class="qa-badge a" aria-hidden="true">A</span>
-            <div class="qa-a-card">
-              <p><strong class="qa-lead">データは、お使いの端末の中に保存されます。</strong>外部のサーバーへ送られることはありません。</p>
-              <p>データを移す際にファイルをお預かりする場合も、変換のためだけに使い、<mark>作業後はこちらのコピーを削除します</mark>。お見せになりたくない場合は、無理にお預かりしません。</p>
-            </div>
-          </div>
+          <p class="qa-link-wrap"><a class="qa-answer-link" href="faq.html#q10">答えを見る</a></p>
         </div>
 
         <div class="patterns-block" id="patterns">
@@ -1452,10 +1441,27 @@
         <p>ここからご紹介する3つのプランの画面は、どれも作例です。『こういうものを作れます』という見本で、できあがっている製品ではありません。いま実際に触って使っていただける実物は、制作者の母が毎日の血圧記録に使っているアプリだけです。実物は<a href="vital.html">『バイタル記録ノート』</a>でご覧いただけます。</p>
       </div>
 
-      <div class="shop-band" aria-label="カスタムアプリ工房">
-        <p class="sb-name">カスタムアプリ工房</p>
-        <p class="sb-sub">アーチデザイン工房 ― 業務アプリ制作</p>
+      <div class="chat" aria-label="金額についての会話" style="margin-top:34px">
+        <div class="chat-topic"><span>金額のこと</span></div>
+        <div class="chat-row owner">
+          <span class="chat-name">店主</span>
+          <div class="chat-bubble">専用のオリジナルのアプリなんか作ったら、何十万とか何百万とか、結構高いんでしょ</div>
+        </div>
+        <div class="chat-row friend">
+          <span class="chat-name">友人</span>
+          <div class="chat-bubble">そんなことないのよ。記録と保存だけなら、5万円から作れるのよ</div>
+        </div>
+        <div class="chat-row owner">
+          <span class="chat-name">店主</span>
+          <div class="chat-bubble">えー、そんな金額で作れるの？</div>
+        </div>
       </div>
+
+      <div class="app-head sakurei-head">
+          <div>
+            <h2>作例紹介</h2>
+          </div>
+        </div>
 
       <!-- ================= A1 ================= -->
       <section class="app" id="app-a1">
@@ -1467,12 +1473,11 @@
           </div>
           <div class="price">
             <div class="yen"><span class="marker">50,000<small>円</small></span></div>
-            <div class="cap">記録プラン／買い切り・月額なし</div>
+            <div class="cap">買い切り・月額なし</div>
           </div>
         </div>
 
         <div class="type-summary ts-a">
-          <p class="ts-name">プランA｜記録</p>
           <p class="ts-for">日々の施術・レッスンの記録を残す仕事に</p>
           <p class="ts-sum">その日の内容を記録して、一覧と検索で見返すプランです。</p>
         </div>
@@ -1576,12 +1581,11 @@
           </div>
           <div class="price">
             <div class="yen"><span class="marker">80,000<small>円</small></span></div>
-            <div class="cap">標準プラン／買い切り・月額なし</div>
+            <div class="cap">買い切り・月額なし</div>
           </div>
         </div>
 
         <div class="type-summary ts-b">
-          <p class="ts-name">プランB｜台帳＋履歴</p>
           <p class="ts-for">お客様一人ひとりの記録が財産の仕事に</p>
           <p class="ts-sum">台帳に来店履歴が積み上がり、前回の内容と好みを接客の前に確認できるプランです。</p>
         </div>
@@ -1656,16 +1660,15 @@
             <p class="for">美容室・サロン・治療院など、リピート客で成り立つお店に</p>
             <p>「前回どうしたか」を覚えていることは、お店の信用そのものです。</p>
             <p>その記憶を、<strong><span class="marker">紙のカルテと店主の記憶の中から、名前で検索できる形に</span></strong>移します。</p>
+            <p class="base-note">探す・見返す土台はプランAと同じです。</p>
             <h3>できること</h3>
             <ul class="can">
-              <li><strong>接客の前に、前回の内容と好みを30秒で確認できる</strong> ― 前回いつ来て、何をして、何が好みか。名前で検索すれば、その場でカルテが開きます</li>
               <li><strong>来店が空いたお客様に、気づいて声をかけられる</strong> ― 前回からの日数が一覧に出るので、声をかけるべきお客様が見落としなく分かります</li>
               <li>月ごとの来店回数が集計されて、推移がグラフで見られます。月次のレポートは印刷して、そのまま紙で出せます。</li>
             </ul>
             <h3>機能</h3>
             <ul class="can">
-              <li>名前検索とカルテ表示</li>
-              <li>来店履歴の時系列表示</li>
+              <li>お客様ごとのカルテ（来店履歴の積み上げ）</li>
               <li>期間集計と推移グラフ</li>
               <li>月次レポートの印刷</li>
               <li>前回からの日数表示と「ご無沙汰」の絞り込み</li>
@@ -1691,12 +1694,11 @@
           </div>
           <div class="price">
             <div class="yen"><span class="marker">100,000<small>円</small></span></div>
-            <div class="cap">業務ルールプラン／買い切り・月額なし</div>
+            <div class="cap">買い切り・月額なし</div>
           </div>
         </div>
 
         <div class="type-summary ts-c">
-          <p class="ts-name">プランC｜状態管理</p>
           <p class="ts-for">モノの「今どうなっているか」を追う仕事に</p>
           <p class="ts-sum">一点ごとの状態と履歴を管理し、動きの止まっているものを拾い上げるプランです。</p>
         </div>
@@ -1772,14 +1774,14 @@
           <div class="app-info">
             <p class="for">画廊・作家事務所・一点ものを扱う工房やお店に</p>
             <p>台帳が何枚ものシートや紙に散らばっていると起きやすい、<strong><span class="marker">二重の約束や、止まったまま忘れられる案件</span></strong>を防ぐためのプランです。</p>
+            <p class="base-note">探す・見返す土台はプランAと同じです。</p>
             <h3>できること</h3>
             <ul class="can">
-              <li><strong>問い合わせが来たその場で、その作品の今の状態がすぐ分かる</strong> ― 作品番号やタイトルで検索すれば、状態と履歴がすぐ開けます</li>
+              <li><strong>一点ごとに、状態と履歴がひも付いて残ります</strong> ― 展示中・交渉中・売約済といった今の状態と、そこに至るまでの履歴が、作品ごとの記録として残ります</li>
               <li><strong>動きが止まったままの作品に、気づいて手を打てる</strong> ― 一定期間動きのないものが拾い上げられるので、抜け漏れと機会損失を防げます</li>
             </ul>
             <h3>機能</h3>
             <ul class="can">
-              <li>作品番号・タイトル検索</li>
               <li>状態の管理</li>
               <li>履歴を一点ごとに記録</li>
               <li>止まっている作品の自動抽出とアラート表示</li>
@@ -1816,42 +1818,24 @@
         <a class="btn sub" href="vital.html">バイタルアプリはこちらです</a>
       </div>
 
-      <div class="chat" aria-label="金額についての会話" style="margin-top:52px">
-        <div class="chat-topic"><span>金額のこと</span></div>
-        <div class="chat-row owner">
-          <span class="chat-name">店主</span>
-          <div class="chat-bubble">専用のオリジナルのアプリなんか作ったら、何十万とか何百万とか、結構高いんでしょ</div>
-        </div>
-        <div class="chat-row friend">
-          <span class="chat-name">友人</span>
-          <div class="chat-bubble">そんなことないのよ。記録と保存だけなら、5万円から作れるのよ</div>
-        </div>
-        <div class="chat-row owner">
-          <span class="chat-name">店主</span>
-          <div class="chat-bubble">えー、そんな金額で作れるの？</div>
-        </div>
-      </div>
-
       <!-- ================= price tiers ================= -->
       <section class="app" id="price">
         <div class="app-head">
           <span class="app-no" style="background:var(--blue)">価格</span>
           <div>
             <h2>金額は3段階、固定です</h2>
-            <p class="app-type" style="font-size:16px">金額と、金額ごとにできることの対応は、下の比較表にまとめました。各プランで何ができるかの説明は、上のプラン紹介（3つのプランのブロック）でまとめてご案内しています</p>
+            <p class="app-type" style="font-size:16px">金額ごとにできることは、下の比較表にまとめました。</p>
           </div>
         </div>
-
-        <p class="free-note">試作品は<span class="marker">無料</span>でお作りします。<span class="marker">購入されなければ、制作費は発生しません。</span></p>
 
         <div class="cmp-box">
           <table class="cmp">
             <thead>
               <tr>
                 <th scope="col" class="feat-h">できること</th>
-                <th scope="col" class="pc"><span class="amt">50,000<small>円</small></span><span class="pl">記録プラン</span></th>
-                <th scope="col" class="pc"><span class="amt">80,000<small>円</small></span><span class="pl">標準プラン</span></th>
-                <th scope="col" class="pc"><span class="amt">100,000<small>円</small></span><span class="pl">業務ルールプラン</span></th>
+                <th scope="col" class="pc"><span class="amt">50,000<small>円</small></span><span class="pl">プランA｜記録</span></th>
+                <th scope="col" class="pc"><span class="amt">80,000<small>円</small></span><span class="pl">プランB｜台帳＋履歴</span></th>
+                <th scope="col" class="pc"><span class="amt">100,000<small>円</small></span><span class="pl">プランC｜状態管理</span></th>
               </tr>
             </thead>
             <tbody>
@@ -1945,14 +1929,15 @@
           <a class="btn main" href="#cta">ご相談・ご質問はこちら</a>
         </div>
         <div class="points-box">
-          <h3>ご契約の要点</h3>
+          <h3>ご契約の前に、要点だけ</h3>
           <ul>
-            <li><strong>金額：</strong>制作費は5万円／8万円／10万円の3段階で固定です。月額費用はありません。範囲を超えるご希望に、ご承諾なく追加料金が発生することはありません</li>
-            <li><strong>含まれるもの：</strong>当初に合意した仕様の範囲内の制作と、購入後の修正は回数の上限なく対応します</li>
-            <li><strong>含まれないもの：</strong>当初の範囲を超える機能の追加、複数人での同時編集・予約・決済などの仕組み（別のお見積もりになります）</li>
-            <li><strong>お支払いとご契約：</strong>購入をお決めいただいた後にお支払いください。ご入金が確認できた時点で、ご契約が成立します</li>
-            <li><strong>お渡し：</strong>ご入金確認後、同じアプリを正規版に更新してお渡しします</li>
-            <li><strong>データと試用：</strong>記録はお使いの端末の中に保存されます。試用期間は7日間です</li>
+            <li><strong>試作品：</strong>試作品は無料でお作りします。実際に使っていただいてから、購入されるかどうかをお決めいただけます。購入されなければ、制作費は発生しません。</li>
+            <li><strong>金額：</strong>制作費は5万円／8万円／10万円の3段階で固定です。月額費用はありません。範囲を超えるご希望に、ご承諾なく追加料金が発生することはありません。</li>
+            <li><strong>含まれるもの：</strong>当初に合意した仕様の範囲内の制作です。購入後の修正は、回数の上限なく対応します。</li>
+            <li><strong>含まれないもの：</strong>当初の範囲を超える機能の追加と、複数人での同時編集・予約・決済などの仕組みです。必要な場合は、別の設計としてお見積もりします。</li>
+            <li><strong>お支払いとご契約：</strong>購入をお決めいただいた後にお支払いください。ご入金が確認できた時点で、ご契約が成立します。</li>
+            <li><strong>お渡し：</strong>ご入金の確認後、同じアプリを正規版に更新してお渡しします。</li>
+            <li><strong>データと試用：</strong>記録はお使いの端末の中に保存されます。試用期間は7日間です。</li>
           </ul>
         </div>
 
@@ -1962,73 +1947,35 @@
             <span class="qa-badge q" aria-hidden="true">Q</span>
             <p class="qa-q-text">本当にこの金額だけですか？追加料金は発生しませんか？</p>
           </div>
-          <div class="qa-a">
-            <span class="qa-badge a" aria-hidden="true">A</span>
-            <div class="qa-a-card">
-              <p><strong class="qa-lead">はい。お支払いは、この金額だけです。</strong>買い切りで、月額費用もかかりません。</p>
-              <p>範囲を超えるご希望がある場合は、着手前に金額をご説明し、ご承諾いただいてから進めます。<mark>ご承諾なく追加料金が発生することはありません</mark>。</p>
-            </div>
-          </div>
+          <p class="qa-link-wrap"><a class="qa-answer-link" href="faq.html#q1">答えを見る</a></p>
         </div>
         <div class="qa-block">
           <div class="qa-q">
             <span class="qa-badge q" aria-hidden="true">Q</span>
             <p class="qa-q-text">保守契約は必要ですか？</p>
           </div>
-          <div class="qa-a">
-            <span class="qa-badge a" aria-hidden="true">A</span>
-            <div class="qa-a-card">
-              <p><strong class="qa-lead">必要ありません。</strong></p>
-              <p>買い切りで、<mark>月額費用はかかりません</mark>。記録はCSVで書き出して、控えを取ることもできます。</p>
-            </div>
-          </div>
+          <p class="qa-link-wrap"><a class="qa-answer-link" href="faq.html#q13">答えを見る</a></p>
         </div>
         <div class="qa-block">
           <div class="qa-q">
             <span class="qa-badge q" aria-hidden="true">Q</span>
             <p class="qa-q-text">納期はどれくらいですか？</p>
           </div>
-          <div class="qa-a">
-            <span class="qa-badge a" aria-hidden="true">A</span>
-            <div class="qa-a-card">
-              <p><strong class="qa-lead">試作品は、仕様が決まってから最短2〜3日でお渡しします。</strong></p>
-              <p>この2〜3日は試作品をお渡しするまでの目安で、<mark>完成・納品までの日数ではありません</mark>。</p>
-              <p>その後の確認と修正を含めた全体の期間は、ご要望の内容によって変わります。着手する日は受注時にご相談のうえ決めます。</p>
-            </div>
-          </div>
+          <p class="qa-link-wrap"><a class="qa-answer-link" href="faq.html#q11">答えを見る</a></p>
         </div>
         <div class="qa-block">
           <div class="qa-q">
             <span class="qa-badge q" aria-hidden="true">Q</span>
             <p class="qa-q-text">使い始めてから、項目を増やしたり直したりできますか？</p>
           </div>
-          <div class="qa-a">
-            <span class="qa-badge a" aria-hidden="true">A</span>
-            <div class="qa-a-card">
-              <p><strong class="qa-lead">購入後は、当初に合意した仕様の範囲内で、回数の上限なく対応します。</strong></p>
-              <p>無料試用中は、<mark>正常に使えない不具合を無料で修正します</mark>。表示の変更や個別の調整は、ご入金確認後の対応となります。</p>
-              <p>新しい項目や機能の追加は、当初の範囲を超えるため、内容に応じて別途ご相談となります。</p>
-            </div>
-          </div>
+          <p class="qa-link-wrap"><a class="qa-answer-link" href="faq.html#q12">答えを見る</a></p>
         </div>
         <div class="qa-block">
           <div class="qa-q">
             <span class="qa-badge q" aria-hidden="true">Q</span>
             <p class="qa-q-text">うちの仕事が対象外になることはありますか？</p>
           </div>
-          <div class="qa-a">
-            <span class="qa-badge a" aria-hidden="true">A</span>
-            <div class="qa-a-card">
-              <p><strong class="qa-lead">次のような場合は、この価格では承っておりません。</strong></p>
-              <ul>
-                <li>複数人で同時に同じデータを編集する使い方</li>
-                <li>予約や決済そのものが本体の仕組み</li>
-                <li>医療の診断に使うもの</li>
-                <li>数十人規模で使うシステム</li>
-              </ul>
-              <p>対象かどうか迷われる場合は、<mark>ご相談の際にご確認ください</mark>。</p>
-            </div>
-          </div>
+          <p class="qa-link-wrap"><a class="qa-answer-link" href="faq.html#q14">答えを見る</a></p>
         </div>
 
         <p class="page-link-line"><a href="faq.html">Q&Aまとめ（全14問）はこちら</a></p>
@@ -2038,7 +1985,6 @@
       <!-- ================= reasons ================= -->
       <section class="app" id="reasons">
         <div class="app-head">
-          <span class="app-no" style="background:var(--blue)">理由</span>
           <div>
             <h2>選ばれる理由</h2>
             <p class="app-type" style="font-size:16px">「金額も納期も、最初から分かるんですか？」――はい。その理由は、作り方の仕組みが決まっているからです</p>
@@ -2052,7 +1998,7 @@
           </div>
           <div class="reason-card">
             <h3>月額費用はかかりません</h3>
-            <p>データはお使いの端末の中に保存され、サーバーを使いません。毎月の利用料や保守契約なしで使い続けられます。</p>
+            <p>データはお使いの端末の中に保存され、サーバーを使いません。毎月の利用料や保守契約はなく、そのままお使いいただけます。</p>
           </div>
           <div class="reason-card">
             <h3>土台は、実際に使われているアプリです</h3>
@@ -2065,10 +2011,9 @@
       <!-- ================= flow ================= -->
       <section class="app" id="flow">
         <div class="app-head">
-          <span class="app-no" style="background:var(--blue)">依頼の流れ</span>
           <div>
             <h2>依頼の流れ</h2>
-            <p class="app-type" style="font-size:16px"><span class="marker">試作品は無料です。</span>まずは実際に使っていただいて、そのうえで購入するかどうかをお決めいただけます</p>
+            <p class="app-type" style="font-size:16px"><span class="marker">試作品は無料です。</span>まずは実際に使っていただいて、そのうえで購入されるかどうかをお決めいただけます</p>
           </div>
         </div>
 
@@ -2084,13 +2029,7 @@
             <span class="qa-badge q" aria-hidden="true">Q</span>
             <p class="qa-q-text">今のデータ（紙・Excel）はどうなりますか？</p>
           </div>
-          <div class="qa-a">
-            <span class="qa-badge a" aria-hidden="true">A</span>
-            <div class="qa-a-card">
-              <p><strong class="qa-lead">そのままお預かりします。</strong>整形は不要です。</p>
-              <p>Excelなどのファイルは今の形のままで大丈夫です（<mark>変換はこちらで行います</mark>）。紙の台帳の場合の進め方など、詳しくは<a href="terms.html">「お申し込み前に見ておいていただきたいこと」</a>の「今お使いのデータの移し方について」をご覧ください。</p>
-            </div>
-          </div>
+          <p class="qa-link-wrap"><a class="qa-answer-link" href="faq.html#q9">答えを見る</a></p>
         </div>
 
         <div class="fstep">
@@ -2103,21 +2042,22 @@
         <div class="qa-block">
           <div class="qa-q">
             <span class="qa-badge q" aria-hidden="true">Q</span>
+            <p class="qa-q-text">本当に無料で作ってもらえるのですか？</p>
+          </div>
+          <p class="qa-link-wrap"><a class="qa-answer-link" href="faq.html#q2">答えを見る</a></p>
+        </div>
+        <div class="qa-block">
+          <div class="qa-q">
+            <span class="qa-badge q" aria-hidden="true">Q</span>
             <p class="qa-q-text">なぜ無料で作れるのですか？</p>
           </div>
-          <div class="qa-a">
-            <span class="qa-badge a" aria-hidden="true">A</span>
-            <div class="qa-a-card">
-              <p><strong class="qa-lead">購入されなかった試作品も、工房の資産になるからです。</strong></p>
-              <p>お客様固有の情報を除去し、一般化したアプリは、次のお客様への制作サンプル（カタログ）に加わります。実際に操作できるサンプルが増えることが、工房にとっても意味があるため、<mark>無料でお作りできます</mark>。</p>
-            </div>
-          </div>
+          <p class="qa-link-wrap"><a class="qa-answer-link" href="faq.html#q5">答えを見る</a></p>
         </div>
 
         <div class="fstep">
           <span class="step-no">3</span>
           <div>
-            <h3>試用期間中に、実際に使ってご確認いただく</h3>
+            <h3>試用期間中に、お試しいただく</h3>
             <p>試用期間は7日間です。ふだんのお仕事の中で、実際に使ってみてください。</p>
           </div>
         </div>
@@ -2126,21 +2066,14 @@
             <span class="qa-badge q" aria-hidden="true">Q</span>
             <p class="qa-q-text">試用中に直してほしいところがあったら？</p>
           </div>
-          <div class="qa-a">
-            <span class="qa-badge a" aria-hidden="true">A</span>
-            <div class="qa-a-card">
-              <p><strong class="qa-lead">正常に使えない不具合は、無料で修正します。</strong></p>
-              <p>ページが開かない、ボタンが動かない、記録が表示されないなど、試すこと自体に支障がある不具合は無料で修正します。</p>
-              <p>表示文字の変更や画面配置など、個別の変更・調整のご希望は、<mark>ご入金確認後に対応します</mark>。</p>
-            </div>
-          </div>
+          <p class="qa-link-wrap"><a class="qa-answer-link" href="faq.html#q3">答えを見る</a></p>
         </div>
 
         <div class="fstep">
           <span class="step-no">4</span>
           <div>
-            <h3>購入するかどうかをお決めいただく</h3>
-            <p>実際に使っていただいて、「これなら使える」と思われましたら、制作費をお支払いください。購入されなければ、制作費は発生しません。</p>
+            <h3>購入されるかどうかをお決めいただく</h3>
+            <p>実際にご利用いただいて、『これなら使える』と思われたら、制作費をお支払いください。購入されなければ、制作費は発生しません。</p>
           </div>
         </div>
 
@@ -2156,13 +2089,7 @@
             <span class="qa-badge q" aria-hidden="true">Q</span>
             <p class="qa-q-text">購入したら、データはどうなりますか？</p>
           </div>
-          <div class="qa-a">
-            <span class="qa-badge a" aria-hidden="true">A</span>
-            <div class="qa-a-card">
-              <p><strong class="qa-lead">記録は、そのまま引き継がれます。</strong></p>
-              <p>記録はお使いの端末の中に保存され、<mark>購入後も同じアプリのまま正規版に更新されます</mark>。端末へのインストールの前には、記録をファイルに保存するバックアップの方法をご案内します。</p>
-            </div>
-          </div>
+          <p class="qa-link-wrap"><a class="qa-answer-link" href="faq.html#q4">答えを見る</a></p>
         </div>
 
         <p class="guide-note"><a href="guide.html">アプリの入れ方と、記録データの移し方はこちら</a></p>
@@ -2173,43 +2100,24 @@
             <span class="qa-badge q" aria-hidden="true">Q</span>
             <p class="qa-q-text">パソコンやスマホが苦手でも使えますか？</p>
           </div>
-          <div class="qa-a">
-            <span class="qa-badge a" aria-hidden="true">A</span>
-            <div class="qa-a-card">
-              <p><strong class="qa-lead">大丈夫です。設定は、こちらで済ませてお渡しします。</strong></p>
-              <p>項目はお仕事に合わせて設定済みです。ホーム画面への追加も、お渡しの際にその場でご一緒しますので、<mark>ご自身で設定していただく必要はありません</mark>。</p>
-              <p>あとから入れ直す場合の手順は<a href="guide.html">「アプリの入れ方・データの移し方」</a>にまとめています。</p>
-            </div>
-          </div>
+          <p class="qa-link-wrap"><a class="qa-answer-link" href="faq.html#q6">答えを見る</a></p>
         </div>
         <div class="qa-block">
           <div class="qa-q">
             <span class="qa-badge q" aria-hidden="true">Q</span>
             <p class="qa-q-text">アプリはどうやってスマホに入れるのですか？アプリストアで探すのですか？</p>
           </div>
-          <div class="qa-a">
-            <span class="qa-badge a" aria-hidden="true">A</span>
-            <div class="qa-a-card">
-              <p><strong class="qa-lead">アプリストアは使いません。</strong></p>
-              <p>お渡ししたアドレスをブラウザで開き、<mark>ホーム画面にアイコンを追加するのが「インストール」です</mark>。詳しい手順は<a href="guide.html">「アプリの入れ方・データの移し方」</a>をご覧ください。お渡しの際は、その場でご一緒に設定します。</p>
-            </div>
-          </div>
+          <p class="qa-link-wrap"><a class="qa-answer-link" href="faq.html#q7">答えを見る</a></p>
         </div>
         <div class="qa-block">
           <div class="qa-q">
             <span class="qa-badge q" aria-hidden="true">Q</span>
             <p class="qa-q-text">電波のない場所でも使えますか？</p>
           </div>
-          <div class="qa-a">
-            <span class="qa-badge a" aria-hidden="true">A</span>
-            <div class="qa-a-card">
-              <p><strong class="qa-lead">はい、使えます。</strong></p>
-              <p>最初にアプリを読み込んでおけば、地下や山間部、電波の届きにくい建物の中など、<mark>インターネットにつながらない場所でも、記録の入力や確認ができます</mark>。記録はお使いの端末の中に保存されます。</p>
-            </div>
-          </div>
+          <p class="qa-link-wrap"><a class="qa-answer-link" href="faq.html#q8">答えを見る</a></p>
         </div>
 
-        <p class="page-link-line"><a href="terms.html">お申し込み前に見ておいていただきたいこと（ご契約時の注意）はこちら</a></p>
+        <p class="page-link-line"><a href="terms.html">お申し込み前にご確認いただきたいこと（ご契約時の注意）はこちら</a></p>
         <p class="back-toc"><a href="#toc">↑ 目次へ戻る</a></p>
       </section>
 
