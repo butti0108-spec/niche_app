@@ -132,6 +132,8 @@
         margin-top: 44px; padding-top: 14px; border-top: 1px solid var(--line);
         text-align: center; font-size: 14px; color: var(--ink-3); letter-spacing: .06em;
       }
+      footer a { color: var(--navy); font-weight: 700; text-decoration: none; }
+      footer a:hover { text-decoration: underline; }
     
       /* ---------- batch 7 (2026-10-29): fluid type + one-line guarantees ---------- */
       html { font-size: 16px; }
@@ -141,7 +143,7 @@
         padding: 16px 30px; font-weight: 800;
         white-space: nowrap; word-break: normal; overflow-wrap: normal;
         letter-spacing: -.01em; font-size: clamp(1rem, 4.1vw, 1.25rem);
-        text-decoration: underline; text-underline-offset: 3px;
+        text-decoration: none;
       }
       /* back-top is a button, not an annotation: 16px + one line */
       .back.back-top a { font-size: 1rem; white-space: nowrap; }
@@ -297,6 +299,74 @@
         <p>ホーム画面へのインストールの前や、機種変更の前には、先に「書き出し」をしておくことをおすすめします。</p>
       </div>
 
+      <!-- ================= Scene 3 ================= -->
+      <h2>記録の保存と、控えのこと</h2>
+      <p class="scene-note">記録は、お使いの端末の中にだけ保存されます。</p>
+      <div class="talk">
+        <div class="msg owner">
+          <div class="avatar">店</div>
+          <div>
+            <p class="who">整体院の店主</p>
+            <div class="bubble"><p>そういえば、記録って、どこに保存されてるの？インターネットの向こう側とかに置かれてるの？</p></div>
+          </div>
+        </div>
+        <div class="msg friend">
+          <div class="avatar">友</div>
+          <div>
+            <p class="who">友人</p>
+            <div class="bubble"><p>違うの。記録は、自分のスマホやパソコンの中だけに置いて、外部のサーバーへは送らないの。だから、サーバー側の不具合で記録が見られなくなる、みたいなこともないよ。</p></div>
+          </div>
+        </div>
+        <div class="msg owner">
+          <div class="avatar">店</div>
+          <div>
+            <p class="who">整体院の店主</p>
+            <div class="bubble"><p>でも、スマホを失くしたり、スマホが壊れたりしたら、記録はどうなっちゃうの？</p></div>
+          </div>
+        </div>
+        <div class="msg friend">
+          <div class="avatar">友</div>
+          <div>
+            <p class="who">友人</p>
+            <div class="bubble"><p>そこはね、控えが取れるの。書き出したファイルを別の場所にも置いておけば、スマホを失くしても、パソコンが壊れても、元に戻せるよ。紙は失くしたら終わりだからね。</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= Scene 4 ================= -->
+      <h2>記録を渡す・共有する</h2>
+      <p class="scene-note">書き出したファイルは、相手にそのまま渡せます。</p>
+      <div class="talk">
+        <div class="msg owner">
+          <div class="avatar">店</div>
+          <div>
+            <p class="who">整体院の店主</p>
+            <div class="bubble"><p>記録を、誰か別の人に見せたり、渡したりしたい時はどうするの？</p></div>
+          </div>
+        </div>
+        <div class="msg friend">
+          <div class="avatar">友</div>
+          <div>
+            <p class="who">友人</p>
+            <div class="bubble"><p>書き出したファイルは、スマホでもパソコンでも扱えるよ。</p></div>
+          </div>
+        </div>
+        <div class="msg friend">
+          <div class="avatar">友</div>
+          <div>
+            <p class="who">友人</p>
+            <div class="bubble"><p>表計算で開けるファイルだから、相手にもそのまま渡せるの。LINEでもすぐ送れるよ。</p></div>
+          </div>
+        </div>
+        <div class="msg friend">
+          <div class="avatar">友</div>
+          <div>
+            <p class="who">友人</p>
+            <div class="bubble"><p>あと、報告書として整えて渡したい時は、集計した内容をPDFのレポートにして出せるよ。プランBとCに入っている機能だよ。</p></div>
+          </div>
+        </div>
+      </div>
+
       <div class="closing">
         <h2><span class="nw">ご相談だけでも</span><span class="nw">大丈夫です</span></h2>
         <p>「うちの仕事はこの枠で作れるだろうか」――そんな段階のご相談で大丈夫です。ご質問がまとまっていなくても構いません。無理におすすめすることはございません。</p>
@@ -308,7 +378,7 @@
         <a href="https://butti0108-spec.github.io/niche_app/">業務アプリ制作のご案内へ戻る</a>
       </div>
 
-      <footer>アーチデザイン工房</footer>
+      <footer><a href="about.html">事業者情報</a>｜アーチデザイン工房</footer>
     </div>
   </body>
 </html>
