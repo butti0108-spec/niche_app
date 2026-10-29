@@ -1133,10 +1133,10 @@
       #flow .qa-item, #flow .qa-block { margin-left: 58px; }
       @media (max-width: 640px) { #flow .qa-item, #flow .qa-block { margin-left: 0; } }
       .vital-line {
-        display: flex; flex-wrap: wrap; align-items: center; gap: 10px 20px;
-        margin-top: 64px; font-size: 1rem; line-height: 1.85;
+        margin-top: 64px; font-size: 1rem; line-height: 1.9;
       }
       .vital-line p { margin: 0; }
+      .vital-line .vital-btn { margin-top: 18px; }
       /* ---------- unification pass: heading treatment ---------- */
       .stories-head { color: #122a5c; border-bottom: 2px solid #1d4e89; padding-bottom: 10px; }
       .breather h2 { color: #122a5c; }
@@ -1369,7 +1369,6 @@
         <h2>目次 ― このページの内容</h2>
         <p class="toc-lead">気になるところだけ、先に開いてみてください。</p>
         <ol>
-          <li><a href="#nayami">お悩み ― こんな管理、続けていませんか</a></li>
           <li><a href="#setsumei">商品説明 ― マンガの続き ― 友人に聞いてみたら</a></li>
           <li><a href="#patterns">プランの大枠とプラン紹介</a></li>
           <li><a href="#price">料金 ― 3段階の比較表</a></li>
@@ -1472,8 +1471,8 @@
         </div>
 
       <div class="vital-line">
-        <p>作例として、実際に使える記録アプリもご用意しています。</p>
-        <a class="btn sub" href="vital.html">バイタルアプリはこちらです</a>
+        <p>こちらが、実際に動く記録アプリの作例です。血圧の記録用に作ったものですが、項目も、レイアウトも、色も、お客様のご用途に合わせて変更できます。機能は、プランB（8万円）にあたる作例です。この下のプランのご案内をご覧いただき、お客様に合うものをお選びください。ご相談もお気軽にどうぞ。</p>
+        <p class="vital-btn"><a class="btn sub" href="vital.html">作例を見る</a></p>
       </div>
 
       <!-- ================= A1 ================= -->
@@ -1801,7 +1800,7 @@
       <!-- ================= price tiers ================= -->
       <section class="app" id="price">
         <div class="app-head">
-          <span class="app-no" style="background:var(--blue)">価格</span>
+          <span class="app-no" style="background:var(--blue)">プラン比較</span>
           <div>
             <h2>金額は3段階、固定です</h2>
             <p class="app-type" style="font-size:16px">金額ごとにできることは、下の比較表にまとめました。</p>
@@ -1970,15 +1969,15 @@
         <div class="app-head">
           <span class="app-no" style="background:var(--blue)">選ばれる理由</span>
           <div>
-            <h2>選ばれる理由</h2>
-            <p class="app-type" style="font-size:16px">「金額も納期も、最初から分かるんですか？」――はい。その理由は、作り方の仕組みが決まっているからです</p>
+            <h2><span class="nw">金額も、</span><span class="nw">納期も、</span><span class="nw">最初から</span><span class="nw">分かります</span></h2>
+            <p class="app-type" style="font-size:16px">作り方の仕組みが決まっているので、ぶれません。</p>
           </div>
         </div>
 
         <div class="reasons-list">
           <div class="reason-card">
             <h3><span class="nw">金額は、</span><span class="nw">ご相談の時点で</span><span class="nw">分かります</span></h3>
-            <p>できることを3段階に分けました。ご相談の時点で、金額が分かります。</p>
+            <p>できることを3段階に分けました。お聞きした内容に合わせて、金額はその場で決まります。</p>
           </div>
           <div class="reason-card">
             <h3>月額費用はかかりません</h3>
@@ -1997,7 +1996,7 @@
         <div class="app-head">
           <span class="app-no" style="background:var(--blue)">依頼の流れ</span>
           <div>
-            <h2>依頼の流れ</h2>
+            <h2><span class="nw">ご相談から、</span><span class="nw">お渡しまで</span></h2>
             <p class="app-type" style="font-size:16px"><span class="marker">試作品は無料です。</span></p>
           </div>
         </div>
@@ -2109,7 +2108,7 @@
       <!-- ================= final CTA ================= -->
       <section class="cta-final" id="cta">
         <h2>まずは、<br />無料の試作品から</h2>
-        <p class="cta-invite"><span class="nw">気になっていただけたら、</span><span class="nw">まずは</span><span class="nw">無料の試作品から</span><span class="nw">始めてみてください。</span></p>
+        <p class="cta-invite"><span class="nw">気になっていただけたら、</span><span class="nw">メールで</span><span class="nw">ご連絡ください。</span></p>
         <p class="cta-mail"><a href="mailto:atsushi.masubuchi.work@gmail.com?subject=%E6%A5%AD%E5%8B%99%E3%82%A2%E3%83%97%E3%83%AA%E3%81%AE%E3%81%94%E7%9B%B8%E8%AB%87">atsushi.masubuchi.work@gmail.com</a></p>
         <p class="cta-price-line"><span class="nw">制作費は</span><span class="nw">5万円／8万円／</span><span class="nw">10万円の</span><span class="nw">固定価格です。</span><br /><span class="nw">月額費用は</span><span class="nw">かかりません。</span></p>
         <p class="cta-soft-line">ご相談だけでも大丈夫です。無理におすすめすることはございません。</p>
