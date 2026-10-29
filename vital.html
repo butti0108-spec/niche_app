@@ -26,7 +26,7 @@
         background: var(--paper);
         color: var(--ink);
         font-family: "M PLUS Rounded 1c", "Hiragino Maru Gothic ProN", "Noto Sans JP", sans-serif;
-        font-size: 16px;
+        font-size: 1rem;
         line-height: 1.9;
         -webkit-font-smoothing: antialiased;
       }
@@ -41,10 +41,10 @@
       }
       h1 {
         font-family: "Shippori Mincho B1", "Hiragino Mincho ProN", serif;
-        font-weight: 800; font-size: 24px;
+        font-weight: 800; font-size: 1.5rem;
         line-height: 1.45; margin: 26px 0 12px; color: var(--navy-deep);
       }
-      .lede { font-size: 16px; color: var(--ink-2); margin: 0 0 18px; }
+      .lede { font-size: 1rem; color: var(--ink-2); margin: 0 0 18px; }
       .lede strong { color: var(--ink); }
       .origin {
         background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
@@ -63,14 +63,14 @@
       }
       .demo a.btn {
         display: inline-block; background: var(--navy); color: #fff;
-        font-weight: 800; font-size: 18px; text-decoration: none;
+        font-weight: 800; font-size: 1.125rem; text-decoration: none;
         border-radius: 999px; padding: 14px 40px;
       }
       .demo .cap { font-size: 14px; color: var(--ink-3); margin: 10px 0 0; }
 
       h2 {
         font-family: "Shippori Mincho B1", "Hiragino Mincho ProN", serif;
-        font-weight: 800; font-size: 24px;
+        font-weight: 800; font-size: 1.5rem;
         color: var(--navy-deep); line-height: 1.5;
         margin: 56px 0 14px; padding-bottom: 8px;
         border-bottom: 2px solid var(--navy);
@@ -78,17 +78,17 @@
       ul.can { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
       ul.can li {
         background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
-        padding: 12px 18px 12px 46px; position: relative; font-size: 16px;
+        padding: 12px 18px 12px 46px; position: relative; font-size: 1rem;
       }
       ul.can li::before {
         content: "✓"; position: absolute; left: 16px; top: 12px;
         color: var(--navy); font-weight: 800;
       }
-      ul.can li small { display: block; color: var(--ink-2); font-size: 16px; line-height: 1.7; }
+      ul.can li small { display: block; color: var(--ink-2); font-size: 1rem; line-height: 1.7; }
 
       .guide-link {
         margin: 30px 0 0; background: #f3edda; border-radius: var(--radius);
-        padding: 14px 20px; font-size: 16px;
+        padding: 14px 20px; font-size: 1rem;
       }
       .guide-link a { color: var(--navy); font-weight: 700; }
 
@@ -109,20 +109,42 @@
       }
       .banner .b-main {
         font-family: "Shippori Mincho B1", "Hiragino Mincho ProN", serif;
-        font-weight: 800; font-size: 20px;
+        font-weight: 800; font-size: 1.25rem;
         letter-spacing: -0.03em; line-height: 1.5; margin: 0 0 8px;
       }
-      .banner .b-sub { margin: 0; font-size: 16px; color: #cfe0f2; }
+      .banner .b-sub { margin: 0; font-size: 1rem; color: #cfe0f2; }
       .banner .b-btn {
         display: block; max-width: 400px; margin: 18px auto 0;
         background: #fff; color: var(--navy-deep);
-        font-weight: 800; font-size: 16px; text-align: center;
+        font-weight: 800; font-size: 1rem; text-align: center;
         border-radius: 999px; padding: 11px 10px;
       }
 
       footer {
         margin-top: 44px; padding-top: 14px; border-top: 1px solid var(--line);
         text-align: center; font-size: 14px; color: var(--ink-3); letter-spacing: .06em;
+      }
+    
+      /* ---------- batch 7 (2026-10-29): fluid type + one-line guarantees ---------- */
+      html { font-size: 16px; }
+      .nw { white-space: nowrap; }
+      /* back-top is a button, not an annotation: 16px + one line */
+      .back-top a { font-size: 1rem; white-space: nowrap; }
+      .banner .b-btn { white-space: nowrap; }
+      .demo a.btn { white-space: nowrap; }
+      @media (max-width: 480px) {
+        .banner { padding: 26px 16px; }
+        .back-top a { padding: 10px 16px; }
+      }
+      @media (max-width: 340px) {
+        .back-top a { padding: 9px 8px; letter-spacing: -.02em; }
+      }
+
+      /* batch 7 fix 2: at <=340px the banner goes full-bleed so the one-line
+         banner button fits inside its pill */
+      @media (max-width: 340px) {
+        .banner { margin-left: -20px; margin-right: -20px; border-radius: 0; }
+        .banner .b-btn { padding: 11px 6px; letter-spacing: -.02em; }
       }
     </style>
   </head>
@@ -179,7 +201,7 @@
         アプリの入れ方や、データの移し方（CSVの書き出し・読み込み）は、会話形式でまとめたページにあります。→ <a href="guide.html">使い方・データの移し方を見る</a>
       </div>
 
-      <h2>この仕組みが、あなたの仕事だと</h2>
+      <h2><span class="nw">この仕組みが、</span><span class="nw">あなたの</span><span class="nw">仕事だと</span></h2>
       <div class="bridge">
         <p>このアプリは、血圧を記録するためのものです。でも、中の仕組み――<strong>その日の内容を残して、あとから名前で探して、まとめて見返す</strong>――は、記録の仕事でしたら、どのお仕事にも置き換えられます。</p>
         <p>たとえば、施術やレッスンのお仕事でしたら、前回のお客様に何をしたかが、その場で分かります。作品や商品を一点ずつ扱うお仕事でしたら、いま何がどうなっているかが、手元ですぐに確かめられます。記録を探す手間と、「前回どうしたか」の見落としが、ぐっと減ります。</p>
@@ -187,7 +209,7 @@
       </div>
 
       <a class="banner" href="https://butti0108-spec.github.io/niche_app/">
-        <p class="b-main">あなた専用の業務アプリで、紙から卒業を。制作は5万円から</p>
+        <p class="b-main"><span class="nw">あなた専用の</span><span class="nw">業務アプリで、</span><span class="nw">紙から卒業を。</span><span class="nw">制作は</span><span class="nw">5万円から</span></p>
         <p class="b-sub">カスタムアプリ工房 ― このアプリの仕組みを、あなたの仕事の記録に合わせて作ります</p>
         <span class="b-btn">カスタムアプリ工房のご案内を見る ›</span>
       </a>

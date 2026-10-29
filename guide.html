@@ -27,7 +27,7 @@
         background: var(--paper);
         color: var(--ink);
         font-family: "M PLUS Rounded 1c", "Hiragino Maru Gothic ProN", "Noto Sans JP", sans-serif;
-        font-size: 16px;
+        font-size: 1rem;
         line-height: 1.9;
         -webkit-font-smoothing: antialiased;
       }
@@ -42,25 +42,25 @@
       }
       h1 {
         font-family: "Shippori Mincho B1", "Hiragino Mincho ProN", serif;
-        font-weight: 800; font-size: 24px;
+        font-weight: 800; font-size: 1.5rem;
         line-height: 1.45; margin: 26px 0 14px; color: var(--navy-deep);
       }
-      .scene-head { color: var(--ink-2); font-size: 16px; margin: 0 0 10px; }
+      .scene-head { color: var(--ink-2); font-size: 1rem; margin: 0 0 10px; }
       .scene-head a { color: var(--navy); font-weight: 700; }
       .cast {
         background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
-        padding: 14px 18px; font-size: 16px; color: var(--ink-2); margin: 18px 0 8px;
+        padding: 14px 18px; font-size: 1rem; color: var(--ink-2); margin: 18px 0 8px;
       }
       .cast strong { color: var(--ink); }
 
       h2 {
         font-family: "Shippori Mincho B1", "Hiragino Mincho ProN", serif;
-        font-weight: 800; font-size: 24px;
+        font-weight: 800; font-size: 1.5rem;
         color: var(--navy-deep); line-height: 1.5;
         margin: 56px 0 6px; padding-bottom: 8px;
         border-bottom: 2px solid var(--navy);
       }
-      .scene-note { color: var(--ink-2); font-size: 16px; margin: 0 0 14px; }
+      .scene-note { color: var(--ink-2); font-size: 1rem; margin: 0 0 14px; }
 
       /* ---------- dialogue ---------- */
       .talk { display: flex; flex-direction: column; gap: 14px; margin: 20px 0 6px; }
@@ -68,11 +68,11 @@
       .msg .avatar {
         flex: none; width: 40px; height: 40px; border-radius: 50%;
         display: flex; align-items: center; justify-content: center;
-        font-weight: 800; font-size: 16px; color: #fff; margin-top: 20px;
+        font-weight: 800; font-size: 1rem; color: #fff; margin-top: 20px;
       }
       .msg .who { font-size: 14px; font-weight: 700; color: var(--ink-3); margin: 0 0 3px; }
       .msg .bubble {
-        border-radius: 16px; padding: 10px 16px; font-size: 16px; line-height: 1.85;
+        border-radius: 16px; padding: 10px 16px; font-size: 1rem; line-height: 1.85;
       }
       .msg .bubble p { margin: 0 0 8px; }
       .msg .bubble p:last-child { margin-bottom: 0; }
@@ -92,18 +92,18 @@
         padding: 18px 22px 10px; margin: 18px 0 8px;
       }
       .steps h3 {
-        margin: 0 0 8px; font-size: 18px; font-weight: 800; color: var(--navy-deep);
+        margin: 0 0 8px; font-size: 1.125rem; font-weight: 800; color: var(--navy-deep);
       }
       .steps ol { margin: 0 0 10px; padding-left: 1.4em; }
-      .steps li { margin-bottom: 6px; font-size: 16px; }
-      .steps p { font-size: 16px; color: var(--ink-2); margin: 0 0 10px; }
+      .steps li { margin-bottom: 6px; font-size: 1rem; }
+      .steps p { font-size: 1rem; color: var(--ink-2); margin: 0 0 10px; }
       .steps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 18px 0 8px; }
       .steps-grid .steps { margin: 0; }
       @media (max-width: 640px) { .steps-grid { grid-template-columns: 1fr; } }
 
       .note {
         background: #f3edda; border-radius: var(--radius);
-        padding: 12px 18px; font-size: 16px; color: var(--ink-2); margin: 16px 0 8px;
+        padding: 12px 18px; font-size: 1rem; color: var(--ink-2); margin: 16px 0 8px;
       }
       .note strong { color: var(--ink); }
 
@@ -112,11 +112,11 @@
         background: var(--navy-deep); color: #fff; border-radius: var(--radius);
         padding: 26px 24px; margin: 56px 0 0; text-align: center;
       }
-      .closing h2 { font-family: "Shippori Mincho B1", "Hiragino Mincho ProN", serif; font-size: 20px; margin: 0 0 10px; color: #fff; border: none; padding: 0; }
+      .closing h2 { font-family: "Shippori Mincho B1", "Hiragino Mincho ProN", serif; font-size: 1.25rem; margin: 0 0 10px; color: #fff; border: none; padding: 0; }
       .closing p { margin: 0 0 10px; color: #e8eefb; }
       .closing .mail {
         display: inline-block; background: #fff; color: var(--navy-deep); font-weight: 800;
-        border-radius: 999px; padding: 16px 30px; font-size: 20px; text-decoration: none; margin-top: 6px;
+        border-radius: 999px; padding: 16px 30px; font-size: 1.25rem; text-decoration: none; margin-top: 6px;
         word-break: break-all;
       }
 
@@ -132,13 +132,45 @@
         margin-top: 44px; padding-top: 14px; border-top: 1px solid var(--line);
         text-align: center; font-size: 14px; color: var(--ink-3); letter-spacing: .06em;
       }
+    
+      /* ---------- batch 7 (2026-10-29): fluid type + one-line guarantees ---------- */
+      html { font-size: 16px; }
+      .nw { white-space: nowrap; }
+      /* mail contact: same solid pill button as the LP final CTA, address on one line */
+      .closing .mail {
+        padding: 16px 30px; font-weight: 800;
+        white-space: nowrap; word-break: normal; overflow-wrap: normal;
+        letter-spacing: -.01em; font-size: clamp(1rem, 4.1vw, 1.25rem);
+        text-decoration: underline; text-underline-offset: 3px;
+      }
+      /* back-top is a button, not an annotation: 16px + one line */
+      .back.back-top a { font-size: 1rem; white-space: nowrap; }
+      @media (max-width: 640px) {
+        .closing { padding-left: 14px; padding-right: 14px; }
+        .closing .mail { padding: 13px 12px; }
+        .back.back-top a { padding: 10px 14px; }
+      }
+      @media (max-width: 340px) {
+        .back.back-top a { padding: 9px 4px; letter-spacing: -.03em; }
+      }
+    
+      /* batch 7 fix: at small widths the closing panel goes full-bleed so the
+         16px-floor mail pill (312px incl. padding) fits inside it, centered */
+      @media (max-width: 480px) {
+        .closing { margin-left: -20px; margin-right: -20px; border-radius: 0; }
+      }
+      @media (max-width: 340px) {
+        .closing { padding-left: 0; padding-right: 0; }
+        .closing h2, .closing p { padding-left: 14px; padding-right: 14px; }
+        .closing .mail { padding: 13px 11px; }
+      }
     </style>
   </head>
   <body>
     <div class="wrap">
       <header class="page-head">
         <div class="shop-line">アーチデザイン工房 ― カスタムアプリ工房</div>
-        <h1>アプリの使い方・データの移し方</h1>
+        <h1><span class="nw">アプリの使い方・</span><span class="nw">データの移し方</span></h1>
         <p class="scene-head">マンガで、友人が店主に記録アプリを見せる場面の、続きの会話です。</p>
         <div class="cast">
           <strong>登場する二人</strong><br />
@@ -187,7 +219,7 @@
 
       <div class="steps-grid">
         <div class="steps">
-          <h3>Android（Chrome）の場合</h3>
+          <h3><span class="nw">Android</span><span class="nw">（Chrome）の場合</span></h3>
           <ol>
             <li>お渡ししたアドレスを、Chromeで開きます</li>
             <li>右上のメニュー（︙）を押します</li>
@@ -196,7 +228,7 @@
           </ol>
         </div>
         <div class="steps">
-          <h3>iPhone（Safari）の場合</h3>
+          <h3><span class="nw">iPhone</span><span class="nw">（Safari）の場合</span></h3>
           <ol>
             <li>お渡ししたアドレスを、Safariで開きます</li>
             <li>画面下の「共有」ボタン（四角に上向き矢印）を押します</li>
@@ -266,7 +298,7 @@
       </div>
 
       <div class="closing">
-        <h2>ご相談だけでも大丈夫です</h2>
+        <h2><span class="nw">ご相談だけでも</span><span class="nw">大丈夫です</span></h2>
         <p>「うちの仕事はこの枠で作れるだろうか」――そんな段階のご相談で大丈夫です。ご質問がまとまっていなくても構いません。無理におすすめすることはございません。</p>
         <p>ご相談・ご質問は、このページをお送りした連絡先（LINE・メールなど）へ、そのままご返信ください。</p>
         <a class="mail" href="mailto:atsushi.masubuchi.work@gmail.com?subject=%E6%A5%AD%E5%8B%99%E3%82%A2%E3%83%97%E3%83%AA%E3%81%AE%E3%81%94%E7%9B%B8%E8%AB%87">atsushi.masubuchi.work@gmail.com</a>
