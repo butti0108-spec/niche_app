@@ -171,6 +171,7 @@
         display: inline-block; font-weight: 700; font-size: 1rem;
         border-radius: 6px; padding: 4px 12px; margin: 0 0 16px;
       }
+      .app-info .also { font-size: 14px; color: var(--ink-3); }
       #app-a1 .for { background: var(--a1-soft); color: var(--a1); }
       #app-b1 .for { background: var(--b1-soft); color: var(--b1); }
       #app-c1 .for { background: var(--c1-soft); color: var(--c1); }
@@ -578,12 +579,12 @@
         display: inline-block; max-width: 100%;
         background: rgba(255, 255, 255, .14); border: 1.5px solid var(--stage-ink); border-radius: 999px;
         color: var(--stage-ink); font-weight: 900; font-size: 1.25rem; line-height: 1.5;
-        padding: 16px 30px; text-decoration: underline; text-underline-offset: 4px;
+        padding: 16px 30px; text-decoration: none;
         overflow-wrap: anywhere; word-break: break-all;
       }
       .cta-mail a:hover { background: rgba(255, 255, 255, .24); }
       .pains-contact { font-size: 1.125rem; color: var(--ink-2); margin: 22px 2px 0; line-height: 1.85; }
-      .pains-contact a { color: var(--blue); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; overflow-wrap: anywhere; word-break: break-all; }
+      .pains-contact a { color: var(--blue); font-weight: 700; text-decoration: none; overflow-wrap: anywhere; word-break: break-all; }
 
       /* ---------- install guide ---------- */
       .install-lead { font-size: 1rem; color: var(--ink-2); line-height: 1.85; margin: 0 0 18px; max-width: 46em; }
@@ -1210,6 +1211,8 @@
       .qa-link-wrap { margin: 10px 0 4px 38px; }
       .qa-answer-link { display: inline-block; font-weight: 900; font-size: 1.125rem; color: var(--blue); background: var(--blue-soft); border: 1.5px solid var(--blue); border-radius: 999px; padding: 9px 22px; text-decoration: underline; text-underline-offset: 3px; line-height: 1.5; }
       .qa-answer-link:hover { background: var(--surface); }
+      .page-link-line a.qa-all-link { display: inline-block; font-weight: 900; font-size: 1.125rem; color: var(--blue); background: var(--blue-soft); border: 1.5px solid var(--blue); border-radius: 999px; padding: 9px 22px; text-decoration: none; line-height: 1.5; }
+      .page-link-line a.qa-all-link:hover { background: var(--surface); }
       @keyframes qa-land-bubble { 0%, 60% { background-color: var(--blue-soft); border-color: var(--blue); box-shadow: inset 4px 0 0 var(--blue), 0 2px 6px rgba(30, 25, 15, .07); } 100% { background-color: var(--surface); border-color: var(--line); box-shadow: inset 4px 0 0 rgba(29, 78, 137, 0), 0 2px 6px rgba(30, 25, 15, .07); } }
       .qa-block:target .qa-q-text { animation: qa-land-bubble 2.8s ease-out both; }
       .base-note { font-size: 1rem; color: var(--ink-3); margin: 8px 0 0; line-height: 1.7; }
@@ -1262,6 +1265,21 @@
         .target-label { padding: 4px 0; }
         .target-label::before, .target-label::after { content: none; }
       }
+    
+      /* ---------- batch 8 item 2 (2026-10-29): plan overview frames are links ---------- */
+      .pattern-overview li { padding: 0; }
+      .pattern-overview li a.po-link {
+        display: flex; gap: 12px; align-items: baseline; flex: 1;
+        padding: 15px 18px 13px; border-radius: var(--radius);
+        color: inherit; text-decoration: none;
+      }
+      .pattern-overview li a.po-link::after {
+        content: "›"; margin-left: auto; flex: none;
+        color: var(--blue); font-weight: 900;
+      }
+      .pattern-overview li a.po-link:hover,
+      .pattern-overview li a.po-link:active { background: var(--blue-soft); }
+      .pattern-overview li a.po-link:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
     </style>
   </head>
   <body>
@@ -1279,6 +1297,11 @@
 
       <!-- ================= visual relief: before/after + stat band ================= -->
       <div style="margin-top:64px">
+        <div class="stat-band" style="margin-bottom:28px" aria-label="料金と試作品までの目安">
+          <div class="stat"><p class="lab">制作費は3段階・固定</p><div class="num">50,000<small>円〜</small></div><p class="sub"><span class="marker">5万円／8万円／10万円</span></p></div>
+          <div class="stat"><p class="lab">月額費用</p><div class="num"><span class="marker">0<small>円</small></span></div><p class="sub">買い切り・保守契約なし</p></div>
+          <div class="stat"><p class="lab">試作品をお渡しするまで</p><div class="num"><span class="marker"><small>最短</small>2〜3<small>日</small></span></div><p class="sub">仕様確定から／完成・納品ではありません</p></div>
+        </div>
         <figure class="fv-visual" style="margin-top:0">
           <div class="fv-panel">
             <svg viewBox="0 0 300 190" role="img" aria-label="紙の記録用紙のイラスト">
@@ -1290,7 +1313,7 @@
               <rect x="97" y="133" width="110" height="7" rx="3.5" fill="#ddd2ba"/>
               <path d="M205 150 q14 10 30 4" stroke="#b3402a" stroke-width="2" fill="none" stroke-linecap="round"/>
             </svg>
-            <p class="fv-cap">いまの記録<small>紙の用紙やExcelに、手書きで書き足している記録です</small></p>
+            <p class="fv-cap">いまの記録<small>紙やExcelに書き足している、日々の記録です</small></p>
           </div>
           <div class="fv-arrow" aria-hidden="true">→</div>
           <div class="fv-panel">
@@ -1303,46 +1326,12 @@
               <rect x="116" y="118" width="68" height="26" rx="6" fill="#faf7ee" stroke="#ddd2ba"/><rect x="122" y="125" width="38" height="5" rx="2.5" fill="#5d574a"/><rect x="122" y="134" width="34" height="5" rx="2.5" fill="#ddd2ba"/>
               <rect x="116" y="152" width="68" height="12" rx="6" fill="#1d4e89"/>
             </svg>
-            <p class="fv-cap">その用紙、そのままスマホに<small>名前で検索できて、過去の記録がすぐ見つかります</small></p>
+            <p class="fv-cap">その用紙、そのままスマホに<small>名前で検索できて、すぐ見つかります</small></p>
           </div>
           <figcaption class="fv-note">イラストはイメージです。実際の項目や画面は、お仕事に合わせて決めます。</figcaption>
         </figure>
 
-        <div class="stat-band" aria-label="料金と試作品までの目安">
-          <div class="stat"><p class="lab">制作費は3段階・固定</p><div class="num">50,000<small>円〜</small></div><p class="sub"><span class="marker">5万円／8万円／10万円</span></p></div>
-          <div class="stat"><p class="lab">月額費用</p><div class="num"><span class="marker">0<small>円</small></span></div><p class="sub">買い切り・保守契約なし</p></div>
-          <div class="stat"><p class="lab">試作品をお渡しするまで</p><div class="num"><span class="marker"><small>最短</small>2〜3<small>日</small></span></div><p class="sub">仕様確定から／完成・納品ではありません</p></div>
-        </div>
-        <p class="stat-note" style="margin-bottom:8px"><span class="nw">記録は</span><span class="nw">お使いの端末の中だけに</span><span class="nw">保存されます。</span><span class="nw">外部のサーバーは</span><span class="nw">使いません。</span></p>
-        <p class="stat-note"><span class="marker">試作品は無料でお作りします。</span>試用中に正常に使えない不具合があれば無料で修正し、表示の変更などの個別の調整は、ご購入後に対応します。詳しくは<a href="#flow" style="color:var(--blue);font-weight:700">依頼の流れ</a>をご覧ください。</p>
       </div>
-
-      <!-- ================= pains ================= -->
-      <section class="app" id="nayami">
-        <div class="app-head">
-          <span class="app-no" style="background:var(--ink-2)">お悩み</span>
-          <div>
-            <h2><span class="nw">こんな管理のしかた、</span><span class="nw">続けていませんか</span></h2>
-            <p class="app-type">紙やExcelでの管理は、件数が増えるほど、探す手間と見落としが増えていきますよね。こちらの4つ、当てはまるものがあるか、一緒に見てみてください</p>
-          </div>
-        </div>
-        <ul class="pains">
-          <li>紙のカルテや記録カード、Excelのファイルが増え続け、<span class="marker">探すだけで時間がかかっている</span></li>
-          <li>「前回どうしたか」が、店主や担当者の<span class="marker">記憶頼みになっている</span></li>
-          <li>回数券やチケットの残り回数を、その都度数え直している</li>
-          <li>しばらく来ていないお客様に<span class="marker">気づけず、声をかけそびれている</span></li>
-        </ul>
-
-        <div class="paper-fit">
-          <h3><span class="segw"><span class="nw">こんな方には、</span><span class="nw">紙のままが</span><span class="nw">向いています</span></span></h3>
-          <p>記録を机に広げて、全体を眺めながら確かめるのが合っている方。記録の件数が少なく、いまの紙やExcelで困っていない方。手で書く時間そのものが、お仕事の振り返りになっている方。そういう方には、無理にアプリへ移すことはおすすめしません。紙の良さが、そのままお仕事の助けになっているからです。</p>
-          <p class="pf-small">また、複数人で同時に同じデータを編集する使い方や、予約・決済そのものが本体の仕組みは、この金額の枠には含まれません。必要な場合は、別の設計としてお見積もりします。詳しくは<a href="#price">料金のご案内</a>をご覧ください。</p>
-        </div>
-
-        <p class="pains-lead">いかがでしたか。一つでも当てはまるようでしたら、そのお仕事はアプリの形に移せます。</p>
-        <p class="pains-contact">この中に、一つでも「うちのことだ」と思われるものがあれば、いつでもご連絡ください。<br /><a href="mailto:atsushi.masubuchi.work@gmail.com?subject=%E6%A5%AD%E5%8B%99%E3%82%A2%E3%83%97%E3%83%AA%E3%81%AE%E3%81%94%E7%9B%B8%E8%AB%87">atsushi.masubuchi.work@gmail.com</a></p>
-        <p class="back-toc"><a href="#toc">↑ 目次へ戻る</a></p>
-      </section>
 
       <!-- ================= stories: scenes, not claims ================= -->
       <div class="stories" id="manga" aria-label="たとえばの場面">
@@ -1354,22 +1343,31 @@
         </div>
       </div>
 
-        <div class="examples">
-          <h3><span class="segw"><span class="nw">こんな</span><span class="nw">お困りごとに</span><span class="nw">対応できます</span></span></h3>
-          <p class="ex-lead">マンガは整体院の店主の話でしたが、記録にまつわる困りごとは、ほかのお仕事にもあります。</p>
-          <ul class="ex-grid">
-            <li><svg class="ex-ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="10" y="7" width="28" height="34" rx="4"/><path d="M17 16h14M17 23h14M17 30h9"/></svg>施術・レッスン記録<small>その日の内容とメモ</small></li>
-            <li><svg class="ex-ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><circle cx="24" cy="16" r="6"/><path d="M11 39c2-8 7-11 13-11s11 3 13 11"/></svg>顧客カルテ<small>前回の内容と好み</small></li>
-            <li><svg class="ex-ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="9" y="11" width="30" height="26" rx="4"/><path d="M16 21l4 4 8-9"/></svg>点検・作業記録<small>チェックと写真の控え</small></li>
-            <li><svg class="ex-ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M10 15l14-7 14 7v18L24 40 10 33z"/><path d="M10 15l14 7 14-7M24 22v18"/></svg>在庫・作品メモ<small>一点ごとの今の状態</small></li>
-            <li><svg class="ex-ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="8" y="13" width="32" height="22" rx="4"/><path d="M8 22h32" stroke-dasharray="3 5"/><circle cx="32" cy="29" r="3"/></svg>回数券の残り<small>残り回数と使い切り</small></li>
-            <li><svg class="ex-ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="9" y="9" width="30" height="30" rx="4"/><circle cx="18" cy="18" r="3"/><path d="M11 35l9-9 6 6 5-4 6 7"/></svg>日々の日報<small>写真とひとことメモ</small></li>
-          </ul>
-        </div>
       <!-- ================= table of contents ================= -->
+      <!-- ================= pains ================= -->
+      <section class="app" id="nayami">
+        <div class="app-head">
+          <span class="app-no" style="background:var(--ink-2)">お悩み</span>
+          <div>
+            <h2><span class="nw">こんな管理のしかた、</span><span class="nw">続けていませんか</span></h2>
+            <p class="app-type">紙やExcelでの管理は、件数が増えるほど、探す手間と見落としが増えていきます。こちらの4つ、当てはまるものはありますか。</p>
+          </div>
+        </div>
+        <ul class="pains">
+          <li>紙のカルテや記録カード、Excelのファイルが増え続け、<span class="marker">探すだけで時間がかかっている</span></li>
+          <li>「前回どうしたか」が、店主や担当者の<span class="marker">記憶頼みになっている</span></li>
+          <li>回数券やチケットの残り回数を、その都度数え直している</li>
+          <li>しばらく来ていないお客様に<span class="marker">気づけず、声をかけそびれている</span></li>
+        </ul>
+
+
+        <p class="pains-contact">一つでも「うちのことだ」と思われましたら、いつでもご連絡ください。<br /><a href="mailto:atsushi.masubuchi.work@gmail.com?subject=%E6%A5%AD%E5%8B%99%E3%82%A2%E3%83%97%E3%83%AA%E3%81%AE%E3%81%94%E7%9B%B8%E8%AB%87">atsushi.masubuchi.work@gmail.com</a></p>
+        <p class="back-toc"><a href="#toc">↑ 目次へ戻る</a></p>
+      </section>
+
       <nav class="toc" id="toc" aria-label="目次">
         <h2>目次 ― このページの内容</h2>
-        <p class="toc-lead">全部を順番に読まなくても大丈夫です。気になるところがあれば、そこだけ先に開いてみてください。各セクションの終わりには、この目次へ戻るリンクもあります。</p>
+        <p class="toc-lead">気になるところだけ、先に開いてみてください。</p>
         <ol>
           <li><a href="#nayami">お悩み ― こんな管理、続けていませんか</a></li>
           <li><a href="#setsumei">商品説明 ― マンガの続き ― 友人に聞いてみたら</a></li>
@@ -1378,7 +1376,6 @@
           <li><a href="#reasons">選ばれる理由</a></li>
           <li><a href="#flow">依頼の流れ</a></li>
         </ol>
-        <p class="toc-extra">別ページのご案内 ― <a href="faq.html">Q&Aまとめ（全14問）</a>／<a href="terms.html">ご契約時の注意・お申し込み前にご確認いただきたいこと</a>／<a href="guide.html">アプリの入れ方とデータの移し方</a></p>
       </nav>
 
       <!-- ================= product: dialogue (manga continuation) ================= -->
@@ -1389,7 +1386,7 @@
             <h2><span class="nw">マンガの続き ―</span> <span class="nw">友人に聞いてみたら</span></h2>
           </div>
         </div>
-        <p class="product-lead">マンガの<strong>2コマ目</strong>で、ファイルの山を探していた店主。そのあと、すでに記録アプリを使っている友人に、くわしく聞いてみました。</p>
+        <p class="product-lead">ファイルの山を探していた店主が、すでに記録アプリを使っている友人に、くわしく聞いてみました。</p>
 
         <div class="chat" aria-label="店主と友人の会話">
           <div class="chat-topic"><span>どこでも確認</span></div>
@@ -1400,10 +1397,6 @@
           <div class="chat-row friend">
             <span class="chat-name">友人</span>
             <div class="chat-bubble">紙だとそうなるよね。探すときも席を立って、ファイルを開いて一枚一枚確かめなきゃいけないし。</div>
-          </div>
-          <div class="chat-row owner">
-            <span class="chat-name">店主</span>
-            <div class="chat-bubble">そうなの。広げて確認するにも、それなりのスペースが要るし、接客の合間だと本当に大変で。</div>
           </div>
           <div class="chat-row friend">
             <span class="chat-name">友人</span>
@@ -1426,48 +1419,29 @@
             <span class="chat-name">友人</span>
             <div class="chat-bubble">そう。その検索はね、自分の探したい情報に合わせて、初期設定でカスタマイズできるの。私はいつも使う探し方に合わせてあるよ。</div>
           </div>
-          <div class="chat-row friend">
-            <span class="chat-name">友人</span>
-            <div class="chat-bubble">それとね、場所のほうも助かるよ。紙のファイルみたいに場所を取らないし、スマホはいつも手元にあるから。</div>
-          </div>
-          <div class="chat-topic"><span>バックアップ</span></div>
+        </div>
+
+        <div class="chat chat-on-dark" aria-label="店主と友人の会話（金額と共有）">
+          <div class="chat-topic"><span>金額のこと</span></div>
           <div class="chat-row owner">
             <span class="chat-name">店主</span>
-            <div class="chat-bubble">場所を取らないのは助かるなあ。でも、スマホを失くしたり、スマホが壊れたりしたら、記録はどうなっちゃうの？</div>
+            <div class="chat-bubble">専用のオリジナルのアプリなんか作ったら、何十万とか何百万とか、結構高いんでしょ</div>
           </div>
           <div class="chat-row friend">
             <span class="chat-name">友人</span>
-            <div class="chat-bubble">そこはね、控えが取れるの。書き出したファイルを別の場所にも置いておけば、スマホを失くしても、パソコンが壊れても、元に戻せるよ。紙は失くしたら終わりだからね。</div>
-          </div>
-          <div class="chat-topic"><span>情報は端末の中だけ</span></div>
-          <div class="chat-row owner">
-            <span class="chat-name">店主</span>
-            <div class="chat-bubble">へえ、後から戻せるんだ。</div>
-          </div>
-          <div class="chat-row friend">
-            <span class="chat-name">友人</span>
-            <div class="chat-bubble">うん。あとね、記録は自分のスマホやパソコンの中だけに置いて、外部のサーバーへは送らないの。だから、サーバー側の不具合で記録が見られなくなる、みたいなこともないよ。</div>
-          </div>
-          <div class="chat-topic"><span>共有も簡単</span></div>
-          <div class="chat-row owner">
-            <span class="chat-name">店主</span>
-            <div class="chat-bubble">自分のところで管理できるのは安心だね。</div>
-          </div>
-          <div class="chat-row friend">
-            <span class="chat-name">友人</span>
-            <div class="chat-bubble">書き出したファイルは、スマホでもパソコンでも扱えるよ。</div>
-          </div>
-          <div class="chat-row friend">
-            <span class="chat-name">友人</span>
-            <div class="chat-bubble">表計算で開けるファイルだから、相手にもそのまま渡せるの。LINEでもすぐ送れるよ。</div>
+            <div class="chat-bubble">そんなことないのよ。記録と保存だけなら、5万円から作れるのよ</div>
           </div>
           <div class="chat-row owner">
             <span class="chat-name">店主</span>
-            <div class="chat-bubble">便利……！ すごいね。私も使いたいな。</div>
+            <div class="chat-bubble">えー、そんな金額で作れるの？</div>
           </div>
           <div class="chat-row friend">
             <span class="chat-name">友人</span>
             <div class="chat-bubble">うん、あなたの仕事だと、記録の探し方がずいぶん楽になると思うよ。</div>
+          </div>
+          <div class="chat-row owner">
+            <span class="chat-name">店主</span>
+            <div class="chat-bubble">便利……！ すごいね。私も使いたいな。</div>
           </div>
         </div>
 
@@ -1482,39 +1456,25 @@
         <div class="patterns-block" id="patterns">
           <p class="patterns-lead">アプリには<span class="marker">3つのプラン</span>があります。</p>
           <ol class="pattern-overview" aria-label="プランの大枠">
-            <li class="po-1"><span class="po-no">①</span><span>記録する</span></li>
-            <li class="po-2"><span class="po-no">②</span><span>記録＋集計・グラフ</span></li>
-            <li class="po-3"><span class="po-no">③</span><span>状態の管理ができる</span></li>
+            <li class="po-1"><a class="po-link" href="#app-a1"><span class="po-no">①</span><span>記録する</span></a></li>
+            <li class="po-2"><a class="po-link" href="#app-b1"><span class="po-no">②</span><span>記録＋集計・グラフ</span></a></li>
+            <li class="po-3"><a class="po-link" href="#app-c1"><span class="po-no">③</span><span>状態の管理ができる</span></a></li>
           </ol>
         </div>
 
       </section>
 
-      <div class="mock-note">
-        <p>ここからご紹介する3つのプランの画面は、どれも作例です。『こういうものを作れます』という見本で、できあがっている製品ではありません。いま実際に触って使っていただける実物は、制作者の母が毎日の血圧記録に使っているアプリだけです。実物は<a href="vital.html">『バイタル記録ノート』</a>でご覧いただけます。</p>
-      </div>
-
-      <div class="chat" aria-label="金額についての会話" style="margin-top:34px">
-        <div class="chat-topic"><span>金額のこと</span></div>
-        <div class="chat-row owner">
-          <span class="chat-name">店主</span>
-          <div class="chat-bubble">専用のオリジナルのアプリなんか作ったら、何十万とか何百万とか、結構高いんでしょ</div>
-        </div>
-        <div class="chat-row friend">
-          <span class="chat-name">友人</span>
-          <div class="chat-bubble">そんなことないのよ。記録と保存だけなら、5万円から作れるのよ</div>
-        </div>
-        <div class="chat-row owner">
-          <span class="chat-name">店主</span>
-          <div class="chat-bubble">えー、そんな金額で作れるの？</div>
-        </div>
-      </div>
 
       <div class="app-head sakurei-head">
           <div>
             <h2>作例紹介</h2>
           </div>
         </div>
+
+      <div class="vital-line">
+        <p>作例として、実際に使える記録アプリもご用意しています。</p>
+        <a class="btn sub" href="vital.html">バイタルアプリはこちらです</a>
+      </div>
 
       <!-- ================= A1 ================= -->
       <section class="app" id="app-a1">
@@ -1599,19 +1559,13 @@
 
           <div class="app-info">
             <p class="for">整体院・パーソナルジム・各種教室の先生に</p>
+            <p class="also">ほかに、点検・作業の記録や、日々の日報のような毎日の記録仕事にもお使いいただけます。</p>
             <p>「前回はどのコースで、どこを重点的に施術したか」を、<strong><span class="marker">紙のメモと記憶の中から、名前で検索できる形に</span></strong>移すのがこのプランです。</p>
             <p>記録する項目（コース・時間・部位・メモなど）は、お仕事に合わせて決めます。</p>
             <h3>できること</h3>
             <ul class="can">
               <li><strong>前回の内容が、その場で分かる</strong> ― 前回・前々回のコースと施術メモが残っているので、「前回どうだったか」を記憶とメモ探しに頼らず確認できます</li>
               <li><strong>誰の記録も、名前で検索してすぐ見つかる</strong> ― 前回いつ来て、どのコースだったかが一覧に並んで見えます</li>
-            </ul>
-            <h3>機能</h3>
-            <ul class="can">
-              <li>会員ごとの施術記録</li>
-              <li>会員一覧と名前検索</li>
-              <li>過去の記録の時系列表示</li>
-              <li>CSVで書き出し・読み込み</li>
             </ul>
             <h3>こう変わる</h3>
             <div class="ba">
@@ -1663,7 +1617,7 @@
                   </div>
                 </div>
                 <div class="tabbar" aria-hidden="true">
-                  <span class="tab on">顧客一覧</span><span class="tab">カルテ</span>
+                  <span class="tab on">顧客一覧</span><span class="tab">カルテ</span><span class="tab">集計</span>
                 </div>
               </div>
             </div>
@@ -1676,36 +1630,34 @@
                 <div class="appbar"><span class="ttl">顧客カルテ</span><span class="sub">美容室・作例</span></div>
                 <div class="screens">
                   <div class="pscreen on">
-                    <div class="p-member">
-                      <div class="p-avatar" style="background:#1e56a8">佐</div>
-                      <div><div class="nm">佐藤 健一 さん</div><div class="dt">お客様になって 2年4ヶ月 ／ 来店 23回</div></div>
-                    </div>
+                    <div class="p-sec">月ごとの集計</div>
+                    <div class="p-row"><span class="l">2026年10月</span><span class="r">来店 <b>38件</b></span></div>
+                    <div class="p-row"><span class="l">2026年9月</span><span class="r">来店 <b>35件</b></span></div>
+                    <div class="p-row"><span class="l">2026年8月</span><span class="r">来店 <b>33件</b></span></div>
                     <div class="p-memo">
-                      <div class="k">前回の内容（10/12）</div>
-                      カット＋カラー（アッシュ系）。次回は少し短め希望。
-                    </div>
-                    <div class="p-memo">
-                      <div class="k">好み・注意メモ</div>
-                      静かな席を希望。シャンプーは強めが好み。仕事は土日休み。
+                      <div class="k">来店回数の推移</div>
+                      <div style="display:flex; align-items:flex-end; gap:8px; height:58px; padding-top:8px">
+                        <div style="flex:1; background:#8fb6dd; height:55%"></div>
+                        <div style="flex:1; background:#8fb6dd; height:62%"></div>
+                        <div style="flex:1; background:#8fb6dd; height:60%"></div>
+                        <div style="flex:1; background:#1e56a8; height:74%"></div>
+                        <div style="flex:1; background:#1e56a8; height:82%"></div>
+                        <div style="flex:1; background:#1e56a8; height:92%"></div>
+                      </div>
+                      <div style="display:flex; gap:8px; font-size:10px; color:#5d574a; margin-top:4px"><span style="flex:1; text-align:center">5月</span><span style="flex:1; text-align:center">6月</span><span style="flex:1; text-align:center">7月</span><span style="flex:1; text-align:center">8月</span><span style="flex:1; text-align:center">9月</span><span style="flex:1; text-align:center">10月</span></div>
                     </div>
                     <div class="p-memo" style="margin-bottom:4px">
-                      <div class="k">ご来店の傾向</div>
-                      土日の午前中が多めです。再来の目安は6週間前後
-                    </div>
-                    <div class="p-sec">来店履歴</div>
-                    <div class="p-tl">
-                      <div class="ev"><div class="when">2026/10/12</div><div class="what">カット＋カラー</div></div>
-                      <div class="ev"><div class="when">2026/8/29</div><div class="what">カット＋カラー</div></div>
-                      <div class="ev"><div class="when">2026/7/18</div><div class="what">カットのみ</div></div>
+                      <div class="k">10月の内訳</div>
+                      カット＋カラー 14件／カットのみ 12件／その他 12件
                     </div>
                   </div>
                 </div>
                 <div class="tabbar" aria-hidden="true">
-                  <span class="tab">顧客一覧</span><span class="tab on">カルテ</span>
+                  <span class="tab">顧客一覧</span><span class="tab">カルテ</span><span class="tab on">集計</span>
                 </div>
               </div>
             </div>
-            <p class="phone-cap">画面2｜お客様のカルテと来店履歴</p>
+            <p class="phone-cap">画面2｜月ごとの集計と推移グラフ</p>
             </div>
           </div>
 
@@ -1717,14 +1669,8 @@
             <h3>できること</h3>
             <ul class="can">
               <li><strong>来店が空いたお客様に、気づいて声をかけられる</strong> ― 前回からの日数が一覧に出るので、声をかけるべきお客様が見落としなく分かります</li>
-              <li>月ごとの来店回数が集計されて、推移がグラフで見られます。月次のレポートは印刷して、そのまま紙で出せます。</li>
-            </ul>
-            <h3>機能</h3>
-            <ul class="can">
-              <li>お客様ごとのカルテ（来店履歴の積み上げ）</li>
-              <li>期間集計と推移グラフ</li>
-              <li>月次レポートの印刷</li>
-              <li>前回からの日数表示と「ご無沙汰」の絞り込み</li>
+              <li><strong>月ごとの集計が、次の画面ですぐ見られます</strong> ― 来店回数は月ごとに自動で集計され、推移はグラフで見られます</li>
+              <li><strong>報告書づくりも、その場で</strong> ― 今まで紙やExcelで集計して作っていた月ごとの報告書が、いつもの入力のまま、ボタン一つでPDFになります。印刷してバインダーに残せます</li>
             </ul>
             <h3>こう変わる</h3>
             <div class="ba">
@@ -1826,18 +1772,14 @@
 
           <div class="app-info">
             <p class="for">画廊・作家事務所・一点ものを扱う工房やお店に</p>
+            <p class="also">ほかに、回数券の残り回数の管理にもお使いいただけます。</p>
             <p>台帳が何枚ものシートや紙に散らばっていると起きやすい、<strong><span class="marker">二重の約束や、止まったまま忘れられる案件</span></strong>を防ぐためのプランです。</p>
             <p class="base-note">探す・見返す土台はプランAと同じです。</p>
             <h3>できること</h3>
             <ul class="can">
               <li><strong>一点ごとに、状態と履歴がひも付いて残ります</strong> ― 展示中・交渉中・売約済といった今の状態と、そこに至るまでの履歴が、作品ごとの記録として残ります</li>
               <li><strong>動きが止まったままの作品に、気づいて手を打てる</strong> ― 一定期間動きのないものが拾い上げられるので、抜け漏れと機会損失を防げます</li>
-            </ul>
-            <h3>機能</h3>
-            <ul class="can">
-              <li>状態の管理</li>
-              <li>履歴を一点ごとに記録</li>
-              <li>止まっている作品の自動抽出とアラート表示</li>
+              <li><strong>状況報告も、その場で</strong> ― 今まで別に作っていた提出用の報告書が、管理しているデータから、ボタン一つでPDFに整えられます</li>
             </ul>
             <h3>こう変わる</h3>
             <div class="ba">
@@ -1852,26 +1794,9 @@
 
       <p class="maker-note">迷われたら、まずはプランA（5万円）で始めるのがおすすめです。必要になれば、あとから差額で上のプランへ広げることもできます。</p>
 
-      <!-- ================= breather: maker's column ================= -->
-      <aside class="breather" aria-label="作り手からの一言">
-        <svg class="mascot" viewBox="0 0 72 72" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true">
-          <rect x="14" y="10" width="44" height="52" rx="7" fill="var(--surface)"/>
-          <path d="M14 22h44" />
-          <circle cx="30" cy="37" r="1.8" fill="currentColor" stroke="none"/><circle cx="42" cy="37" r="1.8" fill="currentColor" stroke="none"/>
-          <path d="M31 46q5 4 10 0" stroke-linecap="round"/><path d="M22 54h28" stroke-linecap="round" opacity=".45"/>
-        </svg>
-        <div>
-          <span class="soft-tag">ちょっと一息 ― 作り手から</span>
-          <h2><span class="nw">なぜ、</span><span class="nw">月額なしに</span><span class="nw">したのか</span></h2>
-          <p>小さなお店や事務所では、記録の仕事が少ない月もあります。<strong>使わない月まで料金がかかる形は、続けにくい。</strong>だから、このサービスは<span class="marker">買い切りにしました</span>。記録はお使いの端末の中に残り、毎月のお支払いはありません。</p>
-          <p class="b-sign">― アーチデザイン工房</p>
-        </div>
-      </aside>
+      
 
-      <div class="vital-line">
-        <p>作例として、実際に使える記録アプリもご用意しています。</p>
-        <a class="btn sub" href="vital.html">バイタルアプリはこちらです</a>
-      </div>
+      
 
       <!-- ================= price tiers ================= -->
       <section class="app" id="price">
@@ -1925,7 +1850,7 @@
                 <td class="pc"><span class="ck new">✓</span></td>
                 <td class="pc"><span class="ck new">✓</span></td>
               </tr>
-              <tr class="grp"><td colspan="4">8万円から増える ― 集計と印刷で「見える形」に</td></tr>
+              <tr class="grp"><td colspan="4">8万円から増える ― 集計と履歴で「見える形」に</td></tr>
               <tr>
                 <td>期間集計と推移グラフ</td>
                 <td class="pc"><span class="na">―</span></td>
@@ -1933,7 +1858,7 @@
                 <td class="pc"><span class="ck new">✓</span></td>
               </tr>
               <tr>
-                <td>月次レポートの印刷</td>
+                <td>レポート出力（PDF）</td>
                 <td class="pc"><span class="na">―</span></td>
                 <td class="pc new-cell"><span class="ck new">✓</span></td>
                 <td class="pc"><span class="ck new">✓</span></td>
@@ -1985,21 +1910,18 @@
             </tbody>
           </table>
         </div>
-        <p style="font-size:16px; color:var(--ink-2); margin:18px 0 0">「うちの仕事は、この枠で作れるだろうか」——<span class="marker">そのご相談から始められます。</span>記録したい項目や状態の種類をお聞きしながら、どの段階に収まるかを一緒に決めていきます。</p>
+        <p style="font-size:16px; color:var(--ink-2); margin:18px 0 0">「うちの仕事は、この枠で作れるだろうか」——<span class="marker">そのご相談から始められます。</span>どの段階に収まるかは、お話を聞きながら一緒に決めていきます。</p>
         <div class="cta-row">
           <a class="btn main" href="#cta">ご相談・ご質問はこちら</a>
         </div>
         <div class="points-box">
           <h3>ご契約の前に、要点だけ</h3>
           <ul>
-            <li><strong>試作品：</strong>試作品は無料でお作りします。実際に使っていただいてから、購入されるかどうかをお決めいただけます。購入されなければ、制作費は発生しません。</li>
-            <li><strong>金額：</strong>制作費は5万円／8万円／10万円の3段階で固定です。月額費用はありません。範囲を超えるご希望に、ご承諾なく追加料金が発生することはありません。</li>
-            <li><strong>含まれるもの：</strong>当初に合意した仕様の範囲内の制作です。購入後の修正は、回数の上限なく対応します。</li>
-            <li><strong>含まれないもの：</strong>当初の範囲を超える機能の追加と、複数人での同時編集・予約・決済などの仕組みです。必要な場合は、別の設計としてお見積もりします。</li>
-            <li><strong>お支払いとご契約：</strong>購入をお決めいただいた後にお支払いください。ご入金が確認できた時点で、ご契約が成立します。</li>
-            <li><strong>お渡し：</strong>ご入金の確認後、同じアプリを正規版に更新してお渡しします。</li>
-            <li><strong>データと試用：</strong>記録はお使いの端末の中に保存されます。試用期間は7日間です。</li>
+            <li><strong>試作品：</strong>試作品は無料でお作りします。実際に使っていただいてから、購入されるかどうかをお決めいただけます。</li>
+            <li><strong>金額：</strong>制作費は5万円／8万円／10万円の3段階で固定です。</li>
+            <li><strong>含まれないもの：</strong>複数人での同時編集・予約・決済などの仕組みは、この金額の枠には含まれません。必要な場合は、別の設計としてお見積もりします。</li>
           </ul>
+          <p style="font-size:16px; margin:10px 0 0">ご契約の決まりごとは<a href="terms.html">規約ページ（ご利用にあたって）</a>にまとめています。</p>
         </div>
 
         <h3 class="qa-sub">料金と契約のご質問</h3>
@@ -2039,13 +1961,14 @@
           <p class="qa-link-wrap"><a class="qa-answer-link" href="faq.html#q14">答えを見る</a></p>
         </div>
 
-        <p class="page-link-line"><a href="faq.html">Q&Aまとめ（全14問）はこちら</a></p>
+        <p class="page-link-line"><a class="qa-all-link" href="faq.html">Q&Aまとめ（全14問）はこちら</a></p>
         <p class="back-toc"><a href="#toc">↑ 目次へ戻る</a></p>
       </section>
 
       <!-- ================= reasons ================= -->
       <section class="app" id="reasons">
         <div class="app-head">
+          <span class="app-no" style="background:var(--blue)">選ばれる理由</span>
           <div>
             <h2>選ばれる理由</h2>
             <p class="app-type" style="font-size:16px">「金額も納期も、最初から分かるんですか？」――はい。その理由は、作り方の仕組みが決まっているからです</p>
@@ -2055,15 +1978,15 @@
         <div class="reasons-list">
           <div class="reason-card">
             <h3><span class="nw">金額は、</span><span class="nw">ご相談の時点で</span><span class="nw">分かります</span></h3>
-            <p>できることを3段階に分け、金額を固定しました。お見積もりをお待ちいただく必要はありません。</p>
+            <p>できることを3段階に分けました。ご相談の時点で、金額が分かります。</p>
           </div>
           <div class="reason-card">
             <h3>月額費用はかかりません</h3>
-            <p>データはお使いの端末の中に保存され、サーバーを使いません。毎月の利用料や保守契約はなく、そのままお使いいただけます。</p>
+            <p>サーバーを使わない作りなので、毎月の利用料や保守契約がありません。</p>
           </div>
           <div class="reason-card">
             <h3><span class="nw">土台は、</span><span class="nw">実際に</span><span class="nw">使われている</span><span class="nw">アプリです</span></h3>
-            <p>制作者の母が、毎日の血圧記録に使っているアプリが土台です。一から作らない分、試作品は最短2〜3日でお渡しできます。作例は<a href="vital.html">「バイタル記録ノート」</a>でご覧いただけます。</p>
+            <p>制作者の母が、毎日の血圧記録に使っているアプリが土台です。作例は<a href="vital.html">「バイタル記録ノート」</a>でご覧いただけます。</p>
           </div>
         </div>
         <p class="back-toc"><a href="#toc">↑ 目次へ戻る</a></p>
@@ -2072,9 +1995,10 @@
       <!-- ================= flow ================= -->
       <section class="app" id="flow">
         <div class="app-head">
+          <span class="app-no" style="background:var(--blue)">依頼の流れ</span>
           <div>
             <h2>依頼の流れ</h2>
-            <p class="app-type" style="font-size:16px"><span class="marker">試作品は無料です。</span>まずは実際に使っていただいて、そのうえで購入されるかどうかをお決めいただけます</p>
+            <p class="app-type" style="font-size:16px"><span class="marker">試作品は無料です。</span></p>
           </div>
         </div>
 
@@ -2082,7 +2006,7 @@
           <span class="step-no">1</span>
           <div>
             <h3>ご相談・ヒアリング</h3>
-            <p>紙やExcelでの記録で困っていることをお聞きし、3つのプランのどれに収まるかを一緒に確認します。ご質問がまとまっていなくても大丈夫です。</p>
+            <p>紙やExcelでの記録で困っていることをお聞きし、3つのプランのどれに収まるかを一緒に確認します。</p>
           </div>
         </div>
         <div class="qa-block" id="from-q9">
@@ -2134,7 +2058,7 @@
           <span class="step-no">4</span>
           <div>
             <h3><span class="nw">購入されるかどうかを</span><span class="nw">お決めいただく</span></h3>
-            <p>実際にご利用いただいて、『これなら使える』と思われたら、制作費をお支払いください。購入されなければ、制作費は発生しません。</p>
+            <p>実際にご利用いただいて、『これなら使える』と思われたら、制作費をお支払いください。</p>
           </div>
         </div>
 
@@ -2178,7 +2102,7 @@
           <p class="qa-link-wrap"><a class="qa-answer-link" href="faq.html#q8">答えを見る</a></p>
         </div>
 
-        <p class="page-link-line"><a href="terms.html">お申し込み前にご確認いただきたいこと（ご契約時の注意）はこちら</a></p>
+        <p class="page-link-line"><a href="terms.html#art5">手順の詳細は、規約の第5条（お申し込みからお渡しまでの手順）へ</a></p>
         <p class="back-toc"><a href="#toc">↑ 目次へ戻る</a></p>
       </section>
 
@@ -2194,11 +2118,130 @@
 
       <footer style="margin-top:64px; border-top:1px solid var(--line); padding-top:16px; font-size:14px; color:var(--ink-3)">
         <p style="margin:0 0 4px">アーチデザイン工房 ― ホームページ制作／業務アプリ制作</p>
-        <p style="margin:0">実物の作例（バイタル記録ノート）の画面を除き、このページの画面はイメージ図で、表示されている名前・数値はサンプルです。実際の項目・状態の種類は、仕事の内容に合わせて決めます。</p>
+        <p style="margin:0 0 4px"><a href="guide.html">使い方</a>｜<a href="faq.html">Q&amp;A</a>｜<a href="terms.html">ご利用にあたって（規約）</a>｜<a href="about.html">事業者情報</a></p>
+        <p style="margin:0">実物の作例（バイタル記録ノート）を除き、画面はイメージ図で、名前・数値はサンプルです。</p>
+        <p style="margin:8px 0 0">© 2026 アーチデザイン工房</p>
       </footer>
 
     </div>
 
 
-  </body>
+  <style>
+/* ============================================================
+   レイアウト「構造強め」本番適用 (2026-10-29)
+   方針: 文句は落ち着いて、構造は強く。
+   - 区切りは線ではなく「地の切り替え」(full-bleed)で作る
+   - 地は box-shadow 100vmax + clip-path で画面幅いっぱいに広げる
+     (レイアウトには一切触れないので横はみ出しは現行と同一になる)
+   - 濃紺(#122a5c)の帯は中盤のイベント帯と最終CTA+フッターの2か所だけ
+   ============================================================ */
+
+/* ---- 地の土台: バンド同士をくっつけ、余白は帯の内側(padding)で取る ---- */
+.wrap { padding-bottom: 0; }
+
+/* 白バンド */
+header.flyer,
+.wrap > div[style="margin-top:64px"],
+section#nayami,
+section#setsumei,
+section#app-a1,
+section#app-c1,
+.wrap > p.maker-note,
+section#reasons {
+  background: var(--surface);
+  box-shadow: 0 0 0 100vmax var(--surface);
+  clip-path: inset(0 -100vmax);
+}
+/* 淡バンド(ブランド淡色 --blue-soft) */
+.stories,
+nav.toc,
+.sakurei-head,
+.wrap > .vital-line,
+section#app-b1,
+section#price,
+section#flow {
+  background: var(--blue-soft);
+  box-shadow: 0 0 0 100vmax var(--blue-soft);
+  clip-path: inset(0 -100vmax);
+}
+/* 濃紺バンド(イベント帯)は商品説明セクション内の部分帯へ移設
+   (「金額のこと」トピック〜対話の終わり)。ルールは下記 .chat-on-dark を参照。
+   旧・作例紹介まわりの帯は廃し、作例紹介見出しは淡バンドに戻した */
+
+/* 自前の地色を持つカード型の要素は、地は変えず帯の色だけを背後に広げる */
+aside.breather {
+  box-shadow: 0 0 0 100vmax var(--surface);
+  clip-path: inset(0 -100vmax);
+}
+
+/* ---- 各帯の縦リズム(マージンを消し、内側の空気にする) ---- */
+header.flyer { padding: 54px 0 4px; }
+.wrap > div[style="margin-top:64px"] { margin-top: 0 !important; padding-bottom: 58px; }
+.stories { margin-top: 0; padding: 62px 0 58px; }
+nav.toc { margin: 0; padding: 42px 22px 34px; }
+section.app { margin-top: 0; padding: 78px 0 70px; }
+/* 商品説明内の濃紺部分帯: 帯の空気は内側の padding で取る */
+section#setsumei .chat-on-dark {
+  margin: 32px 0 36px; padding: 28px 0 24px;
+  background: #122a5c;
+  box-shadow: 0 0 0 100vmax #122a5c;
+  clip-path: inset(0 -100vmax);
+}
+section#setsumei .chat-on-dark .chat-topic:first-child { margin-top: 0; }
+.sakurei-head { margin-top: 0; margin-bottom: 0; padding-top: 40px; padding-bottom: 58px; }
+.wrap > p.maker-note { margin: 0; padding: 30px 0 6px; }
+aside.breather { margin-top: 0; }
+.wrap > .vital-line { margin-top: 0; padding: 26px 0 62px; }
+
+/* ---- 商品説明内の濃紺部分帯の中の文字色 ---- */
+.chat-on-dark .chat-name { color: #cfe0f2; }
+.chat-on-dark .chat-topic { color: #cfe0f2; }
+/* [金額まわり] 帯の中のトピックチップ「金額のこと」: 淡ピル地(#e1e9f6)に
+   淡文字(#cfe0f2)で洗い出して読めなかったため、ピル地は淡いまま文字を濃紺にする */
+.chat-on-dark .chat-topic span { background: #e1e9f6; color: #122a5c; }
+
+/* ---- 見出しの型を全セクションで統一 ----
+   小ラベル(.app-no チップ) + 28px / weight 900 + 上の余白は帯側で大きく、下は詰める */
+.app-head { margin-bottom: 24px; }
+.app-head h2 { font-size: 1.75rem; font-weight: 900; }
+/* reasons / flow のラベルは正式なHTMLチップ(.app-no)として追加済み */
+
+/* ---- 最終CTA: 濃紺パネルを幅いっぱいの帯に広げ、フッターまで続ける ---- */
+section.cta-final {
+  margin-top: 0; border: none; border-radius: 0;
+  padding: 84px 34px 76px;
+  box-shadow: 0 0 0 100vmax #122a5c;
+  clip-path: inset(0 -100vmax);
+}
+footer {
+  margin-top: 0 !important; border-top: none !important; padding-top: 4px !important;
+  padding-bottom: 52px;
+  color: #cfe0f2 !important;
+  background: #122a5c;
+  box-shadow: 0 0 0 100vmax #122a5c;
+  clip-path: inset(0 -100vmax);
+}
+footer a { color: #ffffff; }
+/* 見出し型ルール(.app-head の margin-bottom:24px)より後ろで、作例紹介見出しの
+   下マージンを 0 に戻す(帯同士の継ぎ目に地紙を出さないため) */
+.sakurei-head { margin-bottom: 0; }
+/* ---- 埋もれ対策・コントラスト局所調整 (本番適用時, 2026-10-29) ---- */
+/* [金額まわり] 濃紺帯の中の友人吹き出し: 青(#1d4e89)と濃紺(#122a5c)の
+   明度比は1.66しかなく境界が消えるため、帯の中だけ淡色の吹き出し+濃色文字で受ける */
+.chat-on-dark .chat-row.friend .chat-bubble {
+  background: var(--blue-soft); border-color: var(--blue-soft); color: var(--ink);
+}
+/* 淡青地の上の for チップ: 地の再割り当てで淡地の住人はプランBになった。
+   チップ地(b1-soft)がセクションの地(blue-soft)と同系色で境界が消えるため、
+   淡青地のセクション内だけ白で受ける(A/Cは白地に戻り、元の soft チップで可) */
+#app-b1 .for { background: var(--surface); }
+@media (prefers-color-scheme: light) {
+  /* [金額まわり] プランAの a1 青(#2b7bbb)は、チップ地では3.86、白地でも4.44と
+     基準4.5未満のため、プランA内だけ一段濃い青(#2570aa)にする
+     (for文字: 白地で5.19 / 見出しチップ: 白文字で5.28) */
+  #app-a1 .for { color: #2570aa; }
+  #app-a1 .app-no { background: #2570aa; }
+}
+</style>
+</body>
 </html>

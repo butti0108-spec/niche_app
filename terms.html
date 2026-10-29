@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <link rel="icon" href="data:," />
-    <title>ご契約時の注意・お申し込み前にご確認いただきたいこと｜アーチデザイン工房</title>
+    <title>ご利用にあたって（規約）｜アーチデザイン工房</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;800&family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet" />
@@ -47,24 +47,33 @@
       .lead { color: var(--ink-2); margin: 0 0 10px; }
       .lead a, section a { color: var(--navy); font-weight: 700; }
 
+      /* ---------- articles (規約): plain, bureaucratic by design ----------
+         条見出し 18px / 本文 16px / 注記 14px。装飾は置かず、条番号と
+         アンカーで探せることだけに投資する。 */
+      .art-index { margin: 26px 0 6px; }
+      .art-index p { margin: 0 0 4px; font-weight: 700; }
+      .art-index ol { margin: 0; padding-left: 1.5em; }
+      .art-index li { margin-bottom: 2px; }
+      .art-index a { color: var(--navy); font-weight: 700; text-decoration: none; }
+      .art-index a:hover { text-decoration: underline; }
+      section[id^="art"] { scroll-margin-top: 20px; }
       h2 {
-        font-family: "Shippori Mincho B1", "Hiragino Mincho ProN", serif;
-        font-weight: 800; font-size: 1.5rem;
+        font-size: 1.125rem; font-weight: 800;
         color: var(--navy-deep); line-height: 1.5;
-        margin: 56px 0 6px; padding-bottom: 8px;
-        border-bottom: 2px solid var(--navy);
+        margin: 48px 0 10px; padding-bottom: 6px;
+        border-bottom: 1px solid var(--line);
       }
-      h3 { font-size: 1.125rem; font-weight: 800; color: var(--navy-deep); margin: 26px 0 4px; }
+      h3 { font-size: 1rem; font-weight: 800; color: var(--navy-deep); margin: 22px 0 4px; }
       section p { margin: 0 0 10px; }
-      section ul { margin: 0 0 10px; padding-left: 1.3em; }
+      section ol, section ul { margin: 0 0 10px; padding-left: 1.5em; }
       section li { margin-bottom: 5px; }
-      mark { background: linear-gradient(transparent 52%, #ffd94d 52%); color: inherit; padding: 0 2px; }
+      .art-note { font-size: 14px; color: var(--ink-3); }
 
       .closing {
         background: var(--navy-deep); color: #fff; border-radius: var(--radius);
         padding: 26px 24px; margin: 56px 0 0; text-align: center;
       }
-      .closing h2 { font-size: 1.25rem; margin: 0 0 10px; color: #fff; border: none; padding: 0; }
+      .closing h2 { font-size: 1.25rem; margin: 0 0 10px; color: #fff; border: none; padding: 0; font-family: "Shippori Mincho B1", "Hiragino Mincho ProN", serif; }
       .closing p { margin: 0 0 10px; color: #e8eefb; }
       .closing .mail {
         display: inline-block; background: #fff; color: var(--navy-deep); font-weight: 800;
@@ -82,7 +91,9 @@
         margin-top: 44px; padding-top: 14px; border-top: 1px solid var(--line);
         text-align: center; font-size: 14px; color: var(--ink-3); letter-spacing: .06em;
       }
-    
+      footer a { color: var(--navy); font-weight: 700; text-decoration: none; }
+      footer a:hover { text-decoration: underline; }
+
       /* ---------- batch 7 (2026-10-29): fluid type + one-line guarantees ---------- */
       html { font-size: 16px; }
       .nw { white-space: nowrap; }
@@ -91,7 +102,7 @@
         padding: 16px 30px; font-weight: 800;
         white-space: nowrap; word-break: normal; overflow-wrap: normal;
         letter-spacing: -.01em; font-size: clamp(1rem, 4.1vw, 1.25rem);
-        text-decoration: underline; text-underline-offset: 3px;
+        text-decoration: none;
       }
       /* back-top is a button, not an annotation: 16px + one line */
       .back.back-top a { font-size: 1rem; white-space: nowrap; }
@@ -103,7 +114,7 @@
       @media (max-width: 340px) {
         .back.back-top a { padding: 9px 4px; letter-spacing: -.03em; }
       }
-    
+
       /* batch 7 fix: at small widths the closing panel goes full-bleed so the
          16px-floor mail pill (312px incl. padding) fits inside it, centered */
       @media (max-width: 480px) {
@@ -120,58 +131,91 @@
     <div class="wrap">
       <header class="page-head">
         <div class="shop-line">アーチデザイン工房 ― カスタムアプリ工房</div>
-        <h1>お申し込み前に<br />ご確認いただきたいこと</h1>
-        <p class="lead">ご契約時の注意として、業務アプリ制作の3つのプランすべてに共通する条件をまとめました。価格・納期・データの置き場所について、ご確認ください。</p>
+        <h1>ご利用にあたって</h1>
+        <p class="lead">業務アプリ制作のご契約・ご利用に関する条件を、規約としてまとめたページです。金額・試用・データの扱い・お申し込みからお渡しまでの手順など、事務的な内容はすべてこちらに集約しています。3つのプランすべてに共通する条件です。</p>
       </header>
 
       <div class="back back-top">
         <a href="index.html#price">業務アプリ制作のご案内（料金）へ戻る</a>
       </div>
 
-      <section>
-        <h2><span class="nw">買い切り価格</span><span class="nw">（3段階・固定）</span></h2>
-        <p>金額は5万円・8万円・10万円の3段階で固定です。買い切りのため、<mark>月額費用はありません</mark>。</p>
-        <p>段階ごとの違いは<a href="index.html#price">料金のご案内</a>にまとめています。</p>
+      <nav class="art-index" aria-label="規約の目次">
+        <p>目次</p>
+        <ol>
+          <li><a href="#art1">第1条（金額とお支払い）</a></li>
+          <li><a href="#art2">第2条（無料試作品と試用期間）</a></li>
+          <li><a href="#art3">第3条（購入後の修正）</a></li>
+          <li><a href="#art4">第4条（購入されなかった場合の取り扱い）</a></li>
+          <li><a href="#art5">第5条（お申し込みからお渡しまでの手順）</a></li>
+          <li><a href="#art6">第6条（データの保存と扱い）</a></li>
+          <li><a href="#art7">第7条（今お使いのデータの移し方）</a></li>
+          <li><a href="#art8">第8条（この金額の枠に含まれないもの）</a></li>
+        </ol>
+      </nav>
+
+      <section id="art1">
+        <h2>第1条（金額とお支払い）</h2>
+        <p>1．金額は5万円・8万円・10万円の3段階で固定です。買い切りのため、月額費用はありません。段階ごとの違いは<a href="index.html#price">料金のご案内</a>にまとめています。</p>
+        <p>2．当初の範囲を超えるご希望がある場合は、着手前に金額をご説明し、ご承諾いただいてから進めます。ご承諾なく追加料金が発生することはありません。</p>
+        <p>3．制作費は、購入をお決めいただいた後にお支払いください。ご契約は、制作費のご入金が確認できた時点で成立します。</p>
       </section>
 
-      <section>
-        <h2><span class="nw">試作品は</span><span class="nw">「仕様確定から</span><span class="nw">最短2〜3日」</span></h2>
-        <p>ヒアリングで仕様が決まった時点から、最短2〜3日で試作品（確認用の初版）をお渡しします。これは完成・納品までの日数ではありません。</p>
-        <p>試用中に正常に使えない不具合があった場合は無料で修正し、購入後は、当初に合意した仕様の範囲内で、<mark>回数の上限なく</mark>修正を受けます。</p>
+      <section id="art2">
+        <h2>第2条（無料試作品と試用期間）</h2>
+        <p>1．試作品は無料でお作りします。お支払い前は、ご契約成立前です。試作品を実際に使っていただいてから、購入されるかどうかをお決めいただけます。購入されなければ、制作費は発生しません。</p>
+        <p>2．試作品は、ヒアリングで仕様が決まった時点（仕様確定）から、最短2〜3日でお渡しします。これは試作品（確認用の初版）をお渡しするまでの日数で、完成・納品までの日数ではありません。</p>
+        <p>3．試用期間は7日間です。期間が満了した後は、7日以内に公開を停止いたします。</p>
+        <p>4．無料試作品は、インターネット接続が必要なブラウザでの利用を前提としています。正式購入後は、オフラインでも利用できる正規版をご提供します。</p>
+        <p>5．試用中に正常に使えない不具合があった場合は、無料で修正します。表示の変更や個別の調整のご希望は、ご入金確認後に対応します。</p>
       </section>
 
-      <section>
-        <h2>データは端末の中</h2>
-        <p>記録はお使いの端末の中に保存されます。サーバーは不要です。外部のサーバーへ送られることはありません。</p>
-        <p>スマホ・タブレット・パソコンで使え、スマホではホーム画面にアイコンを追加して、通常のアプリのように開けます（<a href="guide.html">入れ方はこちら</a>）。</p>
+      <section id="art3">
+        <h2>第3条（購入後の修正）</h2>
+        <p>1．購入後は、当初に合意した仕様の範囲内で、回数の上限なく修正に対応します。</p>
+        <p>2．対応の開始と完了は区別し、完了までお時間をいただく場合は、進捗をご案内します。</p>
+        <p>3．当初の範囲を超える項目や機能の追加は、内容に応じて別途ご相談となります。</p>
       </section>
 
-      <section>
-        <h2>無料試作品について</h2>
-        <p>お支払い前は、ご契約成立前です。試作品を実際に使っていただいてから、購入されるかどうかをお決めいただけます。ご契約は、制作費の<mark>ご入金が確認できた時点</mark>で成立します。</p>
-        <p><mark>試用期間は7日間です。</mark>期間が満了した後は、<mark>7日以内に公開を停止いたします</mark>。</p>
-        <p>無料試作品は、インターネット接続が必要なブラウザでの利用を前提としています。正式購入後は、オフラインでも利用できる正規版をご提供します。</p>
-        <p>試用中に正常に使えない不具合があった場合は、無料で修正します。表示の変更や個別の調整のご希望は、ご入金確認後に対応します。</p>
-        <h3>購入されなかった場合の取り扱い</h3>
-        <p>当工房が保有するお客様固有の情報を除去し、一般化したアプリを制作サンプルとして再利用させていただく条件を、制作開始前に明示してご同意いただきます。</p>
-        <h3>購入後の修正</h3>
-        <p>当初に合意した仕様の範囲内で、<mark>回数の上限なく</mark>対応します。対応の開始と完了は区別し、完了までお時間をいただく場合は、進捗をご案内します。</p>
+      <section id="art4">
+        <h2>第4条（購入されなかった場合の取り扱い）</h2>
+        <p>1．購入されなかった場合、当工房が保有するお客様固有の情報を除去し、一般化したアプリを制作サンプルとして再利用させていただきます。</p>
+        <p>2．この条件は、制作を始める前に明示して、ご同意いただいてから作ります。</p>
       </section>
 
-      <section>
-        <h2><span class="nw">今お使いの</span><span class="nw">データの</span><span class="nw">移し方について</span></h2>
-        <h3><span class="nw">Excel・</span><span class="nw">スプレッドシートで</span><span class="nw">管理されている方</span></h3>
-        <p>見出しだけが分かるようにしていただいて、お客様情報が入っていないコピーを共有いただくか、スクリーンショットをお送りください。記録の中身（お客様のお名前やご連絡先など）は入れず、項目と、必要でしたら計算式だけの状態でお願いします。その形をもとに、<mark>アプリの形式への変換はこちらで行います</mark>。見出しと表の形が分かれば、アプリの仕組みはこちらで設計できます。書き出すCSVも、いまお使いの表の並びに合わせられます。</p>
+      <section id="art5">
+        <h2>第5条（お申し込みからお渡しまでの手順）</h2>
+        <ol>
+          <li>ご相談・ヒアリング ― 紙やExcelでの記録で困っていることをお聞きし、3つのプランのどれに収まるかを一緒に確認します。</li>
+          <li>仕様が決まりましたら、無料で試作品を制作し、Webで公開してアドレスをお渡しします（試作品については第2条をご覧ください）。</li>
+          <li>試用期間（7日間）に、ふだんのお仕事の中で、実際に使ってみてください。</li>
+          <li>購入されるかどうかをお決めいただき、購入される場合は制作費をお支払いください（お支払いについては第1条をご覧ください）。</li>
+          <li>ご入金確認後、同じアプリを正規版に更新してお渡しします。ホーム画面への追加と初回の設定は、その場でご一緒にします。</li>
+        </ol>
+      </section>
+
+      <section id="art6">
+        <h2>第6条（データの保存と扱い）</h2>
+        <p>1．記録はお使いの端末の中に保存されます。外部のサーバーへ送られることはありません。サーバーは不要です。</p>
+        <p>2．スマホ・タブレット・パソコンで使え、スマホではホーム画面にアイコンを追加して、通常のアプリのように開けます（<a href="guide.html">入れ方はこちら</a>）。</p>
+        <p>3．購入後も、記録はそのまま引き継がれます。端末へのインストールの前には、記録をファイルに保存するバックアップの方法をご案内します。</p>
+        <p>4．記録はCSVで書き出して、控えを取ることができます。書き出し・読み込みの方法は<a href="guide.html">「アプリの使い方・データの移し方」</a>にまとめています。</p>
+      </section>
+
+      <section id="art7">
+        <h2>第7条（今お使いのデータの移し方）</h2>
+        <p>個人情報を消した形でお渡しいただくのが基本です。移し方は、管理のしかたによって次のとおりです。</p>
+        <h3>Excel・スプレッドシートで管理されている方</h3>
+        <p>見出しだけが分かるようにしていただいて、お客様情報が入っていないコピーを共有いただくか、スクリーンショットをお送りください。記録の中身（お客様のお名前やご連絡先など）は入れず、項目と、必要でしたら計算式だけの状態でお願いします。その形をもとに、アプリの形式への変換はこちらで行います。見出しと表の形が分かれば、アプリの仕組みはこちらで設計できます。書き出すCSVも、いまお使いの表の並びに合わせられます。</p>
         <h3>紙の台帳で管理されている方</h3>
         <p>記録そのものをお預けいただく必要はありません。様式（テンプレート）そのものか、それを写真に撮ったものを送っていただければ結構です。いただいた様式をもとに、アプリの形を決めます。記録の入力は、「来店された方から順に入力する」進め方をご提案します。</p>
-        <h3><span class="nw">そのままの</span><span class="nw">お預かりを</span><span class="nw">ご希望の場合</span></h3>
-        <p>もしご要望があれば、お客様の許可をいただいた上で、データをそのままお預かりすることも可能です。その場合は、変換作業のためだけに使用し、作業が終わりましたら、<mark>こちらのコピーは削除いたします</mark>。第三者へ渡すことはありません。取り扱いの内容を記したメモをお渡しします。</p>
+        <h3>そのままのお預かりをご希望の場合</h3>
+        <p>もしご要望があれば、お客様の許可をいただいた上で、データをそのままお預かりすることも可能です。その場合は、変換作業のためだけに使用し、作業が終わりましたら、こちらのコピーは削除いたします。第三者へ渡すことはありません。取り扱いの内容を記したメモをお渡しします。</p>
         <h3>データをお見せになりたくない方</h3>
-        <p><mark>無理にお預かりはいたしません。</mark>「今日から記録を始める」「来店された方から順に入力する」進め方もお選びいただけます。</p>
+        <p>無理にお預かりはいたしません。「今日から記録を始める」「来店された方から順に入力する」進め方もお選びいただけます。</p>
       </section>
 
-      <section>
-        <h2>対象外のもの</h2>
+      <section id="art8">
+        <h2>第8条（この金額の枠に含まれないもの）</h2>
         <p>次に挙げるものは、この価格と納期の枠には含まれません。必要な場合は、別の設計としてお見積もりします。</p>
         <ul>
           <li>複数人で同時に同じデータを見て編集する共有型</li>
@@ -179,6 +223,7 @@
           <li>医療の診断に使うもの</li>
           <li>数十人規模で使うシステム</li>
         </ul>
+        <p>対象かどうか迷われる場合は、ご相談の際にご確認ください。</p>
       </section>
 
       <div class="closing">
@@ -192,7 +237,7 @@
         <a href="index.html#price">業務アプリ制作のご案内（料金）へ戻る</a>
       </div>
 
-      <footer>アーチデザイン工房</footer>
+      <footer><a href="about.html">事業者情報</a>｜アーチデザイン工房</footer>
     </div>
   </body>
 </html>
