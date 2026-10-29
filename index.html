@@ -1913,6 +1913,10 @@
         <div class="cta-row">
           <a class="btn main" href="#cta">ご相談・ご質問はこちら</a>
         </div>
+        <div class="guide-block">
+          <p class="guide-note">アプリの入れ方と、記録データの移し方は、使い方のページにまとめてあります。</p>
+          <p class="guide-btn"><a class="btn sub" href="guide.html">使い方を見る</a></p>
+        </div>
         <div class="points-box">
           <h3>ご契約の前に、要点だけ</h3>
           <ul>
@@ -2065,9 +2069,10 @@
           <span class="step-no">5</span>
           <div>
             <h3>正規版のお渡し</h3>
-            <p>ご入金確認後、同じアプリを正規版に更新します。ホーム画面への追加と初回の設定は、その場でご一緒にします。</p>
+            <p>ご入金確認後、同じアプリを正規版に更新します。ホーム画面への追加と初回の設定は、使い方ページの手順に沿って、ご自身で進められます。分からないところがあれば、画面共有でご一緒に設定します。</p>
           </div>
         </div>
+        <p class="step-guide-link"><a class="btn sub" href="guide.html#install">アプリの入れ方を見る</a></p>
         <div class="qa-block" id="from-q4">
           <div class="qa-q">
             <span class="qa-badge q" aria-hidden="true">Q</span>
@@ -2075,8 +2080,6 @@
           </div>
           <p class="qa-link-wrap"><a class="qa-answer-link" href="faq.html#q4">答えを見る</a></p>
         </div>
-
-        <p class="guide-note"><a href="guide.html">アプリの入れ方と、記録データの移し方はこちら</a></p>
 
         <h3 class="qa-sub">お渡しと使い方のご質問</h3>
         <div class="qa-block" id="from-q6">
@@ -2119,6 +2122,7 @@
         <p style="margin:0 0 4px">アーチデザイン工房 ― ホームページ制作／業務アプリ制作</p>
         <p style="margin:0 0 4px"><a href="guide.html">使い方</a>｜<a href="faq.html">Q&amp;A</a>｜<a href="terms.html">ご利用にあたって（規約）</a>｜<a href="about.html">事業者情報</a></p>
         <p style="margin:0">実物の作例（バイタル記録ノート）を除き、画面はイメージ図で、名前・数値はサンプルです。</p>
+        <p style="margin:8px 0 0">このサイトの制作には、AIアシスタント「Muse」を活用しています。</p>
         <p style="margin:8px 0 0">© 2026 アーチデザイン工房</p>
       </footer>
 
@@ -2194,6 +2198,10 @@ aside.breather { margin-top: 0; }
 
 /* ---- 商品説明内の濃紺部分帯の中の文字色 ---- */
 .chat-on-dark .chat-name { color: #cfe0f2; }
+/* 友人の名札は既存ルール(.chat-row.friend .chat-name、詳細度0,3,0)が上の指定(0,2,0)に勝ち、
+   濃紺帯の中でも青(#1d4e89)のままで地(#122a5c)に埋もれていた(比 約1.5)。
+   帯の中だけ詳細度を上げて淡色を効かせる */
+.chat-on-dark .chat-row.friend .chat-name { color: #cfe0f2; }
 .chat-on-dark .chat-topic { color: #cfe0f2; }
 /* [金額まわり] 帯の中のトピックチップ「金額のこと」: 淡ピル地(#e1e9f6)に
    淡文字(#cfe0f2)で洗い出して読めなかったため、ピル地は淡いまま文字を濃紺にする */
@@ -2234,6 +2242,25 @@ footer a { color: #ffffff; }
    チップ地(b1-soft)がセクションの地(blue-soft)と同系色で境界が消えるため、
    淡青地のセクション内だけ白で受ける(A/Cは白地に戻り、元の soft チップで可) */
 #app-b1 .for { background: var(--surface); }
+/* [Q&Aピル] 「答えを見る」ピルの地(blue-soft #e2ecf8)は、淡青帯(#price/#flow)の地と
+   完全に同色で面が消え、枠と文字だけになっていた。淡青帯の中だけ白で受ける
+   (#app-b1 .for と同じ受け方)。白帯(#setsumei)の中では淡青地のまま */
+#price .qa-answer-link, #flow .qa-answer-link { background: var(--surface); }
+/* [使い方への入口] 置き場所は料金セクションの比較表の下(要点ボックスの前)。
+   「どうやって操作するの」という疑問が湧くのは、プランの「できること」や比較表を
+   読んでいる時だから。Q&Aの流れの中や流れの末尾では、答えの一つに見えて
+   読み飛ばされる。白カードの独立ブロックとし、ピルは「答えを見る」と別型
+   (「作例を見る」と同じ btn sub)にして、ページへの入口と分かる形にする */
+section#price .guide-block {
+  margin-top: 26px; background: var(--surface); border: 1px solid var(--line);
+  border-radius: 14px; padding: 20px 22px 10px;
+}
+section#price .guide-block .guide-note { margin: 0 0 4px; }
+section#price .guide-block .guide-btn { margin: 8px 0 12px; }
+/* [お渡し手順] ステップ5の直下に、使い方ページの「アプリの入れ方」への入口を置く。
+   Q&Aブロックと同じ左位置にそろえ、狭い幅では左余白を外す */
+#flow .step-guide-link { margin: 0 0 26px 58px; }
+@media (max-width: 640px) { #flow .step-guide-link { margin-left: 0; } }
 @media (prefers-color-scheme: light) {
   /* [金額まわり] プランAの a1 青(#2b7bbb)は、チップ地では3.86、白地でも4.44と
      基準4.5未満のため、プランA内だけ一段濃い青(#2570aa)にする
