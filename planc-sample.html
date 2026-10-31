@@ -294,10 +294,7 @@ function applyFs(){ document.documentElement.style.fontSize = FS_STEPS[fsIdx]+"p
 /* ---------- 画面の色（白・黒・赤・青・緑） ---------- */
 const THEMES = [
   { name:"白", mode:"light", main:"#122A5C", tint:"#EAF2FB" },
-  { name:"黒", mode:"dark",  main:"#122A5C", tint:"#262d3d" },
-  { name:"赤", mode:"light", main:"#B03A2E", tint:"#FBEAE7" },
-  { name:"青", mode:"light", main:"#1D6FD1", tint:"#E3F0FD" },
-  { name:"緑", mode:"light", main:"#1D7A4F", tint:"#E4F4EC" }
+  { name:"黒", mode:"dark",  main:"#122A5C", tint:"#262d3d" }
 ];
 let themeIdx = parseInt(localStorage.getItem(K+"theme") ?? "0", 10); if(!(themeIdx>=0 && themeIdx<THEMES.length)) themeIdx = 0;
 function applyTheme(){
