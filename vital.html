@@ -148,6 +148,38 @@
         .banner { margin-left: -20px; margin-right: -20px; border-radius: 0; }
         .banner .b-btn { padding: 11px 6px; letter-spacing: -.02em; }
       }
+
+      /* ---------- 利用者の声 (2026-10-31) ---------- */
+      .voice-card {
+        background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+        padding: 26px 22px 20px; margin: 14px 0 8px; position: relative;
+      }
+      .voice-mark {
+        font-family: "Shippori Mincho B1", "Hiragino Mincho ProN", serif;
+        font-size: 3rem; line-height: 1; color: var(--navy); opacity: .35;
+        position: absolute; top: 10px; left: 16px;
+      }
+      .voice-lead {
+        font-family: "Shippori Mincho B1", "Hiragino Mincho ProN", serif;
+        font-weight: 800; font-size: 1.25rem; color: var(--navy-deep);
+        line-height: 1.6; margin: 18px 0 14px;
+      }
+      .voice-profile { display: flex; align-items: center; gap: 12px; margin: 0 0 14px; }
+      .voice-avatar {
+        flex: none; width: 44px; height: 44px; border-radius: 50%;
+        background: var(--navy); color: #fff; display: flex; align-items: center; justify-content: center;
+        font-weight: 700; font-size: 1rem;
+      }
+      .voice-who { font-weight: 700; color: var(--ink); line-height: 1.5; }
+      .voice-who small { display: block; font-weight: 400; color: var(--ink-2); font-size: 0.875rem; }
+      .voice-body { color: var(--ink); line-height: 1.9; margin: 0 0 16px; }
+      .voice-points { list-style: none; margin: 0 0 14px; padding: 0; display: grid; gap: 9px; }
+      .voice-points li { padding-left: 1.7em; position: relative; line-height: 1.7; color: var(--ink); }
+      .voice-points li::before {
+        content: "✓"; position: absolute; left: 0; top: 0;
+        color: var(--navy); font-weight: 900;
+      }
+      .voice-note { font-size: 14px; color: var(--ink-3); margin: 0; line-height: 1.7; }
     </style>
   </head>
   <body>
@@ -193,6 +225,25 @@
 
       <div class="guide-link">
         アプリの入れ方や、データの移し方は、こちらにまとめました。→ <a href="guide.html">使い方・データの移し方を見る</a>
+      </div>
+
+
+      <h2 id="voice" style="scroll-margin-top:20px">利用者の声</h2>
+      <div class="voice-card">
+        <span class="voice-mark" aria-hidden="true">❝</span>
+        <p class="voice-lead">毎日の健康記録に、実際に使っています</p>
+        <div class="voice-profile">
+          <span class="voice-avatar" aria-hidden="true">母</span>
+          <p class="voice-who">開発者の母親<small>毎日、朝と晩に記録しています</small></p>
+        </div>
+        <p class="voice-body">以前は紙に記録していましたが、手書きの数字が小さく、過去の数値を確認するのが大変でした。今はスマートフォンで簡単に入力でき、約1か月分の記録を印刷して、病院へ持参するときにも役立っています。</p>
+        <ul class="voice-points">
+          <li>数値の入力が簡単で、短時間で記録できる</li>
+          <li>過去の記録を確認しやすい</li>
+          <li>約1か月分を印刷して、診察のときに医師へ見せられる</li>
+          <li>数か月、毎日朝夕の記録を続けられている</li>
+        </ul>
+        <p class="voice-note">※開発者の母親への聞き取りをもとに、要約して掲載しています。</p>
       </div>
 
       <h2><span class="nw">この仕組みが、</span><span class="nw">あなたの</span><span class="nw">仕事だと</span></h2>
