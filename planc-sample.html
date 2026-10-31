@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>記録管理アプリ（プランC汎用版）</title>
+<style>
+  :root{ --navy:#122A5C; --blue:#EAF2FB; --ink:#1c2430; --sub:#5a6a82; --line:#c9d6e8; --ok:#1d7a4f; --warn:#b3540a; }
+  *{ box-sizing:border-box; }
+  html{ font-size:18px; }
+  body{ margin:0; font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP",sans-serif; color:var(--ink); background:#f4f7fb; font-size:1rem; line-height:1.6; }
+  header{ background:var(--navy); color:#fff; padding:.7rem 1rem; display:flex; align-items:center; gap:.6rem; flex-wrap:wrap; }
+  header .title{ font-weight:700; font-size:1.1rem; }
+  header .spacer{ flex:1; }
+  .fsize{ display:flex; gap:.3rem; align-items:center; font-size:.78rem; }
+  .fsize button{ border:1px solid #fff; background:transparent; color:#fff; border-radius:999px; padding:.15rem .6rem; font-size:.78rem; cursor:pointer; }
+  .fsize button.on{ background:#fff; color:var(--navy); font-weight:700; }
+  nav.tabs{ display:flex; gap:.4rem; padding:.6rem 1rem 0; flex-wrap:wrap; }
+  nav.tabs button{ border:1px solid var(--line); background:#fff; border-radius:999px; padding:.35rem .9rem; font-size:.95rem; cursor:pointer; }
+  nav.tabs button.on{ background:var(--navy); color:#fff; border-color:var(--navy); }
+  main{ padding:1rem; max-width:60rem; margin:0 auto; }
+  .card{ background:#fff; border:1px solid var(--line); border-radius:.8rem; padding:.8rem; margin-bottom:.7rem; }
+  .rec{ display:flex; gap:.8rem; align-items:flex-start; cursor:pointer; }
+  .thumb{ width:4.2rem; height:4.2rem; border-radius:.5rem; background:var(--blue); display:flex; align-items:center; justify-content:center; color:var(--sub); font-size:.72rem; overflow:hidden; flex:none; text-align:center; }
+  .thumb img{ width:100%; height:100%; object-fit:cover; }
+  .rec .body{ flex:1; min-width:0; }
+  .rec .name{ font-weight:700; }
+  .rec .meta{ color:var(--sub); font-size:.85rem; }
+  .badge{ display:inline-block; border-radius:999px; padding:.05rem .6rem; font-size:.8rem; background:var(--blue); color:var(--navy); font-weight:700; }
+  .badge.stale{ background:#fdeeda; color:var(--warn); }
+  .chips{ display:flex; gap:.4rem; flex-wrap:wrap; margin:.6rem 0; }
+  .chips button{ border:1px solid var(--line); background:#fff; border-radius:999px; padding:.2rem .8rem; font-size:.9rem; cursor:pointer; }
+  .chips button.on{ background:var(--navy); color:#fff; }
+  input[type=text],input[type=number],input[type=date],select,textarea{ width:100%; padding:.5rem; border:1px solid var(--line); border-radius:.5rem; font-size:1rem; background:#fff; }
+  label.flabel{ display:block; font-size:.85rem; color:var(--sub); margin:.6rem 0 .2rem; }
+  .btn{ display:inline-block; border:none; border-radius:999px; padding:.55rem 1.3rem; font-size:1rem; cursor:pointer; background:var(--navy); color:#fff; }
+  .btn.sub{ background:#fff; color:var(--navy); border:1px solid var(--navy); }
+  .btn.danger{ background:#fff; color:#b00020; border:1px solid #b00020; }
+  .btnrow{ display:flex; gap:.5rem; flex-wrap:wrap; margin:.8rem 0; }
+  .hidden{ display:none !important; }
+  .photoarea{ border:1px dashed var(--line); border-radius:.8rem; padding:.7rem; text-align:center; background:#fbfdff; }
+  .photoarea img{ max-width:100%; max-height:14rem; border-radius:.5rem; }
+  .hist{ font-size:.88rem; color:var(--sub); }
+  .hist li{ margin:.15rem 0; }
+  table.sum{ width:100%; border-collapse:collapse; }
+  table.sum th, table.sum td{ border-bottom:1px solid var(--line); padding:.4rem; text-align:left; }
+  table.sum td.n, table.sum th.n{ text-align:right; }
+  .note{ font-size:.85rem; color:var(--sub); }
+  .maprow{ display:flex; gap:.5rem; align-items:center; margin:.3rem 0; }
+  .maprow .from{ flex:1; font-size:.9rem; }
+  .maprow select{ flex:1; }
+  .fldrow{ display:flex; gap:.4rem; align-items:center; margin:.3rem 0; }
+  .fldrow input{ flex:2; } .fldrow select{ flex:1; }
+  dialog{ border:1px solid var(--line); border-radius:.8rem; max-width:34rem; width:92%; }
+</style>
+</head>
+<body>
+<header>
+  <div class="title" id="appTitle">記録管理アプリ</div>
+  <div class="spacer"></div>
+  <div class="fsize" id="fsizeBox"><span>文字</span></div>
+</header>
+<nav class="tabs" id="tabs">
+  <button data-view="list" class="on">一覧</button>
+  <button data-view="stale">滞留</button>
+  <button data-view="summary">集計</button>
+  <button data-view="data">データの出し入れ</button>
+  <button data-view="settings">設定</button>
+</nav>
+<main>
+  <section id="view-list">
+    <div class="btnrow"><button class="btn" id="addBtn">＋ 新しく登録</button></div>
+    <input type="text" id="searchBox" placeholder="検索（名前・番号・メモなど）">
+    <div class="chips" id="statusChips"></div>
+    <div id="recList"></div>
+    <p class="note" id="listEmpty" style="display:none">登録がありません。</p>
+  </section>
+  <section id="view-stale" class="hidden">
+    <p class="note" id="staleHead"></p>
+    <div id="staleList"></div>
+  </section>
+  <section id="view-summary" class="hidden">
+    <div class="card"><table class="sum" id="sumTable"></table></div>
+    <p class="note">金額は、数値の項目のうち最初のものを合計しています。</p>
+  </section>
+  <section id="view-data" class="hidden">
+    <div class="card">
+      <h3>書き出し（CSV）</h3>
+      <div class="btnrow">
+        <button class="btn" id="expAll">全項目をCSVで書き出す</button>
+        <select id="expProfileSel" style="max-width:16rem"></select>
+        <button class="btn sub" id="expProfile">宛先用CSVを書き出す</button>
+      </div>
+      <p class="note">写真はCSVには含まれません。写真は、このアプリの中と、バックアップの中だけにあります。</p>
+    </div>
+    <div class="card">
+      <h3>読み込み（CSV）</h3>
+      <input type="file" id="impFile" accept=".csv,text/csv">
+      <div id="impMap"></div>
+      <div class="btnrow"><button class="btn" id="impBtn" disabled>読み込む</button></div>
+      <p class="note">1行目は項目名の行として読みます。列ごとに、取り込み先の項目を選んでください。</p>
+    </div>
+    <div class="card">
+      <h3>バックアップ（写真を含む全データ）</h3>
+      <div class="btnrow">
+        <button class="btn sub" id="bakOut">バックアップを保存</button>
+        <label class="btn sub" for="bakFile" style="cursor:pointer">バックアップから復元</label>
+        <input type="file" id="bakFile" accept=".json,application/json" class="hidden">
+      </div>
+      <p class="note">端末をなくしたときの控えは、このバックアップです。CSVとは別に、定期的に保存してください。</p>
+    </div>
+  </section>
+  <section id="view-settings" class="hidden">
+    <div class="card">
+      <h3>アプリの名前</h3>
+      <input type="text" id="setTitle">
+    </div>
+    <div class="card">
+      <h3>項目</h3>
+      <div id="fldEditor"></div>
+      <div class="btnrow"><button class="btn sub" id="fldAdd">項目を追加</button></div>
+    </div>
+    <div class="card">
+      <h3>状態の種類</h3>
+      <textarea id="setStatuses" rows="3"></textarea>
+      <p class="note">カンマか改行で区切ってください。この並びが、状態の並びになります。</p>
+      <h3>終わりの状態（滞留に数えない）</h3>
+      <div id="closedBox"></div>
+      <label class="flabel">滞留とみなす日数（この日数以上、状態が変わっていないもの）</label>
+      <input type="number" id="setStaleDays" min="1" style="max-width:8rem">
+    </div>
+    <div class="card">
+      <h3>宛先用CSVの形（プロファイル）</h3>
+      <div id="profEditor"></div>
+      <div class="btnrow"><button class="btn sub" id="profAdd">宛先を追加</button></div>
+      <p class="note">宛先ごとに、出す列の名前と中身を決めておけます。kintone用、販売サイト用、請求用などを、ここで分けます。</p>
+    </div>
+    <div class="btnrow"><button class="btn" id="setSave">設定を保存</button></div>
+    <div class="card">
+      <h3>データの全消去</h3>
+      <div class="btnrow"><button class="btn danger" id="wipeBtn">登録と設定をすべて消す</button></div>
+    </div>
+  </section>
+  <section id="view-edit" class="hidden">
+    <div class="btnrow"><button class="btn sub" id="backBtn">← 一覧に戻る</button></div>
+    <div class="card">
+      <div class="photoarea" id="photoArea">
+        <div id="photoView"><p class="note">写真はまだありません</p></div>
+        <div class="btnrow" style="justify-content:center">
+          <label class="btn sub" for="camFile" style="cursor:pointer">カメラで撮る</label>
+          <label class="btn sub" for="galFile" style="cursor:pointer">写真・画像から選ぶ</label>
+          <button class="btn danger" id="photoDel" type="button">写真を消す</button>
+        </div>
+        <input type="file" id="camFile" accept="image/*" capture="environment" class="hidden">
+        <input type="file" id="galFile" accept="image/*" class="hidden">
+        <p class="note">写真は小さく圧縮して、この端末の中に保存されます。</p>
+      </div>
+      <div id="editFields"></div>
+      <label class="flabel">状態</label>
+      <select id="editStatus"></select>
+      <div class="btnrow">
+        <button class="btn" id="saveBtn">保存する</button>
+        <button class="btn danger" id="delBtn">この登録を消す</button>
+      </div>
+      <h3>状態の履歴</h3>
+      <ul class="hist" id="histList"></ul>
+    </div>
+  </section>
+</main>
+<script>
+"use strict";
+const TEST = new URLSearchParams(location.search).get("test") === "1";
+const K = TEST ? "planc_g1_test_" : "planc_g1_";
+const $ = (s) => document.querySelector(s);
+const todayStr = (d) => { const x = d ? new Date(d) : new Date(); return x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0")+"-"+String(x.getDate()).padStart(2,"0"); };
+const daysSince = (s) => Math.floor((new Date(todayStr()) - new Date(s)) / 86400000);
+const uid = () => "r" + Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+const DEFAULT_CFG = {
+  title: "記録管理アプリ（プランC汎用版）",
+  fields: [
+    {key:"name", label:"名前", type:"text"},
+    {key:"code", label:"番号", type:"text"},
+    {key:"price", label:"金額", type:"number"},
+    {key:"day", label:"日付", type:"date"},
+    {key:"memo", label:"メモ", type:"text"}
+  ],
+  statuses: ["未対応","商談中","売約","キャンセル"],
+  closed: ["売約","キャンセル"],
+  staleDays: 7,
+  profiles: []
+};
+function loadCfg(){ try{ const c = JSON.parse(localStorage.getItem(K+"cfg")); if(c && c.fields && c.statuses) return Object.assign({}, DEFAULT_CFG, c); }catch(e){} return JSON.parse(JSON.stringify(DEFAULT_CFG)); }
+function saveCfg(){ localStorage.setItem(K+"cfg", JSON.stringify(cfg)); }
+function loadRecs(){ try{ return JSON.parse(localStorage.getItem(K+"recs")) || []; }catch(e){ return []; } }
+function saveRecs(){ try{ localStorage.setItem(K+"recs", JSON.stringify(recs)); }catch(e){ alert("保存できませんでした。写真の容量が大きい可能性があります。"); } }
+let cfg = loadCfg();
+let recs = loadRecs();
+
+function seed(){
+  const mk = (name, code, price, status, ago) => { const s = todayStr(Date.now() - ago*86400000); return { id: uid()+code, v:{name, code, price, day:s, memo:""}, status, since:s, created:s, updated:s, hist:[{at:s, from:"", to:status}], img:null }; };
+  recs = [
+    mk("サンプル作品A","A-001",120000,"商談中",12),
+    mk("サンプル作品B","B-002",85000,"未対応",9),
+    mk("サンプル作品C","C-003",200000,"商談中",2),
+    mk("サンプル作品D","D-004",45000,"売約",20),
+    mk("サンプル作品E","E-005",60000,"未対応",1),
+    mk("サンプル作品F","F-006",30000,"キャンセル",5)
+  ];
+  cfg = JSON.parse(JSON.stringify(DEFAULT_CFG)); saveCfg(); saveRecs();
+}
+if (TEST && !localStorage.getItem(K+"seeded")) { seed(); localStorage.setItem(K+"seeded","1"); }
+
+/* ---------- 文字の大きさ ---------- */
+const FS_STEPS = [16,17,18,20,22]; const FS_NAMES = ["小","やや小","標準","大","特大"];
+let fsIdx = parseInt(localStorage.getItem(K+"fs") ?? "2", 10); if(!(fsIdx>=0 && fsIdx<5)) fsIdx = 2;
+function applyFs(){ document.documentElement.style.fontSize = FS_STEPS[fsIdx]+"px"; document.querySelectorAll("#fsizeBox button").forEach((b,i)=>b.classList.toggle("on", i===fsIdx)); }
+(function(){ const box = $("#fsizeBox"); FS_NAMES.forEach((n,i)=>{ const b=document.createElement("button"); b.textContent=n; b.addEventListener("click",()=>{ fsIdx=i; localStorage.setItem(K+"fs", String(i)); applyFs(); }); box.appendChild(b); }); })();
+
+/* ---------- 画面の切り替え ---------- */
+let curView = "list";
+function show(view){ curView = view; ["list","stale","summary","data","settings","edit"].forEach((v)=>{ const el = $("#view-"+v); if(el) el.classList.toggle("hidden", v!==view); }); document.querySelectorAll("#tabs button").forEach((b)=>b.classList.toggle("on", b.dataset.view===view)); if(view==="list") renderList(); if(view==="stale") renderStale(); if(view==="summary") renderSummary(); if(view==="data") renderData(); if(view==="settings") renderSettings(); window.scrollTo(0,0); }
+document.querySelectorAll("#tabs button").forEach((b)=>b.addEventListener("click",()=>show(b.dataset.view)));
+
+/* ---------- 一覧 ---------- */
+let filterStatus = "すべて"; let query = "";
+function recTitle(r){ const f = cfg.fields.find((x)=>x.type==="text") || cfg.fields[0]; return r.v[f.key] || "（無題）"; }
+function recCard(r){
+  const d = daysSince(r.since); const stale = !cfg.closed.includes(r.status) && d >= cfg.staleDays;
+  const tf = cfg.fields.find((x)=>x.type==="text") || cfg.fields[0]; const meta = cfg.fields.filter((f)=>f!==tf).slice(0,4).map((f)=> esc(r.v[f.key] ?? "")).filter(Boolean).join(" ／ ");
+  const el = document.createElement("div"); el.className = "card rec"; el.dataset.id = r.id;
+  el.innerHTML = '<div class="thumb">' + (r.img ? '<img src="'+r.img+'" alt="">' : "写真<br>なし") + '</div><div class="body"><div class="name">'+esc(recTitle(r))+'</div><div class="meta">'+meta+'</div><div><span class="badge'+(stale?" stale":"")+'">'+esc(r.status)+'</span> <span class="meta">この状態になって '+d+' 日</span></div></div>';
+  el.addEventListener("click",()=>openEdit(r.id)); return el;
+}
+function renderList(){
+  $("#appTitle").textContent = cfg.title;
+  const chips = $("#statusChips"); chips.innerHTML = "";
+  ["すべて", ...cfg.statuses].forEach((s)=>{ const b=document.createElement("button"); b.textContent=s; b.classList.toggle("on", filterStatus===s); b.addEventListener("click",()=>{ filterStatus=s; renderList(); }); chips.appendChild(b); });
+  const list = $("#recList"); list.innerHTML = "";
+  const q = query.trim();
+  const hit = recs.filter((r)=> (filterStatus==="すべて" || r.status===filterStatus) && (!q || cfg.fields.some((f)=> String(r.v[f.key] ?? "").includes(q)) || r.status.includes(q)) );
+  hit.forEach((r)=> list.appendChild(recCard(r)));
+  $("#listEmpty").style.display = hit.length ? "none" : "block";
+}
+$("#searchBox").addEventListener("input",(e)=>{ query = e.target.value; renderList(); });
+$("#addBtn").addEventListener("click",()=>openEdit(null));
+
+/* ---------- 滞留 ---------- */
+function staleRecs(){ return recs.filter((r)=> !cfg.closed.includes(r.status) && daysSince(r.since) >= cfg.staleDays).sort((a,b)=> daysSince(b.since)-daysSince(a.since)); }
+function renderStale(){ $("#staleHead").textContent = "「"+cfg.closed.join("、")+"」以外の状態のまま、"+cfg.staleDays+"日以上変わっていない登録です。"; const list = $("#staleList"); list.innerHTML=""; const st = staleRecs(); if(!st.length) list.innerHTML = '<p class="note">滞留している登録はありません。</p>'; st.forEach((r)=> list.appendChild(recCard(r))); }
+
+/* ---------- 集計 ---------- */
+function renderSummary(){
+  const numF = cfg.fields.find((f)=>f.type==="number");
+  let html = "<tr><th>状態</th><th class='n'>件数</th>" + (numF ? "<th class='n'>"+esc(numF.label)+"の合計</th>" : "") + "</tr>";
+  let total = 0, totalN = 0;
+  cfg.statuses.forEach((s)=>{ const rs = recs.filter((r)=>r.status===s); const sum = numF ? rs.reduce((a,r)=> a + (parseFloat(r.v[numF.key])||0), 0) : 0; total += rs.length; totalN += sum; html += "<tr><td>"+esc(s)+"</td><td class='n'>"+rs.length+"</td>" + (numF ? "<td class='n'>"+sum.toLocaleString()+"</td>" : "") + "</tr>"; });
+  html += "<tr><td><b>合計</b></td><td class='n'><b>"+total+"</b></td>" + (numF ? "<td class='n'><b>"+totalN.toLocaleString()+"</b></td>" : "") + "</tr>";
+  $("#sumTable").innerHTML = html;
+}
+
+/* ---------- 編集・写真 ---------- */
+let editing = null; let editImg = null;
+function openEdit(id){
+  editing = recs.find((r)=>r.id===id) || null; editImg = editing ? editing.img : null;
+  const box = $("#editFields"); box.innerHTML = "";
+  cfg.fields.forEach((f)=>{
+    const lab = document.createElement("label"); lab.className="flabel"; lab.textContent = f.label;
+    const inp = document.createElement("input"); inp.type = f.type==="number" ? "number" : (f.type==="date" ? "date" : "text"); inp.id = "ef_"+f.key; inp.value = editing ? (editing.v[f.key] ?? "") : "";
+    box.appendChild(lab); box.appendChild(inp);
+  });
+  const sel = $("#editStatus"); sel.innerHTML = ""; cfg.statuses.forEach((s)=>{ const o=document.createElement("option"); o.value=s; o.textContent=s; sel.appendChild(o); });
+  if (editing) sel.value = editing.status;
+  renderPhoto(); renderHist();
+  $("#delBtn").style.display = editing ? "inline-block" : "none";
+  show("edit");
+}
+function renderPhoto(){ const v = $("#photoView"); v.innerHTML = editImg ? '<img src="'+editImg+'" alt="写真">' : '<p class="note">写真はまだありません</p>'; }
+function renderHist(){ const ul = $("#histList"); ul.innerHTML = ""; if(!editing){ ul.innerHTML = "<li>まだ履歴はありません</li>"; return; } editing.hist.slice().reverse().forEach((h)=>{ const li=document.createElement("li"); li.textContent = h.at + "：" + (h.from ? h.from+" → " : "登録 → ") + h.to; ul.appendChild(li); }); }
+function handlePhotoFile(file){
+  if(!file) return;
+  const img = new Image();
+  img.onload = ()=>{ const max = 800; const sc = Math.min(1, max/Math.max(img.width, img.height)); const cv = document.createElement("canvas"); cv.width = Math.round(img.width*sc); cv.height = Math.round(img.height*sc); cv.getContext("2d").drawImage(img,0,0,cv.width,cv.height); editImg = cv.toDataURL("image/jpeg", 0.82); URL.revokeObjectURL(img.src); renderPhoto(); };
+  img.src = URL.createObjectURL(file);
+}
+$("#camFile").addEventListener("change",(e)=>{ handlePhotoFile(e.target.files[0]); e.target.value=""; });
+$("#galFile").addEventListener("change",(e)=>{ handlePhotoFile(e.target.files[0]); e.target.value=""; });
+$("#photoDel").addEventListener("click",()=>{ editImg = null; renderPhoto(); });
+$("#saveBtn").addEventListener("click",()=>{
+  const vals = {}; cfg.fields.forEach((f)=>{ vals[f.key] = $("#ef_"+f.key).value; });
+  const st = $("#editStatus").value; const t = todayStr();
+  if (editing){
+    if (editing.status !== st){ editing.hist.push({at:t, from:editing.status, to:st}); editing.since = t; }
+    editing.v = vals; editing.status = st; editing.img = editImg; editing.updated = t;
+  } else {
+    recs.unshift({ id: uid(), v: vals, status: st, since: t, created: t, updated: t, hist:[{at:t, from:"", to:st}], img: editImg });
+  }
+  saveRecs(); show("list");
+});
+$("#delBtn").addEventListener("click",()=>{ if(!editing) return; if(confirm("この登録を消しますか？")){ recs = recs.filter((r)=>r.id!==editing.id); saveRecs(); show("list"); } });
+$("#backBtn").addEventListener("click",()=>show("list"));
+
+/* ---------- CSV ---------- */
+function csvCell(v){ const s = String(v ?? ""); return /[",\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s; }
+function toCSV(rows){ return rows.map((r)=> r.map(csvCell).join(",")).join("\r\n"); }
+function parseCSV(text){
+  const rows = []; let row = [], cell = "", inQ = false;
+  text = text.replace(/^\ufeff/, "");
+  for (let i=0;i<text.length;i++){ const c = text[i];
+    if (inQ){ if (c === '"'){ if (text[i+1] === '"'){ cell += '"'; i++; } else inQ = false; } else cell += c; }
+    else if (c === '"') inQ = true;
+    else if (c === ","){ row.push(cell); cell = ""; }
+    else if (c === "\n"){ row.push(cell); rows.push(row); row = []; cell = ""; }
+    else if (c === "\r"){ /* skip */ }
+    else cell += c;
+  }
+  if (cell !== "" || row.length){ row.push(cell); rows.push(row); }
+  return rows.filter((r)=> r.some((c)=> c !== ""));
+}
+function download(name, blob){ const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href), 4000); }
+function srcValue(r, src){
+  if (src === "status") return r.status;
+  if (src === "statusDays") return daysSince(r.since);
+  if (src === "since") return r.since;
+  if (src === "updated") return r.updated;
+  return r.v[src] ?? "";
+}
+function srcOptions(){ return [ ...cfg.fields.map((f)=>[f.key, f.label]), ["status","状態"], ["statusDays","状態になってからの日数"], ["since","状態になった日"], ["updated","最終更新日"] ]; }
+
+function renderData(){
+  const sel = $("#expProfileSel"); sel.innerHTML = "";
+  cfg.profiles.forEach((p,i)=>{ const o=document.createElement("option"); o.value=i; o.textContent=p.name; sel.appendChild(o); });
+  $("#expProfile").disabled = !cfg.profiles.length;
+}
+$("#expAll").addEventListener("click",()=>{
+  const head = [ ...cfg.fields.map((f)=>f.label), "状態", "状態になってからの日数", "状態になった日", "最終更新日" ];
+  const rows = [ head, ...recs.map((r)=> [ ...cfg.fields.map((f)=> r.v[f.key] ?? ""), r.status, daysSince(r.since), r.since, r.updated ]) ];
+  download("記録データ_"+todayStr()+".csv", new Blob(["\ufeff"+toCSV(rows)], {type:"text/csv"}));
+});
+$("#expProfile").addEventListener("click",()=>{
+  const p = cfg.profiles[parseInt($("#expProfileSel").value,10)]; if(!p) return;
+  const rows = [ p.cols.map((c)=>c.header), ...recs.map((r)=> p.cols.map((c)=> srcValue(r, c.src))) ];
+  download(p.name+"_"+todayStr()+".csv", new Blob(["\ufeff"+toCSV(rows)], {type:"text/csv"}));
+});
+
+/* ---------- CSV読み込み ---------- */
+let impRows = null;
+$("#impFile").addEventListener("change",(e)=>{
+  const f = e.target.files[0]; if(!f) return;
+  f.text().then((t)=>{
+    impRows = parseCSV(t); if(!impRows.length) return;
+    const head = impRows[0]; const box = $("#impMap"); box.innerHTML = "";
+    head.forEach((h, i)=>{
+      const row = document.createElement("div"); row.className = "maprow";
+      const from = document.createElement("div"); from.className="from"; from.textContent = "CSVの列「"+h+"」→";
+      const sel = document.createElement("select"); sel.id = "imp_"+i;
+      const opts = [ ["", "取り込まない"], ...cfg.fields.map((x)=>[x.key, x.label]), ["status","状態"] ];
+      opts.forEach(([v,l])=>{ const o=document.createElement("option"); o.value=v; o.textContent=l; sel.appendChild(o); });
+      const fmatch = cfg.fields.find((x)=>x.label===h); if (fmatch) sel.value = fmatch.key; else if (h==="状態" || h==="ステータス") sel.value = "status";
+      row.appendChild(from); row.appendChild(sel); box.appendChild(row);
+    });
+    $("#impBtn").disabled = false;
+  });
+});
+$("#impBtn").addEventListener("click",()=>{
+  if(!impRows) return; const head = impRows[0];
+  const map = head.map((_,i)=> $("#imp_"+i).value);
+  const t = todayStr(); let n = 0;
+  impRows.slice(1).forEach((row)=>{
+    const v = {}; let st = cfg.statuses[0];
+    row.forEach((cell,i)=>{ const m = map[i]; if(!m) return; if (m==="status"){ if (cfg.statuses.includes(cell)) st = cell; } else v[m] = cell; });
+    recs.unshift({ id: uid(), v, status: st, since: t, created: t, updated: t, hist:[{at:t, from:"", to:st}], img: null }); n++;
+  });
+  saveRecs(); alert(n+"件を読み込みました。"); show("list");
+});
+
+/* ---------- バックアップ ---------- */
+$("#bakOut").addEventListener("click",()=>{ download("バックアップ_"+todayStr()+".json", new Blob([JSON.stringify({cfg, recs}, null, 1)], {type:"application/json"})); });
+$("#bakFile").addEventListener("change",(e)=>{
+  const f = e.target.files[0]; if(!f) return;
+  f.text().then((t)=>{ try{ const d = JSON.parse(t); if (!d.cfg || !Array.isArray(d.recs)) throw 0; if (confirm("今のデータを、バックアップの内容で置き換えますか？")){ cfg = d.cfg; recs = d.recs; saveCfg(); saveRecs(); show("list"); } }catch(err){ alert("バックアップのファイルを読み取れませんでした。"); } });
+  e.target.value = "";
+});
+
+/* ---------- 設定 ---------- */
+function renderSettings(){
+  $("#setTitle").value = cfg.title;
+  const fe = $("#fldEditor"); fe.innerHTML = "";
+  cfg.fields.forEach((f, i)=>{
+    const row = document.createElement("div"); row.className = "fldrow";
+    row.innerHTML = '<input type="text" value="'+esc(f.label)+'" data-fi="'+i+'" class="fldLabel"><select data-fi="'+i+'" class="fldType"><option value="text">文字</option><option value="number">数値</option><option value="date">日付</option></select><button class="btn danger fldDel" data-fi="'+i+'" type="button">消す</button>';
+    row.querySelector(".fldType").value = f.type; fe.appendChild(row);
+  });
+  fe.querySelectorAll(".fldDel").forEach((b)=> b.addEventListener("click",()=>{ cfg.fields.splice(parseInt(b.dataset.fi,10),1); renderSettings(); }));
+  $("#setStatuses").value = cfg.statuses.join("、");
+  const cb = $("#closedBox"); cb.innerHTML = "";
+  cfg.statuses.forEach((s)=>{ const lab = document.createElement("label"); lab.style.marginRight = "1rem"; lab.innerHTML = '<input type="checkbox" class="closedChk" value="'+esc(s)+'"'+(cfg.closed.includes(s)?" checked":"")+"> "+esc(s); cb.appendChild(lab); });
+  $("#setStaleDays").value = cfg.staleDays;
+  const pe = $("#profEditor"); pe.innerHTML = "";
+  cfg.profiles.forEach((p, pi)=>{
+    const card = document.createElement("div"); card.className = "card";
+    let h = '<div class="fldrow"><input type="text" class="profName" data-pi="'+pi+'" value="'+esc(p.name)+'" placeholder="宛先の名前（例：kintone用）"><button class="btn danger profDel" data-pi="'+pi+'" type="button">宛先を消す</button></div>';
+    p.cols.forEach((c, ci)=>{ h += '<div class="fldrow"><input type="text" class="profHead" data-pi="'+pi+'" data-ci="'+ci+'" value="'+esc(c.header)+'" placeholder="列の名前"><select class="profSrc" data-pi="'+pi+'" data-ci="'+ci+'">' + srcOptions().map(([v,l])=>'<option value="'+v+'"'+(c.src===v?" selected":"")+'>'+l+'</option>').join("") + '</select><button class="btn danger profColDel" data-pi="'+pi+'" data-ci="'+ci+'" type="button">列を消す</button></div>'; });
+    h += '<div class="btnrow"><button class="btn sub profColAdd" data-pi="'+pi+'" type="button">列を追加</button></div>';
+    card.innerHTML = h; pe.appendChild(card);
+  });
+  pe.querySelectorAll(".profDel").forEach((b)=> b.addEventListener("click",()=>{ readProfiles(); cfg.profiles.splice(parseInt(b.dataset.pi,10),1); renderSettings(); }));
+  pe.querySelectorAll(".profColAdd").forEach((b)=> b.addEventListener("click",()=>{ readProfiles(); cfg.profiles[parseInt(b.dataset.pi,10)].cols.push({header:"", src: cfg.fields[0].key}); renderSettings(); }));
+  pe.querySelectorAll(".profColDel").forEach((b)=> b.addEventListener("click",()=>{ readProfiles(); cfg.profiles[parseInt(b.dataset.pi,10)].cols.splice(parseInt(b.dataset.ci,10),1); renderSettings(); }));
+}
+function readProfiles(){
+  document.querySelectorAll(".profName").forEach((inp)=>{ cfg.profiles[parseInt(inp.dataset.pi,10)].name = inp.value; });
+  document.querySelectorAll(".profHead").forEach((inp)=>{ cfg.profiles[parseInt(inp.dataset.pi,10)].cols[parseInt(inp.dataset.ci,10)].header = inp.value; });
+  document.querySelectorAll(".profSrc").forEach((sel)=>{ cfg.profiles[parseInt(sel.dataset.pi,10)].cols[parseInt(sel.dataset.ci,10)].src = sel.value; });
+}
+$("#fldAdd").addEventListener("click",()=>{ readSettingsFields(); cfg.fields.push({key:"f"+Date.now().toString(36), label:"新しい項目", type:"text"}); renderSettings(); });
+$("#profAdd").addEventListener("click",()=>{ readProfiles(); cfg.profiles.push({name:"新しい宛先", cols:[{header: cfg.fields[0].label, src: cfg.fields[0].key}]}); renderSettings(); });
+function readSettingsFields(){
+  document.querySelectorAll(".fldLabel").forEach((inp)=>{ cfg.fields[parseInt(inp.dataset.fi,10)].label = inp.value; });
+  document.querySelectorAll(".fldType").forEach((sel)=>{ cfg.fields[parseInt(sel.dataset.fi,10)].type = sel.value; });
+}
+$("#setSave").addEventListener("click",()=>{
+  readSettingsFields(); readProfiles();
+  cfg.title = $("#setTitle").value || cfg.title;
+  const sts = $("#setStatuses").value.split(/[、,\n]/).map((s)=>s.trim()).filter(Boolean);
+  if (sts.length) cfg.statuses = sts;
+  cfg.closed = Array.from(document.querySelectorAll(".closedChk")).filter((c)=>c.checked).map((c)=>c.value);
+  cfg.staleDays = Math.max(1, parseInt($("#setStaleDays").value,10) || 7);
+  recs.forEach((r)=>{ if(!cfg.statuses.includes(r.status)){ r.status = cfg.statuses[0]; } });
+  saveCfg(); saveRecs(); alert("設定を保存しました。"); show("list");
+});
+$("#wipeBtn").addEventListener("click",()=>{ if(confirm("登録と設定をすべて消しますか？元に戻せません。")){ localStorage.removeItem(K+"cfg"); localStorage.removeItem(K+"recs"); location.href = location.pathname; } });
+
+applyFs();
+$("#appTitle").textContent = cfg.title;
+show("list");
+</script>
+</body>
+</html>
