@@ -5,21 +5,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>記録管理アプリ（プランC汎用版）</title>
 <style>
-  :root{ --navy:#122A5C; --blue:#EAF2FB; --ink:#1c2430; --sub:#5a6a82; --line:#c9d6e8; --ok:#1d7a4f; --warn:#b3540a; }
+  :root{ --navy:#122A5C; --blue:#EAF2FB; --ink:#1c2430; --sub:#5a6a82; --line:#c9d6e8; --ok:#1d7a4f; --warn:#b3540a; --bg:#f4f7fb; --card:#ffffff; }
+  html[data-mode="dark"]{ --bg:#101216; --card:#1b1e24; --ink:#e8ecf2; --sub:#9aa7ba; --line:#3a4152; }
   *{ box-sizing:border-box; }
   html{ font-size:18px; }
-  body{ margin:0; font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP",sans-serif; color:var(--ink); background:#f4f7fb; font-size:1rem; line-height:1.6; }
+  body{ margin:0; font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP",sans-serif; color:var(--ink); background:var(--bg); font-size:1rem; line-height:1.6; }
   header{ background:var(--navy); color:#fff; padding:.7rem 1rem; display:flex; align-items:center; gap:.6rem; flex-wrap:wrap; }
   header .title{ font-weight:700; font-size:1.1rem; }
   header .spacer{ flex:1; }
   .fsize{ display:flex; gap:.3rem; align-items:center; font-size:.78rem; }
   .fsize button{ border:1px solid #fff; background:transparent; color:#fff; border-radius:999px; padding:.15rem .6rem; font-size:.78rem; cursor:pointer; }
   .fsize button.on{ background:#fff; color:var(--navy); font-weight:700; }
+  .swatch{ width:1.35rem; height:1.35rem; border-radius:50%; border:2px solid rgba(255,255,255,.65); padding:0 !important; }
+  .swatch.on{ border-color:#fff; box-shadow:0 0 0 2px #fff inset; outline:2px solid #fff; }
   nav.tabs{ display:flex; gap:.4rem; padding:.6rem 1rem 0; flex-wrap:wrap; }
-  nav.tabs button{ border:1px solid var(--line); background:#fff; border-radius:999px; padding:.35rem .9rem; font-size:.95rem; cursor:pointer; }
+  nav.tabs button{ border:1px solid var(--line); background:var(--card); color:var(--ink); border-radius:999px; padding:.35rem .9rem; font-size:.95rem; cursor:pointer; }
   nav.tabs button.on{ background:var(--navy); color:#fff; border-color:var(--navy); }
   main{ padding:1rem; max-width:60rem; margin:0 auto; }
-  .card{ background:#fff; border:1px solid var(--line); border-radius:.8rem; padding:.8rem; margin-bottom:.7rem; }
+  .card{ background:var(--card); border:1px solid var(--line); border-radius:.8rem; padding:.8rem; margin-bottom:.7rem; }
   .rec{ display:flex; gap:.8rem; align-items:flex-start; cursor:pointer; }
   .thumb{ width:4.2rem; height:4.2rem; border-radius:.5rem; background:var(--blue); display:flex; align-items:center; justify-content:center; color:var(--sub); font-size:.72rem; overflow:hidden; flex:none; text-align:center; }
   .thumb img{ width:100%; height:100%; object-fit:cover; }
@@ -31,28 +34,28 @@
   .chips{ display:flex; gap:.4rem; flex-wrap:wrap; margin:.6rem 0; }
   .chips button{ border:1px solid var(--line); background:#fff; border-radius:999px; padding:.2rem .8rem; font-size:.9rem; cursor:pointer; }
   .chips button.on{ background:var(--navy); color:#fff; }
-  input[type=text],input[type=number],input[type=date],select,textarea{ width:100%; padding:.5rem; border:1px solid var(--line); border-radius:.5rem; font-size:1rem; background:#fff; }
+  input[type=text],input[type=number],input[type=date],input[type=password],select,textarea{ width:100%; padding:.5rem; border:1px solid var(--line); border-radius:.5rem; font-size:1rem; background:var(--card); color:var(--ink); }
   label.flabel{ display:block; font-size:.85rem; color:var(--sub); margin:.6rem 0 .2rem; }
   .btn{ display:inline-block; border:none; border-radius:999px; padding:.55rem 1.3rem; font-size:1rem; cursor:pointer; background:var(--navy); color:#fff; }
-  .btn.sub{ background:#fff; color:var(--navy); border:1px solid var(--navy); }
+  .btn.sub{ background:var(--card); color:var(--navy); border:1px solid var(--navy); }
   .btn.danger{ background:#fff; color:#b00020; border:1px solid #b00020; }
   .btnrow{ display:flex; gap:.5rem; flex-wrap:wrap; margin:.8rem 0; }
   .hidden{ display:none !important; }
   .card.rec{ position:relative; }
-  .editmini{ position:absolute; right:.6rem; bottom:.6rem; font-size:.78rem; padding:.28rem .7rem; border-radius:999px; border:1.5px solid var(--navy); background:#fff; color:var(--navy); cursor:pointer; }
+  .editmini{ position:absolute; right:.6rem; bottom:.6rem; font-size:.78rem; padding:.28rem .7rem; border-radius:999px; border:1.5px solid var(--navy); background:var(--card); color:var(--navy); cursor:pointer; }
   .kv{ display:flex; justify-content:space-between; gap:1rem; padding:.35rem 0; border-bottom:1px solid var(--line); }
   .kv:last-child{ border-bottom:none; }
   .kv span{ color:var(--sub); flex:none; }
   .bar{ display:flex; align-items:center; gap:.6rem; margin:.32rem 0; }
   .bar .bl{ width:5.2rem; flex:none; color:var(--sub); }
-  .bar .bt{ flex:1; background:#eef2f8; border-radius:.4rem; height:1.15rem; overflow:hidden; }
+  .bar .bt{ flex:1; background:var(--blue); border-radius:.4rem; height:1.15rem; overflow:hidden; }
   .bar .bf{ background:var(--navy); height:100%; border-radius:.4rem; }
   .bar .bv{ width:4.6rem; flex:none; text-align:right; }
   .calgrid{ display:grid; grid-template-columns:repeat(7,1fr); gap:.3rem; margin-top:.6rem; }
   .calgrid .dow{ text-align:center; color:var(--sub); font-size:.8rem; }
-  .calgrid .day{ border:1.5px solid var(--line); border-radius:.5rem; min-height:2.9rem; padding:.25rem; text-align:center; cursor:pointer; background:#fff; }
+  .calgrid .day{ border:1.5px solid var(--line); border-radius:.5rem; min-height:2.9rem; padding:.25rem; text-align:center; cursor:pointer; background:var(--card); color:var(--ink); }
   .calgrid .day.today{ border-color:var(--navy); }
-  .calgrid .day.sel{ background:#eef2f8; }
+  .calgrid .day.sel{ background:var(--blue); }
   .calgrid .day .n{ font-weight:700; color:var(--navy); display:block; }
   .calgrid .day.dim{ opacity:.35; }
   #printArea{ display:none; }
@@ -87,6 +90,7 @@
   <div class="title" id="appTitle">記録管理アプリ</div>
   <div class="spacer"></div>
   <div class="fsize" id="fsizeBox"><span>文字</span></div>
+  <div class="fsize" id="themeBox"><span>色</span></div>
 </header>
 <nav class="tabs" id="tabs">
   <button data-view="list" class="on">一覧</button>
@@ -94,7 +98,6 @@
   <button data-view="summary">集計</button>
   <button data-view="calendar">カレンダー</button>
   <button data-view="data">データの出し入れ</button>
-  <button data-view="settings">設定</button>
 </nav>
 <main>
   <section id="view-list">
@@ -115,6 +118,7 @@
       <div class="btnrow"><button class="btn" id="printBtn" type="button">まとめを印刷する</button></div>
       <p class="note">印刷は、表示している期間の集計と記録の一覧です。月ごとに印刷して、ファイルに綴じる使い方を想定しています。</p>
     </div>
+    <div class="card"><h3>状態の内訳（円グラフ）</h3><canvas id="pieChart" width="300" height="300" style="display:block;margin:0 auto;max-width:80%"></canvas><div id="pieLegend"></div></div>
     <div class="card"><h3>状態ごとの件数（グラフ）</h3><div id="chartStatus"></div></div>
     <div class="card"><h3>月ごとの登録件数（グラフ）</h3><div id="chartMonth"></div></div>
   </section>
@@ -153,8 +157,25 @@
       </div>
       <p class="note">端末をなくしたときの控えは、このバックアップです。CSVとは別に、定期的に保存してください。</p>
     </div>
+      <p style="text-align:right;margin-top:1.2rem"><button class="note" id="toSettings" type="button" style="background:none;border:none;text-decoration:underline;cursor:pointer">管理者用の設定はこちら</button></p>
+    <div id="passGate" class="card hidden">
+      <h3>管理者用の設定</h3>
+      <p class="note">合言葉を入れてください。</p>
+      <label class="flabel">合言葉</label>
+      <input type="password" id="passIn" autocomplete="off">
+      <div class="btnrow"><button class="btn" id="passGo" type="button">設定を開く</button></div>
+      <p class="note" id="passErr" style="color:#b3261e"></p>
+    </div>
   </section>
   <section id="view-settings" class="hidden">
+    <div class="btnrow"><button class="btn sub" id="settingsBack" type="button">← データの出し入れに戻る</button></div>
+    <p class="note">ここは管理者用の設定です。ふだんの操作では使いません。合言葉は、うっかり開かないための軽い鍵です。</p>
+    <div class="card">
+      <h3>合言葉の変更</h3>
+      <label class="flabel">新しい合言葉</label>
+      <input type="text" id="newPass" autocomplete="off">
+      <div class="btnrow"><button class="btn sub" id="passChange" type="button">合言葉を変える</button></div>
+    </div>
     <div class="card">
       <h3>アプリの名前</h3>
       <input type="text" id="setTitle">
@@ -171,6 +192,7 @@
       <p class="note">カンマか改行で区切ってください。この並びが、状態の並びになります。</p>
       <h3>終わりの状態（滞留に数えない）</h3>
       <div id="closedBox"></div>
+      <p class="note">チェックした状態は「終わったもの」として扱い、何日たっても滞留（止まっている登録）には出しません。例：売約とキャンセル。</p>
       <label class="flabel">滞留とみなす日数（この日数以上、状態が変わっていないもの）</label>
       <input type="number" id="setStaleDays" min="1" style="max-width:8rem">
     </div>
@@ -227,6 +249,7 @@ const uid = () => "r" + Date.now().toString(36) + Math.random().toString(36).sli
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
 const DEFAULT_CFG = {
+  pass: "あおぞら",
   title: "記録管理アプリ（プランC汎用版）",
   fields: [
     {key:"name", label:"名前", type:"text"},
@@ -267,6 +290,30 @@ const FS_STEPS = [16,17,18,20,22]; const FS_NAMES = ["小","やや小","標準",
 let fsIdx = parseInt(localStorage.getItem(K+"fs") ?? "2", 10); if(!(fsIdx>=0 && fsIdx<5)) fsIdx = 2;
 function applyFs(){ document.documentElement.style.fontSize = FS_STEPS[fsIdx]+"px"; document.querySelectorAll("#fsizeBox button").forEach((b,i)=>b.classList.toggle("on", i===fsIdx)); }
 (function(){ const box = $("#fsizeBox"); FS_NAMES.forEach((n,i)=>{ const b=document.createElement("button"); b.textContent=n; b.addEventListener("click",()=>{ fsIdx=i; localStorage.setItem(K+"fs", String(i)); applyFs(); }); box.appendChild(b); }); })();
+
+/* ---------- 画面の色（白・黒・赤・青・緑） ---------- */
+const THEMES = [
+  { name:"白", mode:"light", main:"#122A5C", tint:"#EAF2FB" },
+  { name:"黒", mode:"dark",  main:"#122A5C", tint:"#262d3d" },
+  { name:"赤", mode:"light", main:"#B03A2E", tint:"#FBEAE7" },
+  { name:"青", mode:"light", main:"#1D6FD1", tint:"#E3F0FD" },
+  { name:"緑", mode:"light", main:"#1D7A4F", tint:"#E4F4EC" }
+];
+let themeIdx = parseInt(localStorage.getItem(K+"theme") ?? "0", 10); if(!(themeIdx>=0 && themeIdx<THEMES.length)) themeIdx = 0;
+function applyTheme(){
+  const t = THEMES[themeIdx]; const root = document.documentElement;
+  root.style.setProperty("--navy", t.main);
+  root.style.setProperty("--blue", t.tint);
+  root.dataset.mode = t.mode;
+  document.querySelectorAll("#themeBox button").forEach((b,i)=> b.classList.toggle("on", i===themeIdx));
+  const sum = $("#view-summary");
+  if (sum && !sum.classList.contains("hidden")) renderSummary();
+}
+(function(){
+  const tb = $("#themeBox");
+  THEMES.forEach((t,i)=>{ const b = document.createElement("button"); b.type = "button"; b.textContent = t.name; b.addEventListener("click",()=>{ themeIdx = i; localStorage.setItem(K+"theme", String(i)); applyTheme(); }); tb.appendChild(b); });
+  applyTheme();
+})();
 
 /* ---------- 画面の切り替え ---------- */
 let curView = "list";
@@ -333,6 +380,39 @@ function renderSummary(){
   const mk = Object.keys(months).sort().slice(-6);
   const maxM = Math.max(1, ...mk.map((m)=>months[m]));
   $("#chartMonth").innerHTML = mk.length ? mk.map((m)=> bar(m.replace("-","年")+"月", months[m], maxM, "件")).join("") : '<p class="note">まだ記録がありません</p>';
+  drawPie(prs, numF);
+}
+
+/* ---------- 円グラフ（状態の内訳） ---------- */
+const PIE_COLORS = ["#1f3a5f","#2e7d5a","#c9a227","#c0392b","#5b7fa6","#8e6cc8","#4aa3a2","#999999"];
+function drawPie(prs, numF){
+  const cv = $("#pieChart"); if (!cv) return;
+  const ctx = cv.getContext("2d");
+  const parts = cfg.statuses.map((st, i)=>{
+    const rs = prs.filter((r)=>r.status===st);
+    const val = numF ? rs.reduce((a,r)=> a + (parseFloat(r.v[numF.key])||0), 0) : rs.length;
+    return { label: st, val, color: PIE_COLORS[i % PIE_COLORS.length] };
+  }).filter((x)=> x.val > 0);
+  const total = parts.reduce((a,x)=> a + x.val, 0);
+  ctx.clearRect(0,0,cv.width,cv.height);
+  const cx = cv.width/2, cy = cv.height/2, R = 138, r = R * 0.58;
+  if (total > 0) {
+    let ang = -Math.PI/2;
+    parts.forEach((x)=>{
+      const sw = x.val / total * Math.PI * 2;
+      ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,R,ang,ang+sw); ctx.closePath();
+      ctx.fillStyle = x.color; ctx.fill();
+      ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--card"); ctx.lineWidth = 2; ctx.stroke();
+      ang += sw;
+    });
+    ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--card"); ctx.fill();
+    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--ink"); ctx.font = "bold 21px sans-serif"; ctx.textAlign = "center";
+    ctx.fillText(numF ? "¥" + total.toLocaleString() : total + "件", cx, cy + 7);
+  } else {
+    ctx.fillStyle = "#999"; ctx.font = "15px sans-serif"; ctx.textAlign = "center";
+    ctx.fillText("データがありません", cx, cy);
+  }
+  $("#pieLegend").innerHTML = parts.map((x)=> '<div class="bar"><span class="bl"><span style="display:inline-block;width:.8rem;height:.8rem;border-radius:.2rem;background:'+x.color+';margin-right:.35rem"></span>'+esc(x.label)+'</span><span class="bv" style="width:auto">'+(numF ? "¥"+x.val.toLocaleString() : x.val+"件")+"（"+(total ? Math.round(x.val/total*1000)/10 : 0)+"%）</span></div>").join("");
 }
 
 /* ---------- カレンダー ---------- */
@@ -447,6 +527,16 @@ function openDetail(id){
   show("detail");
 }
 $("#detailBack").addEventListener("click",()=>show("list"));
+$("#toSettings").addEventListener("click",()=>{ $("#passGate").classList.toggle("hidden"); $("#passErr").textContent = ""; $("#passIn").value = ""; });
+$("#passGo").addEventListener("click",()=>{
+  if ($("#passIn").value === (cfg.pass || "kobo")) { $("#passGate").classList.add("hidden"); show("settings"); }
+  else { $("#passErr").textContent = "合言葉が違います。"; }
+});
+$("#passChange").addEventListener("click",()=>{
+  const v = $("#newPass").value.trim(); if (!v) { alert("合言葉を入れてください。"); return; }
+  cfg.pass = v; saveCfg(); $("#newPass").value = ""; alert("合言葉を変えました。");
+});
+$("#settingsBack").addEventListener("click",()=>show("data"));
 $("#detailEdit").addEventListener("click",()=>{ if (detailId) openEdit(detailId); });
 
 /* ---------- CSV ---------- */
