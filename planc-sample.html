@@ -38,6 +38,24 @@
   .btn.danger{ background:#fff; color:#b00020; border:1px solid #b00020; }
   .btnrow{ display:flex; gap:.5rem; flex-wrap:wrap; margin:.8rem 0; }
   .hidden{ display:none !important; }
+  .card.rec{ position:relative; }
+  .editmini{ position:absolute; right:.6rem; bottom:.6rem; font-size:.78rem; padding:.28rem .7rem; border-radius:999px; border:1.5px solid var(--navy); background:#fff; color:var(--navy); cursor:pointer; }
+  .kv{ display:flex; justify-content:space-between; gap:1rem; padding:.35rem 0; border-bottom:1px solid var(--line); }
+  .kv:last-child{ border-bottom:none; }
+  .kv span{ color:var(--sub); flex:none; }
+  .bar{ display:flex; align-items:center; gap:.6rem; margin:.32rem 0; }
+  .bar .bl{ width:5.2rem; flex:none; color:var(--sub); }
+  .bar .bt{ flex:1; background:#eef2f8; border-radius:.4rem; height:1.15rem; overflow:hidden; }
+  .bar .bf{ background:var(--navy); height:100%; border-radius:.4rem; }
+  .bar .bv{ width:4.6rem; flex:none; text-align:right; }
+  .calgrid{ display:grid; grid-template-columns:repeat(7,1fr); gap:.3rem; margin-top:.6rem; }
+  .calgrid .dow{ text-align:center; color:var(--sub); font-size:.8rem; }
+  .calgrid .day{ border:1.5px solid var(--line); border-radius:.5rem; min-height:2.9rem; padding:.25rem; text-align:center; cursor:pointer; background:#fff; }
+  .calgrid .day.today{ border-color:var(--navy); }
+  .calgrid .day.sel{ background:#eef2f8; }
+  .calgrid .day .n{ font-weight:700; color:var(--navy); display:block; }
+  .calgrid .day.dim{ opacity:.35; }
+  .kv strong{ text-align:right; word-break:break-all; }
   .photoarea{ border:1px dashed var(--line); border-radius:.8rem; padding:.7rem; text-align:center; background:#fbfdff; }
   .photoarea img{ max-width:100%; max-height:14rem; border-radius:.5rem; }
   .hist{ font-size:.88rem; color:var(--sub); }
@@ -64,6 +82,7 @@
   <button data-view="list" class="on">一覧</button>
   <button data-view="stale">滞留</button>
   <button data-view="summary">集計</button>
+  <button data-view="calendar">カレンダー</button>
   <button data-view="data">データの出し入れ</button>
   <button data-view="settings">設定</button>
 </nav>
@@ -81,6 +100,16 @@
   </section>
   <section id="view-summary" class="hidden">
     <div class="card"><table class="sum" id="sumTable"></table></div>
+    <div class="card"><h3>状態ごとの件数（グラフ）</h3><div id="chartStatus"></div></div>
+    <div class="card"><h3>月ごとの登録件数（グラフ）</h3><div id="chartMonth"></div></div>
+  </section>
+  <section id="view-calendar" class="hidden">
+    <div class="card">
+      <div class="btnrow" style="justify-content:space-between"><button class="btn sub" id="calPrev">← 前の月</button><strong id="calTitle"></strong><button class="btn sub" id="calNext">次の月 →</button></div>
+      <div id="calGrid" class="calgrid"></div>
+      <p class="note">数字は、その日に登録された件数です。日をタップすると、その日の記録が出ます。</p>
+    </div>
+    <div id="calList"></div>
     <p class="note">金額は、数値の項目のうち最初のものを合計しています。</p>
   </section>
   <section id="view-data" class="hidden">
@@ -117,6 +146,7 @@
     </div>
     <div class="card">
       <h3>項目</h3>
+      <p class="note">項目の追加は、そのまま使えます。不要になった項目は「隠す」にすると、データは残したまま画面から外れます（元に戻せます）。</p>
       <div id="fldEditor"></div>
       <div class="btnrow"><button class="btn sub" id="fldAdd">項目を追加</button></div>
     </div>
@@ -141,8 +171,13 @@
       <div class="btnrow"><button class="btn danger" id="wipeBtn">登録と設定をすべて消す</button></div>
     </div>
   </section>
+  <section id="view-detail" class="hidden">
+    <div class="btnrow"><button class="btn sub" id="detailBack">← 一覧に戻る</button></div>
+    <div id="detailBox"></div>
+    <div class="btnrow"><button class="btn" id="detailEdit">編集する（入力の画面へ）</button></div>
+  </section>
   <section id="view-edit" class="hidden">
-    <div class="btnrow"><button class="btn sub" id="backBtn">← 一覧に戻る</button></div>
+    <div class="btnrow"><button class="btn sub" id="backBtn">← 戻る</button></div>
     <div class="card">
       <div class="photoarea" id="photoArea">
         <div id="photoView"><p class="note">写真はまだありません</p></div>
@@ -162,8 +197,6 @@
         <button class="btn" id="saveBtn">保存する</button>
         <button class="btn danger" id="delBtn">この登録を消す</button>
       </div>
-      <h3>状態の履歴</h3>
-      <ul class="hist" id="histList"></ul>
     </div>
   </section>
 </main>
@@ -196,6 +229,7 @@ function saveCfg(){ localStorage.setItem(K+"cfg", JSON.stringify(cfg)); }
 function loadRecs(){ try{ return JSON.parse(localStorage.getItem(K+"recs")) || []; }catch(e){ return []; } }
 function saveRecs(){ try{ localStorage.setItem(K+"recs", JSON.stringify(recs)); }catch(e){ alert("保存できませんでした。写真の容量が大きい可能性があります。"); } }
 let cfg = loadCfg();
+const visFields = () => cfg.fields.filter((f)=>!f.hidden);
 let recs = loadRecs();
 
 function seed(){
@@ -220,18 +254,21 @@ function applyFs(){ document.documentElement.style.fontSize = FS_STEPS[fsIdx]+"p
 
 /* ---------- 画面の切り替え ---------- */
 let curView = "list";
-function show(view){ curView = view; ["list","stale","summary","data","settings","edit"].forEach((v)=>{ const el = $("#view-"+v); if(el) el.classList.toggle("hidden", v!==view); }); document.querySelectorAll("#tabs button").forEach((b)=>b.classList.toggle("on", b.dataset.view===view)); if(view==="list") renderList(); if(view==="stale") renderStale(); if(view==="summary") renderSummary(); if(view==="data") renderData(); if(view==="settings") renderSettings(); window.scrollTo(0,0); }
+function show(view){ curView = view; ["list","stale","summary","data","settings","edit","detail","calendar"].forEach((v)=>{ const el = $("#view-"+v); if(el) el.classList.toggle("hidden", v!==view); }); document.querySelectorAll("#tabs button").forEach((b)=>b.classList.toggle("on", b.dataset.view===view || ((view==="detail"||view==="edit") && b.dataset.view==="list"))); if(view==="list") renderList(); if(view==="stale") renderStale(); if(view==="summary") renderSummary(); if(view==="data") renderData(); if(view==="calendar") renderCalendar(); if(view==="settings") renderSettings(); window.scrollTo(0,0); }
 document.querySelectorAll("#tabs button").forEach((b)=>b.addEventListener("click",()=>show(b.dataset.view)));
 
 /* ---------- 一覧 ---------- */
 let filterStatus = "すべて"; let query = "";
-function recTitle(r){ const f = cfg.fields.find((x)=>x.type==="text") || cfg.fields[0]; return r.v[f.key] || "（無題）"; }
+function recTitle(r){ const f = visFields().find((x)=>x.type==="text") || visFields()[0] || cfg.fields[0]; return r.v[f.key] || "（無題）"; }
 function recCard(r){
   const d = daysSince(r.since); const stale = !cfg.closed.includes(r.status) && d >= cfg.staleDays;
-  const tf = cfg.fields.find((x)=>x.type==="text") || cfg.fields[0]; const meta = cfg.fields.filter((f)=>f!==tf).slice(0,4).map((f)=> esc(r.v[f.key] ?? "")).filter(Boolean).join(" ／ ");
+  const tf = visFields().find((x)=>x.type==="text") || visFields()[0] || cfg.fields[0]; const meta = visFields().filter((f)=>f!==tf).slice(0,4).map((f)=> esc(r.v[f.key] ?? "")).filter(Boolean).join(" ／ ");
   const el = document.createElement("div"); el.className = "card rec"; el.dataset.id = r.id;
   el.innerHTML = '<div class="thumb">' + (r.img ? '<img src="'+r.img+'" alt="">' : "写真<br>なし") + '</div><div class="body"><div class="name">'+esc(recTitle(r))+'</div><div class="meta">'+meta+'</div><div><span class="badge'+(stale?" stale":"")+'">'+esc(r.status)+'</span> <span class="meta">この状態になって '+d+' 日</span></div></div>';
-  el.addEventListener("click",()=>openEdit(r.id)); return el;
+  const eb = document.createElement("button"); eb.className = "editmini"; eb.type = "button"; eb.textContent = "編集";
+  eb.addEventListener("click",(e)=>{ e.stopPropagation(); openEdit(r.id); });
+  el.appendChild(eb);
+  el.addEventListener("click",()=>openDetail(r.id)); return el;
 }
 function renderList(){
   $("#appTitle").textContent = cfg.title;
@@ -239,7 +276,7 @@ function renderList(){
   ["すべて", ...cfg.statuses].forEach((s)=>{ const b=document.createElement("button"); b.textContent=s; b.classList.toggle("on", filterStatus===s); b.addEventListener("click",()=>{ filterStatus=s; renderList(); }); chips.appendChild(b); });
   const list = $("#recList"); list.innerHTML = "";
   const q = query.trim();
-  const hit = recs.filter((r)=> (filterStatus==="すべて" || r.status===filterStatus) && (!q || cfg.fields.some((f)=> String(r.v[f.key] ?? "").includes(q)) || r.status.includes(q)) );
+  const hit = recs.filter((r)=> (filterStatus==="すべて" || r.status===filterStatus) && (!q || visFields().some((f)=> String(r.v[f.key] ?? "").includes(q)) || r.status.includes(q)) );
   hit.forEach((r)=> list.appendChild(recCard(r)));
   $("#listEmpty").style.display = hit.length ? "none" : "block";
 }
@@ -252,32 +289,73 @@ function renderStale(){ $("#staleHead").textContent = "「"+cfg.closed.join("、
 
 /* ---------- 集計 ---------- */
 function renderSummary(){
-  const numF = cfg.fields.find((f)=>f.type==="number");
+  const numF = visFields().find((f)=>f.type==="number");
   let html = "<tr><th>状態</th><th class='n'>件数</th>" + (numF ? "<th class='n'>"+esc(numF.label)+"の合計</th>" : "") + "</tr>";
   let total = 0, totalN = 0;
   cfg.statuses.forEach((s)=>{ const rs = recs.filter((r)=>r.status===s); const sum = numF ? rs.reduce((a,r)=> a + (parseFloat(r.v[numF.key])||0), 0) : 0; total += rs.length; totalN += sum; html += "<tr><td>"+esc(s)+"</td><td class='n'>"+rs.length+"</td>" + (numF ? "<td class='n'>"+sum.toLocaleString()+"</td>" : "") + "</tr>"; });
   html += "<tr><td><b>合計</b></td><td class='n'><b>"+total+"</b></td>" + (numF ? "<td class='n'><b>"+totalN.toLocaleString()+"</b></td>" : "") + "</tr>";
   $("#sumTable").innerHTML = html;
+  const bar = (label, val, max, suffix) => '<div class="bar"><span class="bl">'+esc(label)+'</span><span class="bt"><span class="bf" style="display:block;width:'+(max? Math.round(val/max*100):0)+'%"></span></span><span class="bv">'+val+(suffix||"")+'</span></div>';
+  const maxC = Math.max(1, ...cfg.statuses.map((st)=> recs.filter((r)=>r.status===st).length));
+  $("#chartStatus").innerHTML = cfg.statuses.map((st)=> bar(st, recs.filter((r)=>r.status===st).length, maxC, "件")).join("");
+  const months = {};
+  recs.forEach((r)=>{ const m = (r.created || "").slice(0,7); if (m) months[m] = (months[m]||0)+1; });
+  const mk = Object.keys(months).sort().slice(-6);
+  const maxM = Math.max(1, ...mk.map((m)=>months[m]));
+  $("#chartMonth").innerHTML = mk.length ? mk.map((m)=> bar(m.replace("-","年")+"月", months[m], maxM, "件")).join("") : '<p class="note">まだ記録がありません</p>';
 }
+
+/* ---------- カレンダー ---------- */
+let calYm = null; let calSel = null;
+function renderCalendar(){
+  if (!calYm) { const d = new Date(); calYm = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0"); }
+  const [y, m] = calYm.split("-").map(Number);
+  $("#calTitle").textContent = y+"年"+m+"月";
+  const first = new Date(y, m-1, 1); const startDay = first.getDay();
+  const dim = new Date(y, m, 0).getDate(); const prevDim = new Date(y, m-1, 0).getDate();
+  const today = todayStr();
+  const cnt = {}; recs.forEach((r)=>{ cnt[r.created] = (cnt[r.created]||0)+1; });
+  const grid = $("#calGrid"); grid.innerHTML = "";
+  ["日","月","火","水","木","金","土"].forEach((w)=>{ const e = document.createElement("div"); e.className = "dow"; e.textContent = w; grid.appendChild(e); });
+  const cells = [];
+  for (let i=0;i<startDay;i++) cells.push({d: prevDim-startDay+1+i, dim:true, key:""});
+  for (let d=1; d<=dim; d++) { const key = y+"-"+String(m).padStart(2,"0")+"-"+String(d).padStart(2,"0"); cells.push({d, dim:false, key}); }
+  let td = 1; while (cells.length % 7) cells.push({d: td++, dim:true, key:""});
+  cells.slice(0,42).forEach((c)=>{
+    const e = document.createElement("button"); e.type = "button";
+    e.className = "day" + (c.dim ? " dim" : "") + (c.key===today ? " today" : "") + (c.key===calSel ? " sel" : "");
+    e.innerHTML = c.d + (c.key && cnt[c.key] ? '<span class="n">'+cnt[c.key]+'件</span>' : "");
+    if (c.key) e.addEventListener("click",()=>{ calSel = c.key; renderCalendar(); });
+    grid.appendChild(e);
+  });
+  const list = $("#calList"); list.innerHTML = "";
+  if (calSel) {
+    const hits = recs.filter((r)=> r.created === calSel);
+    const head = document.createElement("p"); head.className = "note"; head.textContent = calSel + " の登録：" + hits.length + "件";
+    list.appendChild(head);
+    hits.forEach((r)=> list.appendChild(recCard(r)));
+  }
+}
+$("#calPrev").addEventListener("click",()=>{ const [y,m] = calYm.split("-").map(Number); const d = new Date(y, m-2, 1); calYm = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0"); calSel = null; renderCalendar(); });
+$("#calNext").addEventListener("click",()=>{ const [y,m] = calYm.split("-").map(Number); const d = new Date(y, m, 1); calYm = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0"); calSel = null; renderCalendar(); });
 
 /* ---------- 編集・写真 ---------- */
 let editing = null; let editImg = null;
 function openEdit(id){
   editing = recs.find((r)=>r.id===id) || null; editImg = editing ? editing.img : null;
   const box = $("#editFields"); box.innerHTML = "";
-  cfg.fields.forEach((f)=>{
+  visFields().forEach((f)=>{
     const lab = document.createElement("label"); lab.className="flabel"; lab.textContent = f.label;
     const inp = document.createElement("input"); inp.type = f.type==="number" ? "number" : (f.type==="date" ? "date" : "text"); inp.id = "ef_"+f.key; inp.value = editing ? (editing.v[f.key] ?? "") : "";
     box.appendChild(lab); box.appendChild(inp);
   });
   const sel = $("#editStatus"); sel.innerHTML = ""; cfg.statuses.forEach((s)=>{ const o=document.createElement("option"); o.value=s; o.textContent=s; sel.appendChild(o); });
   if (editing) sel.value = editing.status;
-  renderPhoto(); renderHist();
+  renderPhoto();
   $("#delBtn").style.display = editing ? "inline-block" : "none";
   show("edit");
 }
 function renderPhoto(){ const v = $("#photoView"); v.innerHTML = editImg ? '<img src="'+editImg+'" alt="写真">' : '<p class="note">写真はまだありません</p>'; }
-function renderHist(){ const ul = $("#histList"); ul.innerHTML = ""; if(!editing){ ul.innerHTML = "<li>まだ履歴はありません</li>"; return; } editing.hist.slice().reverse().forEach((h)=>{ const li=document.createElement("li"); li.textContent = h.at + "：" + (h.from ? h.from+" → " : "登録 → ") + h.to; ul.appendChild(li); }); }
 function handlePhotoFile(file){
   if(!file) return;
   const img = new Image();
@@ -288,18 +366,46 @@ $("#camFile").addEventListener("change",(e)=>{ handlePhotoFile(e.target.files[0]
 $("#galFile").addEventListener("change",(e)=>{ handlePhotoFile(e.target.files[0]); e.target.value=""; });
 $("#photoDel").addEventListener("click",()=>{ editImg = null; renderPhoto(); });
 $("#saveBtn").addEventListener("click",()=>{
-  const vals = {}; cfg.fields.forEach((f)=>{ vals[f.key] = $("#ef_"+f.key).value; });
+  const vals = Object.assign({}, editing ? editing.v : {}); visFields().forEach((f)=>{ vals[f.key] = $("#ef_"+f.key).value; });
   const st = $("#editStatus").value; const t = todayStr();
   if (editing){
-    if (editing.status !== st){ editing.hist.push({at:t, from:editing.status, to:st}); editing.since = t; }
+    if (editing.status !== st){ editing.hist.push({at:new Date().toISOString(), from:editing.status, to:st}); editing.since = t; }
     editing.v = vals; editing.status = st; editing.img = editImg; editing.updated = t;
   } else {
-    recs.unshift({ id: uid(), v: vals, status: st, since: t, created: t, updated: t, hist:[{at:t, from:"", to:st}], img: editImg });
+    recs.unshift({ id: uid(), v: vals, status: st, since: t, created: t, updated: t, hist:[{at:new Date().toISOString(), from:"", to:st}], img: editImg });
   }
-  saveRecs(); show("list");
+  const savedId = editing ? editing.id : null;
+  saveRecs(); if (savedId) openDetail(savedId); else show("list");
 });
 $("#delBtn").addEventListener("click",()=>{ if(!editing) return; if(confirm("この登録を消しますか？")){ recs = recs.filter((r)=>r.id!==editing.id); saveRecs(); show("list"); } });
-$("#backBtn").addEventListener("click",()=>show("list"));
+$("#backBtn").addEventListener("click",()=>{ if (editing) openDetail(editing.id); else show("list"); });
+
+/* ---------- 詳細（見るだけ）・時系列 ---------- */
+let detailId = null;
+function fmtDT(a){ if(!a) return ""; if(a.indexOf("T")<0) return a; const d = new Date(a); if(isNaN(d)) return a; const p2=(n)=>String(n).padStart(2,"0"); return d.getFullYear()+"年"+(d.getMonth()+1)+"月"+d.getDate()+"日 "+p2(d.getHours())+":"+p2(d.getMinutes()); }
+function openDetail(id){
+  const r = recs.find((x)=>x.id===id); if(!r) return; detailId = id;
+  const box = $("#detailBox"); box.innerHTML = "";
+  const head = document.createElement("div"); head.className = "card";
+  head.innerHTML = '<div class="name" style="margin-bottom:.3rem">'+esc(recTitle(r))+'</div><div><span class="badge">'+esc(r.status)+'</span> <span class="meta">この状態になって '+daysSince(r.since)+' 日</span></div>';
+  box.appendChild(head);
+  const tbl = document.createElement("div"); tbl.className = "card";
+  visFields().forEach((f)=>{ const row = document.createElement("div"); row.className = "kv"; row.innerHTML = "<span>"+esc(f.label)+"</span><strong>"+esc(r.v[f.key] || "―")+"</strong>"; tbl.appendChild(row); });
+  box.appendChild(tbl);
+  if (r.img) { const pc = document.createElement("div"); pc.className = "card"; pc.innerHTML = '<img src="'+r.img+'" alt="写真" style="max-width:100%">'; box.appendChild(pc); }
+  const hist = document.createElement("div"); hist.className = "card";
+  const hh = document.createElement("h3"); hh.textContent = "時系列（履歴）"; hist.appendChild(hh);
+  r.hist.slice().reverse().forEach((h)=>{
+    const line = document.createElement("div"); line.className = "kv";
+    const what = h.from ? "状態を「"+h.from+"」から「"+h.to+"」に変更" : "登録（状態は「"+h.to+"」）";
+    line.innerHTML = "<span>"+esc(fmtDT(h.at))+"</span><strong>"+esc(what)+"</strong>";
+    hist.appendChild(line);
+  });
+  box.appendChild(hist);
+  show("detail");
+}
+$("#detailBack").addEventListener("click",()=>show("list"));
+$("#detailEdit").addEventListener("click",()=>{ if (detailId) openEdit(detailId); });
 
 /* ---------- CSV ---------- */
 function csvCell(v){ const s = String(v ?? ""); return /[",\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s; }
@@ -326,7 +432,7 @@ function srcValue(r, src){
   if (src === "updated") return r.updated;
   return r.v[src] ?? "";
 }
-function srcOptions(){ return [ ...cfg.fields.map((f)=>[f.key, f.label]), ["status","状態"], ["statusDays","状態になってからの日数"], ["since","状態になった日"], ["updated","最終更新日"] ]; }
+function srcOptions(){ return [ ...visFields().map((f)=>[f.key, f.label]), ["status","状態"], ["statusDays","状態になってからの日数"], ["since","状態になった日"], ["updated","最終更新日"] ]; }
 
 function renderData(){
   const sel = $("#expProfileSel"); sel.innerHTML = "";
@@ -334,8 +440,8 @@ function renderData(){
   $("#expProfile").disabled = !cfg.profiles.length;
 }
 $("#expAll").addEventListener("click",()=>{
-  const head = [ ...cfg.fields.map((f)=>f.label), "状態", "状態になってからの日数", "状態になった日", "最終更新日" ];
-  const rows = [ head, ...recs.map((r)=> [ ...cfg.fields.map((f)=> r.v[f.key] ?? ""), r.status, daysSince(r.since), r.since, r.updated ]) ];
+  const head = [ ...visFields().map((f)=>f.label), "状態", "状態になってからの日数", "状態になった日", "最終更新日" ];
+  const rows = [ head, ...recs.map((r)=> [ ...visFields().map((f)=> r.v[f.key] ?? ""), r.status, daysSince(r.since), r.since, r.updated ]) ];
   download("記録データ_"+todayStr()+".csv", new Blob(["\ufeff"+toCSV(rows)], {type:"text/csv"}));
 });
 $("#expProfile").addEventListener("click",()=>{
@@ -355,9 +461,9 @@ $("#impFile").addEventListener("change",(e)=>{
       const row = document.createElement("div"); row.className = "maprow";
       const from = document.createElement("div"); from.className="from"; from.textContent = "CSVの列「"+h+"」→";
       const sel = document.createElement("select"); sel.id = "imp_"+i;
-      const opts = [ ["", "取り込まない"], ...cfg.fields.map((x)=>[x.key, x.label]), ["status","状態"] ];
+      const opts = [ ["", "取り込まない"], ...visFields().map((x)=>[x.key, x.label]), ["status","状態"] ];
       opts.forEach(([v,l])=>{ const o=document.createElement("option"); o.value=v; o.textContent=l; sel.appendChild(o); });
-      const fmatch = cfg.fields.find((x)=>x.label===h); if (fmatch) sel.value = fmatch.key; else if (h==="状態" || h==="ステータス") sel.value = "status";
+      const fmatch = visFields().find((x)=>x.label===h); if (fmatch) sel.value = fmatch.key; else if (h==="状態" || h==="ステータス") sel.value = "status";
       row.appendChild(from); row.appendChild(sel); box.appendChild(row);
     });
     $("#impBtn").disabled = false;
@@ -370,7 +476,7 @@ $("#impBtn").addEventListener("click",()=>{
   impRows.slice(1).forEach((row)=>{
     const v = {}; let st = cfg.statuses[0];
     row.forEach((cell,i)=>{ const m = map[i]; if(!m) return; if (m==="status"){ if (cfg.statuses.includes(cell)) st = cell; } else v[m] = cell; });
-    recs.unshift({ id: uid(), v, status: st, since: t, created: t, updated: t, hist:[{at:t, from:"", to:st}], img: null }); n++;
+    recs.unshift({ id: uid(), v, status: st, since: t, created: t, updated: t, hist:[{at:new Date().toISOString(), from:"", to:st}], img: null }); n++;
   });
   saveRecs(); alert(n+"件を読み込みました。"); show("list");
 });
@@ -389,10 +495,10 @@ function renderSettings(){
   const fe = $("#fldEditor"); fe.innerHTML = "";
   cfg.fields.forEach((f, i)=>{
     const row = document.createElement("div"); row.className = "fldrow";
-    row.innerHTML = '<input type="text" value="'+esc(f.label)+'" data-fi="'+i+'" class="fldLabel"><select data-fi="'+i+'" class="fldType"><option value="text">文字</option><option value="number">数値</option><option value="date">日付</option></select><button class="btn danger fldDel" data-fi="'+i+'" type="button">消す</button>';
+    row.innerHTML = '<input type="text" value="'+esc(f.label)+'" data-fi="'+i+'" class="fldLabel"><select data-fi="'+i+'" class="fldType"><option value="text">文字</option><option value="number">数値</option><option value="date">日付</option></select><button class="btn sub fldHide" data-fi="'+i+'" type="button">'+(f.hidden?"戻す":"隠す")+'</button>';
     row.querySelector(".fldType").value = f.type; fe.appendChild(row);
   });
-  fe.querySelectorAll(".fldDel").forEach((b)=> b.addEventListener("click",()=>{ cfg.fields.splice(parseInt(b.dataset.fi,10),1); renderSettings(); }));
+  fe.querySelectorAll(".fldHide").forEach((b)=> b.addEventListener("click",()=>{ readSettingsFields(); const f = cfg.fields[parseInt(b.dataset.fi,10)]; f.hidden = !f.hidden; renderSettings(); }));
   $("#setStatuses").value = cfg.statuses.join("、");
   const cb = $("#closedBox"); cb.innerHTML = "";
   cfg.statuses.forEach((s)=>{ const lab = document.createElement("label"); lab.style.marginRight = "1rem"; lab.innerHTML = '<input type="checkbox" class="closedChk" value="'+esc(s)+'"'+(cfg.closed.includes(s)?" checked":"")+"> "+esc(s); cb.appendChild(lab); });
@@ -406,7 +512,7 @@ function renderSettings(){
     card.innerHTML = h; pe.appendChild(card);
   });
   pe.querySelectorAll(".profDel").forEach((b)=> b.addEventListener("click",()=>{ readProfiles(); cfg.profiles.splice(parseInt(b.dataset.pi,10),1); renderSettings(); }));
-  pe.querySelectorAll(".profColAdd").forEach((b)=> b.addEventListener("click",()=>{ readProfiles(); cfg.profiles[parseInt(b.dataset.pi,10)].cols.push({header:"", src: cfg.fields[0].key}); renderSettings(); }));
+  pe.querySelectorAll(".profColAdd").forEach((b)=> b.addEventListener("click",()=>{ readProfiles(); cfg.profiles[parseInt(b.dataset.pi,10)].cols.push({header:"", src: (visFields()[0]||cfg.fields[0]).key}); renderSettings(); }));
   pe.querySelectorAll(".profColDel").forEach((b)=> b.addEventListener("click",()=>{ readProfiles(); cfg.profiles[parseInt(b.dataset.pi,10)].cols.splice(parseInt(b.dataset.ci,10),1); renderSettings(); }));
 }
 function readProfiles(){
@@ -415,7 +521,7 @@ function readProfiles(){
   document.querySelectorAll(".profSrc").forEach((sel)=>{ cfg.profiles[parseInt(sel.dataset.pi,10)].cols[parseInt(sel.dataset.ci,10)].src = sel.value; });
 }
 $("#fldAdd").addEventListener("click",()=>{ readSettingsFields(); cfg.fields.push({key:"f"+Date.now().toString(36), label:"新しい項目", type:"text"}); renderSettings(); });
-$("#profAdd").addEventListener("click",()=>{ readProfiles(); cfg.profiles.push({name:"新しい宛先", cols:[{header: cfg.fields[0].label, src: cfg.fields[0].key}]}); renderSettings(); });
+$("#profAdd").addEventListener("click",()=>{ readProfiles(); cfg.profiles.push({name:"新しい宛先", cols:[{header: (visFields()[0]||cfg.fields[0]).label, src: (visFields()[0]||cfg.fields[0]).key}]}); renderSettings(); });
 function readSettingsFields(){
   document.querySelectorAll(".fldLabel").forEach((inp)=>{ cfg.fields[parseInt(inp.dataset.fi,10)].label = inp.value; });
   document.querySelectorAll(".fldType").forEach((sel)=>{ cfg.fields[parseInt(sel.dataset.fi,10)].type = sel.value; });
