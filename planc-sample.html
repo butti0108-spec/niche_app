@@ -248,10 +248,15 @@
   </section>
   <div id="printArea"></div>
 </main>
+<script>window.PLANC_PLAN="C";window.PLANC_DEMO=true;</script>
 <script>
 "use strict";
-const TEST = new URLSearchParams(location.search).get("test") === "1";
-const K = TEST ? "planc_g1_test_" : "planc_g1_";
+const QP = new URLSearchParams(location.search);
+const TEST = QP.get("test") === "1";
+const PLAN = (window.PLANC_PLAN || QP.get("plan") || "C").toUpperCase();
+const DEMO = !!window.PLANC_DEMO || QP.get("demo") === "1";
+const FEAT = { status: PLAN === "C", stale: PLAN === "C", photo: PLAN === "C", profiles: PLAN === "C", history: PLAN === "C", summary: PLAN !== "A", calendar: PLAN !== "A" };
+const K = DEMO ? "planc_demo_" + PLAN.toLowerCase() + "_" : (TEST ? "planc_g1_test_" : "planc_g1_");
 const $ = (s) => document.querySelector(s);
 const todayStr = (d) => { const x = d ? new Date(d) : new Date(); return x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0")+"-"+String(x.getDate()).padStart(2,"0"); };
 const daysSince = (s) => Math.floor((new Date(todayStr()) - new Date(s)) / 86400000);
@@ -293,7 +298,32 @@ function seed(){
   ];
   cfg = JSON.parse(JSON.stringify(DEFAULT_CFG)); saveCfg(); saveRecs();
 }
+if (DEMO) { seed(); }
 if (TEST && !localStorage.getItem(K+"seeded")) { seed(); localStorage.setItem(K+"seeded","1"); }
+
+/* ---------- プラン別・見本の初期化 ---------- */
+function applyPlanDemo(){
+  document.querySelectorAll("#tabs button").forEach((b)=>{
+    const v = b.dataset.view;
+    if ((v === "stale" && !FEAT.stale) || (v === "summary" && !FEAT.summary) || (v === "calendar" && !FEAT.calendar)) b.style.display = "none";
+  });
+  if (!FEAT.status) { const w = $("#editStatus").closest("div, .card, form") ; }
+  if (!FEAT.photo) $("#photoArea").style.display = "none";
+  if (!FEAT.profiles) { $("#expProfileSel").style.display = "none"; $("#expProfile").style.display = "none"; }
+  if (PLAN !== "C") { const sl = $("#editStatus"); if (sl) { sl.style.display = "none"; const lb = sl.previousElementSibling; if (lb && lb.tagName === "LABEL") lb.style.display = "none"; } }
+  if (DEMO) {
+    const bar = document.createElement("div"); bar.className = "card"; bar.style.borderColor = "var(--navy)";
+    bar.innerHTML = "<h3>これは作例（見本）です</h3><p class='note' style='font-size:.95rem'>データの追加や保存はできない形にしてあります。画面の流れと使い勝手をご確認ください。項目や並びは、お仕事に合わせて調整します。こんな機能がほしい、レイアウトをこう変えたい、といったご相談もお気軽にどうぞ。</p>";
+    const m = document.querySelector("main"); m.insertBefore(bar, m.firstChild);
+    $("#addBtn").style.display = "none";
+    $("#toSettings").style.display = "none";
+    ["expAll","expProfile","bakOut","impBtn"].forEach((id)=>{ const b = document.getElementById(id); if (b) { b.disabled = true; b.style.opacity = ".45"; } });
+    $("#impFile").disabled = true;
+    const bf = $("#bakFile"); bf.disabled = true; const lb = document.querySelector('label[for="bakFile"]'); if (lb) { lb.style.opacity = ".45"; lb.style.pointerEvents = "none"; }
+    const sv = $("#saveBtn"); sv.disabled = true; sv.style.opacity = ".45"; sv.textContent = "見本では保存できません";
+    const db = $("#delBtn"); if (db) db.style.display = "none";
+  }
+}
 
 /* ---------- 文字の大きさ ---------- */
 const FS_STEPS = [16,17,18,20,22]; const FS_NAMES = ["小","やや小","標準","大","特大"];
@@ -334,7 +364,7 @@ function recCard(r){
   const d = daysSince(r.since); const stale = !cfg.closed.includes(r.status) && d >= cfg.staleDays;
   const tf = visFields().find((x)=>x.type==="text") || visFields()[0] || cfg.fields[0]; const meta = visFields().filter((f)=>f!==tf).slice(0,4).map((f)=> esc(r.v[f.key] ?? "")).filter(Boolean).join(" ／ ");
   const el = document.createElement("div"); el.className = "card rec"; el.dataset.id = r.id;
-  el.innerHTML = '<div class="thumb">' + (r.img ? '<img src="'+r.img+'" alt="">' : "写真<br>なし") + '</div><div class="body"><div class="name">'+esc(recTitle(r))+'</div><div class="meta">'+meta+'</div><div><span class="badge'+(stale?" stale":"")+'">'+esc(r.status)+'</span> <span class="meta">この状態になって '+d+' 日</span></div></div>';
+  el.innerHTML = (FEAT.photo ? '<div class="thumb">' + (r.img ? '<img src="'+r.img+'" alt="">' : "写真<br>なし") + '</div>' : "") + '<div class="body"><div class="name">'+esc(recTitle(r))+'</div><div class="meta">'+meta+'</div>' + (FEAT.status ? '<div><span class="badge'+(stale?" stale":"")+'">'+esc(r.status)+'</span> <span class="meta">この状態になって '+d+' 日</span></div>' : "") + '</div>';
   const eb = document.createElement("button"); eb.className = "editmini"; eb.type = "button"; eb.textContent = "編集";
   eb.addEventListener("click",(e)=>{ e.stopPropagation(); openEdit(r.id); });
   el.appendChild(eb);
@@ -343,7 +373,7 @@ function recCard(r){
 function renderList(){
   $("#appTitle").textContent = cfg.title;
   const chips = $("#statusChips"); chips.innerHTML = "";
-  ["すべて", ...cfg.statuses].forEach((s)=>{ const b=document.createElement("button"); b.textContent=s; b.classList.toggle("on", filterStatus===s); b.addEventListener("click",()=>{ filterStatus=s; renderList(); }); chips.appendChild(b); });
+  if (FEAT.status) ["すべて", ...cfg.statuses].forEach((s)=>{ const b=document.createElement("button"); b.textContent=s; b.classList.toggle("on", filterStatus===s); b.addEventListener("click",()=>{ filterStatus=s; renderList(); }); chips.appendChild(b); });
   const list = $("#recList"); list.innerHTML = "";
   const q = query.trim();
   const hit = recs.filter((r)=> (filterStatus==="すべて" || r.status===filterStatus) && (!q || visFields().some((f)=> String(r.v[f.key] ?? "").includes(q)) || r.status.includes(q)) );
@@ -522,12 +552,13 @@ function openDetail(id){
   const r = recs.find((x)=>x.id===id); if(!r) return; detailId = id;
   const box = $("#detailBox"); box.innerHTML = "";
   const head = document.createElement("div"); head.className = "card";
-  head.innerHTML = '<div class="name" style="margin-bottom:.3rem">'+esc(recTitle(r))+'</div><div><span class="badge">'+esc(r.status)+'</span> <span class="meta">この状態になって '+daysSince(r.since)+' 日</span></div>';
+  head.innerHTML = '<div class="name" style="margin-bottom:.3rem">'+esc(recTitle(r))+'</div>' + (FEAT.status ? '<div><span class="badge">'+esc(r.status)+'</span> <span class="meta">この状態になって '+daysSince(r.since)+' 日</span></div>' : "");
   box.appendChild(head);
   const tbl = document.createElement("div"); tbl.className = "card";
   visFields().forEach((f)=>{ const row = document.createElement("div"); row.className = "kv"; row.innerHTML = "<span>"+esc(f.label)+"</span><strong>"+esc(r.v[f.key] || "―")+"</strong>"; tbl.appendChild(row); });
   box.appendChild(tbl);
-  if (r.img) { const pc = document.createElement("div"); pc.className = "card"; pc.innerHTML = '<img src="'+r.img+'" alt="写真" style="max-width:100%">'; box.appendChild(pc); }
+  if (FEAT.photo && r.img) { const pc = document.createElement("div"); pc.className = "card"; pc.innerHTML = '<img src="'+r.img+'" alt="写真" style="max-width:100%">'; box.appendChild(pc); }
+  if (!FEAT.history) { show("detail"); return; }
   const hist = document.createElement("div"); hist.className = "card";
   const hh = document.createElement("h3"); hh.textContent = "時系列（履歴）"; hist.appendChild(hh);
   r.hist.slice().reverse().forEach((h)=>{
@@ -685,6 +716,7 @@ $("#wipeBtn").addEventListener("click",()=>{ if(confirm("登録と設定をす�
 
 applyFs();
 $("#appTitle").textContent = cfg.title;
+applyPlanDemo();
 show("list");
 </script>
 </body>
