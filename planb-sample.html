@@ -499,7 +499,11 @@ $("#printBtn").addEventListener("click",()=>{
   prs.forEach((r)=>{ h += "<tr>"+visFields().map((f)=>"<td>"+esc(r.v[f.key] ?? "")+"</td>").join("")+"<td>"+esc(r.status)+"</td><td>"+esc(r.created)+"</td></tr>"; });
   h += "</table>";
   $("#printArea").innerHTML = h;
-  window.print();
+  const pimg = $("#printArea .pieimg");
+  let printed = false;
+  const goPrint = () => { if (printed) return; printed = true; setTimeout(()=>window.print(), 60); };
+  if (pimg && !pimg.complete) { pimg.addEventListener("load", goPrint, {once:true}); pimg.addEventListener("error", goPrint, {once:true}); setTimeout(goPrint, 1500); }
+  else goPrint();
 });
 $("#calPrev").addEventListener("click",()=>{ const [y,m] = calYm.split("-").map(Number); const d = new Date(y, m-2, 1); calYm = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0"); calSel = null; renderCalendar(); });
 $("#calNext").addEventListener("click",()=>{ const [y,m] = calYm.split("-").map(Number); const d = new Date(y, m, 1); calYm = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0"); calSel = null; renderCalendar(); });
