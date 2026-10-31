@@ -1,0 +1,723 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>記録管理アプリ（プランC汎用版）</title>
+<style>
+  :root{ --navy:#122A5C; --blue:#EAF2FB; --ink:#1c2430; --sub:#5a6a82; --line:#c9d6e8; --ok:#1d7a4f; --warn:#b3540a; --bg:#f4f7fb; --card:#ffffff; }
+  html[data-mode="dark"]{ --bg:#101216; --card:#1b1e24; --ink:#e8ecf2; --sub:#9aa7ba; --line:#3a4152; }
+  *{ box-sizing:border-box; }
+  html{ font-size:18px; }
+  body{ margin:0; font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP",sans-serif; color:var(--ink); background:var(--bg); font-size:1rem; line-height:1.6; }
+  header{ background:var(--navy); color:#fff; padding:.7rem 1rem; display:flex; align-items:center; gap:.6rem; flex-wrap:wrap; }
+  header .title{ font-weight:700; font-size:1.1rem; }
+  header .spacer{ flex:1; }
+  .fsize{ display:flex; gap:.3rem; align-items:center; font-size:.78rem; }
+  .fsize button{ border:1px solid #fff; background:transparent; color:#fff; border-radius:999px; padding:.15rem .6rem; font-size:.78rem; cursor:pointer; }
+  .fsize button.on{ background:#fff; color:var(--navy); font-weight:700; }
+  .swatch{ width:1.35rem; height:1.35rem; border-radius:50%; border:2px solid rgba(255,255,255,.65); padding:0 !important; }
+  .swatch.on{ border-color:#fff; box-shadow:0 0 0 2px #fff inset; outline:2px solid #fff; }
+  nav.tabs{ display:flex; gap:.4rem; padding:.6rem 1rem 0; flex-wrap:wrap; }
+  nav.tabs button{ border:1px solid var(--line); background:var(--card); color:var(--ink); border-radius:999px; padding:.35rem .9rem; font-size:.95rem; cursor:pointer; }
+  nav.tabs button.on{ background:var(--navy); color:#fff; border-color:var(--navy); }
+  main{ padding:1rem; max-width:60rem; margin:0 auto; }
+  .card{ background:var(--card); border:1px solid var(--line); border-radius:.8rem; padding:.8rem; margin-bottom:.7rem; }
+  .rec{ display:flex; gap:.8rem; align-items:flex-start; cursor:pointer; }
+  .thumb{ width:4.2rem; height:4.2rem; border-radius:.5rem; background:var(--blue); display:flex; align-items:center; justify-content:center; color:var(--sub); font-size:.72rem; overflow:hidden; flex:none; text-align:center; }
+  .thumb img{ width:100%; height:100%; object-fit:cover; }
+  .rec .body{ flex:1; min-width:0; }
+  .rec .name{ font-weight:700; }
+  .rec .meta{ color:var(--sub); font-size:.85rem; }
+  .badge{ display:inline-block; border-radius:999px; padding:.05rem .6rem; font-size:.8rem; background:var(--blue); color:var(--navy); font-weight:700; }
+  .badge.stale{ background:#fdeeda; color:var(--warn); }
+  .chips{ display:flex; gap:.4rem; flex-wrap:wrap; margin:.6rem 0; }
+  .chips button{ border:1px solid var(--line); background:#fff; border-radius:999px; padding:.2rem .8rem; font-size:.9rem; cursor:pointer; }
+  .chips button.on{ background:var(--navy); color:#fff; }
+  input[type=text],input[type=number],input[type=date],input[type=password],select,textarea{ width:100%; padding:.5rem; border:1px solid var(--line); border-radius:.5rem; font-size:1rem; background:var(--card); color:var(--ink); }
+  label.flabel{ display:block; font-size:.85rem; color:var(--sub); margin:.6rem 0 .2rem; }
+  .btn{ display:inline-block; border:none; border-radius:999px; padding:.55rem 1.3rem; font-size:1rem; cursor:pointer; background:var(--navy); color:#fff; }
+  .btn.sub{ background:var(--card); color:var(--navy); border:1px solid var(--navy); }
+  .btn.danger{ background:#fff; color:#b00020; border:1px solid #b00020; }
+  .btnrow{ display:flex; gap:.5rem; flex-wrap:wrap; margin:.8rem 0; }
+  .hidden{ display:none !important; }
+  .card.rec{ position:relative; }
+  .editmini{ position:absolute; right:.6rem; bottom:.6rem; font-size:.78rem; padding:.28rem .7rem; border-radius:999px; border:1.5px solid var(--navy); background:var(--card); color:var(--navy); cursor:pointer; }
+  .kv{ display:flex; justify-content:space-between; gap:1rem; padding:.35rem 0; border-bottom:1px solid var(--line); }
+  .kv:last-child{ border-bottom:none; }
+  .kv span{ color:var(--sub); flex:none; }
+  .bar{ display:flex; align-items:center; gap:.6rem; margin:.32rem 0; }
+  .bar .bl{ width:5.2rem; flex:none; color:var(--sub); }
+  .bar .bt{ flex:1; background:var(--blue); border-radius:.4rem; height:1.15rem; overflow:hidden; }
+  .bar .bf{ background:var(--navy); height:100%; border-radius:.4rem; }
+  .bar .bv{ width:4.6rem; flex:none; text-align:right; }
+  .calgrid{ display:grid; grid-template-columns:repeat(7,1fr); gap:.3rem; margin-top:.6rem; }
+  .calgrid .dow{ text-align:center; color:var(--sub); font-size:.8rem; }
+  .calgrid .day{ border:1.5px solid var(--line); border-radius:.5rem; min-height:2.9rem; padding:.25rem; text-align:center; cursor:pointer; background:var(--card); color:var(--ink); }
+  .calgrid .day.today{ border-color:var(--navy); }
+  .calgrid .day.sel{ background:var(--blue); }
+  .calgrid .day .n{ font-weight:700; color:var(--navy); display:block; }
+  .calgrid .day.dim{ opacity:.35; }
+  #printArea{ display:none; }
+  @media print{
+    header, nav.tabs, main > section, .fab, #fsizeBox{ display:none !important; }
+    #printArea{ display:block; color:#000; font-size:11pt; line-height:1.55; }
+    @page{ size:A4; margin:11mm; }
+    #printArea table{ width:100%; border-collapse:collapse; margin:.5rem 0 1rem; }
+    #printArea th, #printArea td{ border:1px solid #666; padding:.3rem .5rem; text-align:left; }
+    #printArea th.n, #printArea td.n{ text-align:right; }
+    #printArea h1{ font-size:1.25rem; margin:0 0 .2rem; }
+    #printArea h2{ font-size:1.05rem; margin:.8rem 0 .3rem; }
+    #printArea .charts{ display:flex; gap:1.2rem; align-items:flex-start; }
+    #printArea .charts .piebox{ flex:none; }
+    #printArea .charts .barbox{ flex:1; }
+    #printArea .pieimg{ display:block; width:8.6rem; margin:.2rem auto; }
+    #printArea .pbar{ display:flex; align-items:center; gap:.5rem; margin:.25rem 0; }
+    #printArea .pbar .bl{ width:5rem; }
+    #printArea .pbar .bt{ flex:1; border:1px solid #666; height:.8rem; }
+    #printArea .pbar .bf{ display:block; height:100%; background:#122A5C; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    #printArea .pbar .bv{ width:3.5rem; text-align:right; }
+  }
+  .kv strong{ text-align:right; word-break:break-all; }
+  .photoarea{ border:1px dashed var(--line); border-radius:.8rem; padding:.7rem; text-align:center; background:#fbfdff; }
+  .photoarea img{ max-width:100%; max-height:14rem; border-radius:.5rem; }
+  .hist{ font-size:.88rem; color:var(--sub); }
+  .hist li{ margin:.15rem 0; }
+  table.sum{ width:100%; border-collapse:collapse; }
+  table.sum th, table.sum td{ border-bottom:1px solid var(--line); padding:.4rem; text-align:left; }
+  table.sum td.n, table.sum th.n{ text-align:right; }
+  .note{ font-size:.85rem; color:var(--sub); }
+  .maprow{ display:flex; gap:.5rem; align-items:center; margin:.3rem 0; }
+  .maprow .from{ flex:1; font-size:.9rem; }
+  .maprow select{ flex:1; }
+  .fldrow{ display:flex; gap:.4rem; align-items:center; margin:.3rem 0; }
+  .fldrow input{ flex:2; } .fldrow select{ flex:1; }
+  dialog{ border:1px solid var(--line); border-radius:.8rem; max-width:34rem; width:92%; }
+</style>
+</head>
+<body>
+<header>
+  <div class="title" id="appTitle">記録管理アプリ</div>
+  <div class="spacer"></div>
+  <div class="fsize" id="fsizeBox"><span>文字</span></div>
+  <div class="fsize" id="themeBox"><span>色</span></div>
+</header>
+<nav class="tabs" id="tabs">
+  <button data-view="list" class="on">一覧</button>
+  <button data-view="stale">滞留</button>
+  <button data-view="summary">集計</button>
+  <button data-view="calendar">カレンダー</button>
+  <button data-view="data">データの出し入れ</button>
+</nav>
+<main>
+  <section id="view-list">
+    <div class="btnrow"><button class="btn" id="addBtn">＋ 新しく登録</button></div>
+    <input type="text" id="searchBox" placeholder="検索（名前・番号・メモなど）">
+    <div class="chips" id="statusChips"></div>
+    <div id="recList"></div>
+    <p class="note" id="listEmpty" style="display:none">登録がありません。</p>
+  </section>
+  <section id="view-stale" class="hidden">
+    <p class="note" id="staleHead"></p>
+    <div id="staleList"></div>
+  </section>
+  <section id="view-summary" class="hidden">
+    <div class="card">
+      <div class="chips" id="periodChips"></div>
+      <table class="sum" id="sumTable"></table>
+      <div class="btnrow"><button class="btn" id="printBtn" type="button">まとめを印刷する</button></div>
+      <p class="note">印刷は、表示している期間の集計と記録の一覧です。月ごとに印刷して、ファイルに綴じる使い方を想定しています。</p>
+    </div>
+    <div class="card"><h3>状態の内訳（円グラフ）</h3><canvas id="pieChart" width="300" height="300" style="display:block;margin:0 auto;max-width:80%"></canvas><div id="pieLegend"></div></div>
+    <div class="card"><h3>状態ごとの件数（グラフ）</h3><div id="chartStatus"></div></div>
+    <div class="card"><h3>月ごとの登録件数（グラフ）</h3><div id="chartMonth"></div></div>
+  </section>
+  <section id="view-calendar" class="hidden">
+    <div class="card">
+      <div class="btnrow" style="justify-content:space-between"><button class="btn sub" id="calPrev">← 前の月</button><strong id="calTitle"></strong><button class="btn sub" id="calNext">次の月 →</button></div>
+      <div id="calGrid" class="calgrid"></div>
+      <p class="note">数字は、その日に登録された件数です。日をタップすると、その日の記録が出ます。</p>
+    </div>
+    <div id="calList"></div>
+    <p class="note">金額は、数値の項目のうち最初のものを合計しています。</p>
+  </section>
+  <section id="view-data" class="hidden">
+    <div class="card">
+      <h3>書き出し（CSV）</h3>
+      <div class="btnrow">
+        <button class="btn" id="expAll">全項目をCSVで書き出す</button>
+        <select id="expProfileSel" style="max-width:16rem"></select>
+        <button class="btn sub" id="expProfile">宛先用CSVを書き出す</button>
+      </div>
+      <p class="note">写真はCSVには含まれません。写真は、このアプリの中と、バックアップの中だけにあります。</p>
+    </div>
+    <div class="card">
+      <h3>読み込み（CSV）</h3>
+      <input type="file" id="impFile" accept=".csv,text/csv">
+      <div id="impMap"></div>
+      <div class="btnrow"><button class="btn" id="impBtn" disabled>読み込む</button></div>
+      <p class="note">1行目は項目名の行として読みます。列ごとに、取り込み先の項目を選んでください。</p>
+    </div>
+    <div class="card">
+      <h3>バックアップ（写真を含む全データ）</h3>
+      <div class="btnrow">
+        <button class="btn sub" id="bakOut">バックアップを保存</button>
+        <label class="btn sub" for="bakFile" style="cursor:pointer">バックアップから復元</label>
+        <input type="file" id="bakFile" accept=".json,application/json" class="hidden">
+      </div>
+      <p class="note">端末をなくしたときの控えは、このバックアップです。CSVとは別に、定期的に保存してください。</p>
+    </div>
+      <p style="text-align:right;margin-top:1.2rem"><button class="note" id="toSettings" type="button" style="background:none;border:none;text-decoration:underline;cursor:pointer">管理者用の設定はこちら</button></p>
+    <div id="passGate" class="card hidden">
+      <h3>管理者用の設定</h3>
+      <p class="note">合言葉を入れてください。</p>
+      <label class="flabel">合言葉</label>
+      <input type="password" id="passIn" autocomplete="off">
+      <div class="btnrow"><button class="btn" id="passGo" type="button">設定を開く</button></div>
+      <p class="note" id="passErr" style="color:#b3261e"></p>
+    </div>
+  </section>
+  <section id="view-settings" class="hidden">
+    <div class="btnrow"><button class="btn sub" id="settingsBack" type="button">← データの出し入れに戻る</button></div>
+    <p class="note">ここは管理者用の設定です。ふだんの操作では使いません。合言葉は、うっかり開かないための軽い鍵です。</p>
+    <div class="card">
+      <h3>合言葉の変更</h3>
+      <label class="flabel">新しい合言葉</label>
+      <input type="text" id="newPass" autocomplete="off">
+      <div class="btnrow"><button class="btn sub" id="passChange" type="button">合言葉を変える</button></div>
+    </div>
+    <div class="card">
+      <h3>アプリの名前</h3>
+      <input type="text" id="setTitle">
+    </div>
+    <div class="card">
+      <h3>項目</h3>
+      <p class="note">項目の追加は、そのまま使えます。不要になった項目は「隠す」にすると、データは残したまま画面から外れます（元に戻せます）。</p>
+      <div id="fldEditor"></div>
+      <div class="btnrow"><button class="btn sub" id="fldAdd">項目を追加</button></div>
+    </div>
+    <div class="card">
+      <h3>状態の種類</h3>
+      <textarea id="setStatuses" rows="3"></textarea>
+      <p class="note">カンマか改行で区切ってください。この並びが、状態の並びになります。</p>
+      <h3>終わりの状態（滞留に数えない）</h3>
+      <div id="closedBox"></div>
+      <p class="note">チェックした状態は「終わったもの」として扱い、何日たっても滞留（止まっている登録）には出しません。例：売約とキャンセル。</p>
+      <label class="flabel">滞留とみなす日数（この日数以上、状態が変わっていないもの）</label>
+      <input type="number" id="setStaleDays" min="1" style="max-width:8rem">
+    </div>
+    <div class="card">
+      <h3>宛先用CSVの形（プロファイル）</h3>
+      <div id="profEditor"></div>
+      <div class="btnrow"><button class="btn sub" id="profAdd">宛先を追加</button></div>
+      <p class="note">宛先ごとに、出す列の名前と中身を決めておけます。kintone用、販売サイト用、請求用などを、ここで分けます。</p>
+    </div>
+    <div class="btnrow"><button class="btn" id="setSave">設定を保存</button></div>
+    <div class="card">
+      <h3>データの全消去</h3>
+      <div class="btnrow"><button class="btn danger" id="wipeBtn">登録と設定をすべて消す</button></div>
+    </div>
+  </section>
+  <section id="view-detail" class="hidden">
+    <div class="btnrow"><button class="btn sub" id="detailBack">← 一覧に戻る</button></div>
+    <div id="detailBox"></div>
+    <div class="btnrow"><button class="btn" id="detailEdit">編集する（入力の画面へ）</button></div>
+  </section>
+  <section id="view-edit" class="hidden">
+    <div class="btnrow"><button class="btn sub" id="backBtn">← 戻る</button></div>
+    <div class="card">
+      <div class="photoarea" id="photoArea">
+        <div id="photoView"><p class="note">写真はまだありません</p></div>
+        <div class="btnrow" style="justify-content:center">
+          <label class="btn sub" for="camFile" style="cursor:pointer">カメラで撮る</label>
+          <label class="btn sub" for="galFile" style="cursor:pointer">写真・画像から選ぶ</label>
+          <button class="btn danger" id="photoDel" type="button">写真を消す</button>
+        </div>
+        <input type="file" id="camFile" accept="image/*" capture="environment" class="hidden">
+        <input type="file" id="galFile" accept="image/*" class="hidden">
+        <p class="note">写真は小さく圧縮して、この端末の中に保存されます。</p>
+      </div>
+      <div id="editFields"></div>
+      <label class="flabel">状態</label>
+      <select id="editStatus"></select>
+      <div class="btnrow">
+        <button class="btn" id="saveBtn">保存する</button>
+        <button class="btn danger" id="delBtn">この登録を消す</button>
+      </div>
+    </div>
+  </section>
+  <div id="printArea"></div>
+</main>
+<script>window.PLANC_PLAN="B";window.PLANC_DEMO=true;</script>
+<script>
+"use strict";
+const QP = new URLSearchParams(location.search);
+const TEST = QP.get("test") === "1";
+const PLAN = (window.PLANC_PLAN || QP.get("plan") || "C").toUpperCase();
+const DEMO = !!window.PLANC_DEMO || QP.get("demo") === "1";
+const FEAT = { status: PLAN === "C", stale: PLAN === "C", photo: PLAN === "C", profiles: PLAN === "C", history: PLAN === "C", summary: PLAN !== "A", calendar: PLAN !== "A" };
+const K = DEMO ? "planc_demo_" + PLAN.toLowerCase() + "_" : (TEST ? "planc_g1_test_" : "planc_g1_");
+const $ = (s) => document.querySelector(s);
+const todayStr = (d) => { const x = d ? new Date(d) : new Date(); return x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0")+"-"+String(x.getDate()).padStart(2,"0"); };
+const daysSince = (s) => Math.floor((new Date(todayStr()) - new Date(s)) / 86400000);
+const uid = () => "r" + Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+const DEFAULT_CFG = {
+  pass: "あおぞら",
+  title: "記録管理アプリ（プランC汎用版）",
+  fields: [
+    {key:"name", label:"名前", type:"text"},
+    {key:"code", label:"番号", type:"text"},
+    {key:"price", label:"金額", type:"number"},
+    {key:"day", label:"日付", type:"date"},
+    {key:"memo", label:"メモ", type:"text"}
+  ],
+  statuses: ["未対応","商談中","売約","キャンセル"],
+  closed: ["売約","キャンセル"],
+  staleDays: 7,
+  profiles: []
+};
+function loadCfg(){ try{ const c = JSON.parse(localStorage.getItem(K+"cfg")); if(c && c.fields && c.statuses) return Object.assign({}, DEFAULT_CFG, c); }catch(e){} return JSON.parse(JSON.stringify(DEFAULT_CFG)); }
+function saveCfg(){ localStorage.setItem(K+"cfg", JSON.stringify(cfg)); }
+function loadRecs(){ try{ return JSON.parse(localStorage.getItem(K+"recs")) || []; }catch(e){ return []; } }
+function saveRecs(){ try{ localStorage.setItem(K+"recs", JSON.stringify(recs)); }catch(e){ alert("保存できませんでした。写真の容量が大きい可能性があります。"); } }
+let cfg = loadCfg();
+const visFields = () => cfg.fields.filter((f)=>!f.hidden);
+let recs = loadRecs();
+
+function seed(){
+  const mk = (name, code, price, status, ago) => { const s = todayStr(Date.now() - ago*86400000); return { id: uid()+code, v:{name, code, price, day:s, memo:""}, status, since:s, created:s, updated:s, hist:[{at:s, from:"", to:status}], img:null }; };
+  recs = [
+    mk("サンプル作品A","A-001",120000,"商談中",12),
+    mk("サンプル作品B","B-002",85000,"未対応",9),
+    mk("サンプル作品C","C-003",200000,"商談中",2),
+    mk("サンプル作品D","D-004",45000,"売約",20),
+    mk("サンプル作品E","E-005",60000,"未対応",1),
+    mk("サンプル作品F","F-006",30000,"キャンセル",5)
+  ];
+  cfg = JSON.parse(JSON.stringify(DEFAULT_CFG)); saveCfg(); saveRecs();
+}
+if (DEMO) { seed(); }
+if (TEST && !localStorage.getItem(K+"seeded")) { seed(); localStorage.setItem(K+"seeded","1"); }
+
+/* ---------- プラン別・見本の初期化 ---------- */
+function applyPlanDemo(){
+  document.querySelectorAll("#tabs button").forEach((b)=>{
+    const v = b.dataset.view;
+    if ((v === "stale" && !FEAT.stale) || (v === "summary" && !FEAT.summary) || (v === "calendar" && !FEAT.calendar)) b.style.display = "none";
+  });
+  if (!FEAT.status) { const w = $("#editStatus").closest("div, .card, form") ; }
+  if (!FEAT.photo) $("#photoArea").style.display = "none";
+  if (!FEAT.profiles) { $("#expProfileSel").style.display = "none"; $("#expProfile").style.display = "none"; }
+  if (PLAN !== "C") { const sl = $("#editStatus"); if (sl) { sl.style.display = "none"; const lb = sl.previousElementSibling; if (lb && lb.tagName === "LABEL") lb.style.display = "none"; } }
+  if (DEMO) {
+    const bar = document.createElement("div"); bar.className = "card"; bar.style.borderColor = "var(--navy)";
+    bar.innerHTML = "<h3>これは作例（見本）です</h3><p class='note' style='font-size:.95rem'>データの追加や保存はできない形にしてあります。画面の流れと使い勝手をご確認ください。項目や並びは、お仕事に合わせて調整します。こんな機能がほしい、レイアウトをこう変えたい、といったご相談もお気軽にどうぞ。</p>";
+    const m = document.querySelector("main"); m.insertBefore(bar, m.firstChild);
+    $("#addBtn").style.display = "none";
+    $("#toSettings").style.display = "none";
+    ["expAll","expProfile","bakOut","impBtn"].forEach((id)=>{ const b = document.getElementById(id); if (b) { b.disabled = true; b.style.opacity = ".45"; } });
+    $("#impFile").disabled = true;
+    const bf = $("#bakFile"); bf.disabled = true; const lb = document.querySelector('label[for="bakFile"]'); if (lb) { lb.style.opacity = ".45"; lb.style.pointerEvents = "none"; }
+    const sv = $("#saveBtn"); sv.disabled = true; sv.style.opacity = ".45"; sv.textContent = "見本では保存できません";
+    const db = $("#delBtn"); if (db) db.style.display = "none";
+  }
+}
+
+/* ---------- 文字の大きさ ---------- */
+const FS_STEPS = [16,17,18,20,22]; const FS_NAMES = ["小","やや小","標準","大","特大"];
+let fsIdx = parseInt(localStorage.getItem(K+"fs") ?? "2", 10); if(!(fsIdx>=0 && fsIdx<5)) fsIdx = 2;
+function applyFs(){ document.documentElement.style.fontSize = FS_STEPS[fsIdx]+"px"; document.querySelectorAll("#fsizeBox button").forEach((b,i)=>b.classList.toggle("on", i===fsIdx)); }
+(function(){ const box = $("#fsizeBox"); FS_NAMES.forEach((n,i)=>{ const b=document.createElement("button"); b.textContent=n; b.addEventListener("click",()=>{ fsIdx=i; localStorage.setItem(K+"fs", String(i)); applyFs(); }); box.appendChild(b); }); })();
+
+/* ---------- 画面の色（白・黒・赤・青・緑） ---------- */
+const THEMES = [
+  { name:"白", mode:"light", main:"#122A5C", tint:"#EAF2FB" },
+  { name:"黒", mode:"dark",  main:"#122A5C", tint:"#262d3d" }
+];
+let themeIdx = parseInt(localStorage.getItem(K+"theme") ?? "0", 10); if(!(themeIdx>=0 && themeIdx<THEMES.length)) themeIdx = 0;
+function applyTheme(){
+  const t = THEMES[themeIdx]; const root = document.documentElement;
+  root.style.setProperty("--navy", t.main);
+  root.style.setProperty("--blue", t.tint);
+  root.dataset.mode = t.mode;
+  document.querySelectorAll("#themeBox button").forEach((b,i)=> b.classList.toggle("on", i===themeIdx));
+  const sum = $("#view-summary");
+  if (sum && !sum.classList.contains("hidden")) renderSummary();
+}
+(function(){
+  const tb = $("#themeBox");
+  THEMES.forEach((t,i)=>{ const b = document.createElement("button"); b.type = "button"; b.textContent = t.name; b.addEventListener("click",()=>{ themeIdx = i; localStorage.setItem(K+"theme", String(i)); applyTheme(); }); tb.appendChild(b); });
+  applyTheme();
+})();
+
+/* ---------- 画面の切り替え ---------- */
+let curView = "list";
+function show(view){ curView = view; ["list","stale","summary","data","settings","edit","detail","calendar"].forEach((v)=>{ const el = $("#view-"+v); if(el) el.classList.toggle("hidden", v!==view); }); document.querySelectorAll("#tabs button").forEach((b)=>b.classList.toggle("on", b.dataset.view===view || ((view==="detail"||view==="edit") && b.dataset.view==="list"))); if(view==="list") renderList(); if(view==="stale") renderStale(); if(view==="summary") renderSummary(); if(view==="data") renderData(); if(view==="calendar") renderCalendar(); if(view==="settings") renderSettings(); window.scrollTo(0,0); }
+document.querySelectorAll("#tabs button").forEach((b)=>b.addEventListener("click",()=>show(b.dataset.view)));
+
+/* ---------- 一覧 ---------- */
+let filterStatus = "すべて"; let query = "";
+function recTitle(r){ const f = visFields().find((x)=>x.type==="text") || visFields()[0] || cfg.fields[0]; return r.v[f.key] || "（無題）"; }
+function recCard(r){
+  const d = daysSince(r.since); const stale = !cfg.closed.includes(r.status) && d >= cfg.staleDays;
+  const tf = visFields().find((x)=>x.type==="text") || visFields()[0] || cfg.fields[0]; const meta = visFields().filter((f)=>f!==tf).slice(0,4).map((f)=> esc(r.v[f.key] ?? "")).filter(Boolean).join(" ／ ");
+  const el = document.createElement("div"); el.className = "card rec"; el.dataset.id = r.id;
+  el.innerHTML = (FEAT.photo ? '<div class="thumb">' + (r.img ? '<img src="'+r.img+'" alt="">' : "写真<br>なし") + '</div>' : "") + '<div class="body"><div class="name">'+esc(recTitle(r))+'</div><div class="meta">'+meta+'</div>' + (FEAT.status ? '<div><span class="badge'+(stale?" stale":"")+'">'+esc(r.status)+'</span> <span class="meta">この状態になって '+d+' 日</span></div>' : "") + '</div>';
+  const eb = document.createElement("button"); eb.className = "editmini"; eb.type = "button"; eb.textContent = "編集";
+  eb.addEventListener("click",(e)=>{ e.stopPropagation(); openEdit(r.id); });
+  el.appendChild(eb);
+  el.addEventListener("click",()=>openDetail(r.id)); return el;
+}
+function renderList(){
+  $("#appTitle").textContent = cfg.title;
+  const chips = $("#statusChips"); chips.innerHTML = "";
+  if (FEAT.status) ["すべて", ...cfg.statuses].forEach((s)=>{ const b=document.createElement("button"); b.textContent=s; b.classList.toggle("on", filterStatus===s); b.addEventListener("click",()=>{ filterStatus=s; renderList(); }); chips.appendChild(b); });
+  const list = $("#recList"); list.innerHTML = "";
+  const q = query.trim();
+  const hit = recs.filter((r)=> (filterStatus==="すべて" || r.status===filterStatus) && (!q || visFields().some((f)=> String(r.v[f.key] ?? "").includes(q)) || r.status.includes(q)) );
+  hit.forEach((r)=> list.appendChild(recCard(r)));
+  $("#listEmpty").style.display = hit.length ? "none" : "block";
+}
+$("#searchBox").addEventListener("input",(e)=>{ query = e.target.value; renderList(); });
+$("#addBtn").addEventListener("click",()=>openEdit(null));
+
+/* ---------- 滞留 ---------- */
+function staleRecs(){ return recs.filter((r)=> !cfg.closed.includes(r.status) && daysSince(r.since) >= cfg.staleDays).sort((a,b)=> daysSince(b.since)-daysSince(a.since)); }
+function renderStale(){ $("#staleHead").textContent = "「"+cfg.closed.join("、")+"」以外の状態のまま、"+cfg.staleDays+"日以上変わっていない登録です。"; const list = $("#staleList"); list.innerHTML=""; const st = staleRecs(); if(!st.length) list.innerHTML = '<p class="note">滞留している登録はありません。</p>'; st.forEach((r)=> list.appendChild(recCard(r))); }
+
+/* ---------- 集計 ---------- */
+let period = "all";
+function inPeriod(r){
+  if (period === "all") return true;
+  const c = (r.created || "");
+  const now = new Date(); const ym = now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0");
+  if (period === "month") return c.startsWith(ym);
+  if (period === "prev") { const d = new Date(now.getFullYear(), now.getMonth()-1, 1); return c.startsWith(d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")); }
+  if (period === "year") return c.startsWith(String(now.getFullYear()));
+  return true;
+}
+const periodLabel = () => ({all:"全期間", month:"今月", prev:"先月", year:"今年"})[period];
+function renderSummary(){
+  const numF = visFields().find((f)=>f.type==="number");
+  const pc = $("#periodChips"); pc.innerHTML = "";
+  [["all","全期間"],["month","今月"],["prev","先月"],["year","今年"]].forEach(([k,lab])=>{ const b = document.createElement("button"); b.textContent = lab; b.classList.toggle("on", period===k); b.addEventListener("click",()=>{ period = k; renderSummary(); }); pc.appendChild(b); });
+  const prs = recs.filter(inPeriod);
+  let html = "<tr><th>状態</th><th class='n'>件数</th>" + (numF ? "<th class='n'>"+esc(numF.label)+"の合計</th>" : "") + "</tr>";
+  let total = 0, totalN = 0;
+  cfg.statuses.forEach((s)=>{ const rs = prs.filter((r)=>r.status===s); const sum = numF ? rs.reduce((a,r)=> a + (parseFloat(r.v[numF.key])||0), 0) : 0; total += rs.length; totalN += sum; html += "<tr><td>"+esc(s)+"</td><td class='n'>"+rs.length+"</td>" + (numF ? "<td class='n'>"+sum.toLocaleString()+"</td>" : "") + "</tr>"; });
+  html += "<tr><td><b>合計</b></td><td class='n'><b>"+total+"</b></td>" + (numF ? "<td class='n'><b>"+totalN.toLocaleString()+"</b></td>" : "") + "</tr>";
+  $("#sumTable").innerHTML = html;
+  const bar = (label, val, max, suffix) => '<div class="bar"><span class="bl">'+esc(label)+'</span><span class="bt"><span class="bf" style="display:block;width:'+(max? Math.round(val/max*100):0)+'%"></span></span><span class="bv">'+val+(suffix||"")+'</span></div>';
+  const maxC = Math.max(1, ...cfg.statuses.map((st)=> recs.filter((r)=>r.status===st).length));
+  $("#chartStatus").innerHTML = cfg.statuses.map((st)=> bar(st, prs.filter((r)=>r.status===st).length, Math.max(1, ...cfg.statuses.map((x)=> prs.filter((r)=>r.status===x).length)), "件")).join("");
+  const months = {};
+  recs.forEach((r)=>{ const m = (r.created || "").slice(0,7); if (m) months[m] = (months[m]||0)+1; });
+  const mk = Object.keys(months).sort().slice(-6);
+  const maxM = Math.max(1, ...mk.map((m)=>months[m]));
+  $("#chartMonth").innerHTML = mk.length ? mk.map((m)=> bar(m.replace("-","年")+"月", months[m], maxM, "件")).join("") : '<p class="note">まだ記録がありません</p>';
+  drawPie(prs, numF);
+}
+
+/* ---------- 円グラフ（状態の内訳） ---------- */
+const PIE_COLORS = ["#1f3a5f","#2e7d5a","#c9a227","#c0392b","#5b7fa6","#8e6cc8","#4aa3a2","#999999"];
+function drawPie(prs, numF){
+  const cv = $("#pieChart"); if (!cv) return;
+  const ctx = cv.getContext("2d");
+  const parts = cfg.statuses.map((st, i)=>{
+    const rs = prs.filter((r)=>r.status===st);
+    const val = numF ? rs.reduce((a,r)=> a + (parseFloat(r.v[numF.key])||0), 0) : rs.length;
+    return { label: st, val, color: PIE_COLORS[i % PIE_COLORS.length] };
+  }).filter((x)=> x.val > 0);
+  const total = parts.reduce((a,x)=> a + x.val, 0);
+  ctx.clearRect(0,0,cv.width,cv.height);
+  const cx = cv.width/2, cy = cv.height/2, R = 138, r = R * 0.58;
+  if (total > 0) {
+    let ang = -Math.PI/2;
+    parts.forEach((x)=>{
+      const sw = x.val / total * Math.PI * 2;
+      ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,R,ang,ang+sw); ctx.closePath();
+      ctx.fillStyle = x.color; ctx.fill();
+      ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--card"); ctx.lineWidth = 2; ctx.stroke();
+      ang += sw;
+    });
+    ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--card"); ctx.fill();
+    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--ink"); ctx.font = "bold 21px sans-serif"; ctx.textAlign = "center";
+    ctx.fillText(numF ? "¥" + total.toLocaleString() : total + "件", cx, cy + 7);
+  } else {
+    ctx.fillStyle = "#999"; ctx.font = "15px sans-serif"; ctx.textAlign = "center";
+    ctx.fillText("データがありません", cx, cy);
+  }
+  $("#pieLegend").innerHTML = parts.map((x)=> '<div class="bar"><span class="bl"><span style="display:inline-block;width:.8rem;height:.8rem;border-radius:.2rem;background:'+x.color+';margin-right:.35rem"></span>'+esc(x.label)+'</span><span class="bv" style="width:auto">'+(numF ? "¥"+x.val.toLocaleString() : x.val+"件")+"（"+(total ? Math.round(x.val/total*1000)/10 : 0)+"%）</span></div>").join("");
+}
+
+/* ---------- カレンダー ---------- */
+let calYm = null; let calSel = null;
+function renderCalendar(){
+  if (!calYm) { const d = new Date(); calYm = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0"); }
+  const [y, m] = calYm.split("-").map(Number);
+  $("#calTitle").textContent = y+"年"+m+"月";
+  const first = new Date(y, m-1, 1); const startDay = first.getDay();
+  const dim = new Date(y, m, 0).getDate(); const prevDim = new Date(y, m-1, 0).getDate();
+  const today = todayStr();
+  const cnt = {}; recs.forEach((r)=>{ cnt[r.created] = (cnt[r.created]||0)+1; });
+  const grid = $("#calGrid"); grid.innerHTML = "";
+  ["日","月","火","水","木","金","土"].forEach((w)=>{ const e = document.createElement("div"); e.className = "dow"; e.textContent = w; grid.appendChild(e); });
+  const cells = [];
+  for (let i=0;i<startDay;i++) cells.push({d: prevDim-startDay+1+i, dim:true, key:""});
+  for (let d=1; d<=dim; d++) { const key = y+"-"+String(m).padStart(2,"0")+"-"+String(d).padStart(2,"0"); cells.push({d, dim:false, key}); }
+  let td = 1; while (cells.length % 7) cells.push({d: td++, dim:true, key:""});
+  cells.slice(0,42).forEach((c)=>{
+    const e = document.createElement("button"); e.type = "button";
+    e.className = "day" + (c.dim ? " dim" : "") + (c.key===today ? " today" : "") + (c.key===calSel ? " sel" : "");
+    e.innerHTML = c.d + (c.key && cnt[c.key] ? '<span class="n">'+cnt[c.key]+'件</span>' : "");
+    if (c.key) e.addEventListener("click",()=>{ calSel = c.key; renderCalendar(); });
+    grid.appendChild(e);
+  });
+  const list = $("#calList"); list.innerHTML = "";
+  if (calSel) {
+    const hits = recs.filter((r)=> r.created === calSel);
+    const head = document.createElement("p"); head.className = "note"; head.textContent = calSel + " の登録：" + hits.length + "件";
+    list.appendChild(head);
+    hits.forEach((r)=> list.appendChild(recCard(r)));
+  }
+}
+$("#printBtn").addEventListener("click",()=>{
+  const numF = visFields().find((f)=>f.type==="number");
+  const prs = recs.filter(inPeriod);
+  let h = "<h1>"+esc(cfg.title)+" まとめ</h1><p>期間："+periodLabel()+"／作成日："+todayStr()+"</p>";
+  const pieCv = $("#pieChart");
+  let pieHtml = "";
+  if (pieCv) { try { pieHtml = '<div class="piebox"><h2>状態の内訳（円グラフ）</h2><img class="pieimg" src="' + pieCv.toDataURL("image/png") + '" alt="円グラフ"></div>'; } catch(e){} }
+  const maxPc = Math.max(1, ...cfg.statuses.map((st)=> prs.filter((r)=>r.status===st).length));
+  const barsHtml = '<div class="barbox"><h2>状態ごとの件数</h2>' + cfg.statuses.map((st)=>{ const c = prs.filter((r)=>r.status===st).length; return '<div class="pbar"><span class="bl">' + esc(st) + '</span><span class="bt"><span class="bf" style="width:' + Math.round(c/maxPc*100) + '%"></span></span><span class="bv">' + c + '件</span></div>'; }).join("") + "</div>";
+  h += '<div class="charts">' + pieHtml + barsHtml + "</div>";
+  h += "<h2>集計</h2><table><tr><th>状態</th><th class='n'>件数</th>"+(numF ? "<th class='n'>"+esc(numF.label)+"の合計</th>" : "")+"</tr>";
+  cfg.statuses.forEach((st)=>{ const rs = prs.filter((r)=>r.status===st); const sum = numF ? rs.reduce((a,r)=> a + (parseFloat(r.v[numF.key])||0), 0) : 0; h += "<tr><td>"+esc(st)+"</td><td class='n'>"+rs.length+"</td>"+(numF ? "<td class='n'>"+sum.toLocaleString()+"</td>" : "")+"</tr>"; });
+  h += "</table><h2>記録の一覧</h2><table><tr>"+visFields().map((f)=>"<th>"+esc(f.label)+"</th>").join("")+"<th>状態</th><th>登録日</th></tr>";
+  prs.forEach((r)=>{ h += "<tr>"+visFields().map((f)=>"<td>"+esc(r.v[f.key] ?? "")+"</td>").join("")+"<td>"+esc(r.status)+"</td><td>"+esc(r.created)+"</td></tr>"; });
+  h += "</table>";
+  $("#printArea").innerHTML = h;
+  window.print();
+});
+$("#calPrev").addEventListener("click",()=>{ const [y,m] = calYm.split("-").map(Number); const d = new Date(y, m-2, 1); calYm = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0"); calSel = null; renderCalendar(); });
+$("#calNext").addEventListener("click",()=>{ const [y,m] = calYm.split("-").map(Number); const d = new Date(y, m, 1); calYm = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0"); calSel = null; renderCalendar(); });
+
+/* ---------- 編集・写真 ---------- */
+let editing = null; let editImg = null;
+function openEdit(id){
+  editing = recs.find((r)=>r.id===id) || null; editImg = editing ? editing.img : null;
+  const box = $("#editFields"); box.innerHTML = "";
+  visFields().forEach((f)=>{
+    const lab = document.createElement("label"); lab.className="flabel"; lab.textContent = f.label;
+    const inp = document.createElement("input"); inp.type = f.type==="number" ? "number" : (f.type==="date" ? "date" : "text"); inp.id = "ef_"+f.key; inp.value = editing ? (editing.v[f.key] ?? "") : "";
+    box.appendChild(lab); box.appendChild(inp);
+  });
+  const sel = $("#editStatus"); sel.innerHTML = ""; cfg.statuses.forEach((s)=>{ const o=document.createElement("option"); o.value=s; o.textContent=s; sel.appendChild(o); });
+  if (editing) sel.value = editing.status;
+  renderPhoto();
+  $("#delBtn").style.display = editing ? "inline-block" : "none";
+  show("edit");
+}
+function renderPhoto(){ const v = $("#photoView"); v.innerHTML = editImg ? '<img src="'+editImg+'" alt="写真">' : '<p class="note">写真はまだありません</p>'; }
+function handlePhotoFile(file){
+  if(!file) return;
+  const img = new Image();
+  img.onload = ()=>{ const max = 800; const sc = Math.min(1, max/Math.max(img.width, img.height)); const cv = document.createElement("canvas"); cv.width = Math.round(img.width*sc); cv.height = Math.round(img.height*sc); cv.getContext("2d").drawImage(img,0,0,cv.width,cv.height); editImg = cv.toDataURL("image/jpeg", 0.82); URL.revokeObjectURL(img.src); renderPhoto(); };
+  img.src = URL.createObjectURL(file);
+}
+$("#camFile").addEventListener("change",(e)=>{ handlePhotoFile(e.target.files[0]); e.target.value=""; });
+$("#galFile").addEventListener("change",(e)=>{ handlePhotoFile(e.target.files[0]); e.target.value=""; });
+$("#photoDel").addEventListener("click",()=>{ editImg = null; renderPhoto(); });
+$("#saveBtn").addEventListener("click",()=>{
+  const vals = Object.assign({}, editing ? editing.v : {}); visFields().forEach((f)=>{ vals[f.key] = $("#ef_"+f.key).value; });
+  const st = $("#editStatus").value; const t = todayStr();
+  if (editing){
+    if (editing.status !== st){ editing.hist.push({at:new Date().toISOString(), from:editing.status, to:st}); editing.since = t; }
+    editing.v = vals; editing.status = st; editing.img = editImg; editing.updated = t;
+  } else {
+    recs.unshift({ id: uid(), v: vals, status: st, since: t, created: t, updated: t, hist:[{at:new Date().toISOString(), from:"", to:st}], img: editImg });
+  }
+  const savedId = editing ? editing.id : null;
+  saveRecs(); if (savedId) openDetail(savedId); else show("list");
+});
+$("#delBtn").addEventListener("click",()=>{ if(!editing) return; if(confirm("この登録を消しますか？")){ recs = recs.filter((r)=>r.id!==editing.id); saveRecs(); show("list"); } });
+$("#backBtn").addEventListener("click",()=>{ if (editing) openDetail(editing.id); else show("list"); });
+
+/* ---------- 詳細（見るだけ）・時系列 ---------- */
+let detailId = null;
+function fmtDT(a){ if(!a) return ""; if(a.indexOf("T")<0) return a; const d = new Date(a); if(isNaN(d)) return a; const p2=(n)=>String(n).padStart(2,"0"); return d.getFullYear()+"年"+(d.getMonth()+1)+"月"+d.getDate()+"日 "+p2(d.getHours())+":"+p2(d.getMinutes()); }
+function openDetail(id){
+  const r = recs.find((x)=>x.id===id); if(!r) return; detailId = id;
+  const box = $("#detailBox"); box.innerHTML = "";
+  const head = document.createElement("div"); head.className = "card";
+  head.innerHTML = '<div class="name" style="margin-bottom:.3rem">'+esc(recTitle(r))+'</div>' + (FEAT.status ? '<div><span class="badge">'+esc(r.status)+'</span> <span class="meta">この状態になって '+daysSince(r.since)+' 日</span></div>' : "");
+  box.appendChild(head);
+  const tbl = document.createElement("div"); tbl.className = "card";
+  visFields().forEach((f)=>{ const row = document.createElement("div"); row.className = "kv"; row.innerHTML = "<span>"+esc(f.label)+"</span><strong>"+esc(r.v[f.key] || "―")+"</strong>"; tbl.appendChild(row); });
+  box.appendChild(tbl);
+  if (FEAT.photo && r.img) { const pc = document.createElement("div"); pc.className = "card"; pc.innerHTML = '<img src="'+r.img+'" alt="写真" style="max-width:100%">'; box.appendChild(pc); }
+  if (!FEAT.history) { show("detail"); return; }
+  const hist = document.createElement("div"); hist.className = "card";
+  const hh = document.createElement("h3"); hh.textContent = "時系列（履歴）"; hist.appendChild(hh);
+  r.hist.slice().reverse().forEach((h)=>{
+    const line = document.createElement("div"); line.className = "kv";
+    const what = h.from ? "状態を「"+h.from+"」から「"+h.to+"」に変更" : "登録（状態は「"+h.to+"」）";
+    line.innerHTML = "<span>"+esc(fmtDT(h.at))+"</span><strong>"+esc(what)+"</strong>";
+    hist.appendChild(line);
+  });
+  box.appendChild(hist);
+  show("detail");
+}
+$("#detailBack").addEventListener("click",()=>show("list"));
+$("#toSettings").addEventListener("click",()=>{ $("#passGate").classList.toggle("hidden"); $("#passErr").textContent = ""; $("#passIn").value = ""; });
+$("#passGo").addEventListener("click",()=>{
+  if ($("#passIn").value === (cfg.pass || "kobo")) { $("#passGate").classList.add("hidden"); show("settings"); }
+  else { $("#passErr").textContent = "合言葉が違います。"; }
+});
+$("#passChange").addEventListener("click",()=>{
+  const v = $("#newPass").value.trim(); if (!v) { alert("合言葉を入れてください。"); return; }
+  cfg.pass = v; saveCfg(); $("#newPass").value = ""; alert("合言葉を変えました。");
+});
+$("#settingsBack").addEventListener("click",()=>show("data"));
+$("#detailEdit").addEventListener("click",()=>{ if (detailId) openEdit(detailId); });
+
+/* ---------- CSV ---------- */
+function csvCell(v){ const s = String(v ?? ""); return /[",\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s; }
+function toCSV(rows){ return rows.map((r)=> r.map(csvCell).join(",")).join("\r\n"); }
+function parseCSV(text){
+  const rows = []; let row = [], cell = "", inQ = false;
+  text = text.replace(/^\ufeff/, "");
+  for (let i=0;i<text.length;i++){ const c = text[i];
+    if (inQ){ if (c === '"'){ if (text[i+1] === '"'){ cell += '"'; i++; } else inQ = false; } else cell += c; }
+    else if (c === '"') inQ = true;
+    else if (c === ","){ row.push(cell); cell = ""; }
+    else if (c === "\n"){ row.push(cell); rows.push(row); row = []; cell = ""; }
+    else if (c === "\r"){ /* skip */ }
+    else cell += c;
+  }
+  if (cell !== "" || row.length){ row.push(cell); rows.push(row); }
+  return rows.filter((r)=> r.some((c)=> c !== ""));
+}
+function download(name, blob){ const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href), 4000); }
+function srcValue(r, src){
+  if (src === "status") return r.status;
+  if (src === "statusDays") return daysSince(r.since);
+  if (src === "since") return r.since;
+  if (src === "updated") return r.updated;
+  return r.v[src] ?? "";
+}
+function srcOptions(){ return [ ...visFields().map((f)=>[f.key, f.label]), ["status","状態"], ["statusDays","状態になってからの日数"], ["since","状態になった日"], ["updated","最終更新日"] ]; }
+
+function renderData(){
+  const sel = $("#expProfileSel"); sel.innerHTML = "";
+  cfg.profiles.forEach((p,i)=>{ const o=document.createElement("option"); o.value=i; o.textContent=p.name; sel.appendChild(o); });
+  $("#expProfile").disabled = !cfg.profiles.length;
+}
+$("#expAll").addEventListener("click",()=>{
+  const head = [ ...visFields().map((f)=>f.label), "状態", "状態になってからの日数", "状態になった日", "最終更新日" ];
+  const rows = [ head, ...recs.map((r)=> [ ...visFields().map((f)=> r.v[f.key] ?? ""), r.status, daysSince(r.since), r.since, r.updated ]) ];
+  download("記録データ_"+todayStr()+".csv", new Blob(["\ufeff"+toCSV(rows)], {type:"text/csv"}));
+});
+$("#expProfile").addEventListener("click",()=>{
+  const p = cfg.profiles[parseInt($("#expProfileSel").value,10)]; if(!p) return;
+  const rows = [ p.cols.map((c)=>c.header), ...recs.map((r)=> p.cols.map((c)=> srcValue(r, c.src))) ];
+  download(p.name+"_"+todayStr()+".csv", new Blob(["\ufeff"+toCSV(rows)], {type:"text/csv"}));
+});
+
+/* ---------- CSV読み込み ---------- */
+let impRows = null;
+$("#impFile").addEventListener("change",(e)=>{
+  const f = e.target.files[0]; if(!f) return;
+  f.text().then((t)=>{
+    impRows = parseCSV(t); if(!impRows.length) return;
+    const head = impRows[0]; const box = $("#impMap"); box.innerHTML = "";
+    head.forEach((h, i)=>{
+      const row = document.createElement("div"); row.className = "maprow";
+      const from = document.createElement("div"); from.className="from"; from.textContent = "CSVの列「"+h+"」→";
+      const sel = document.createElement("select"); sel.id = "imp_"+i;
+      const opts = [ ["", "取り込まない"], ...visFields().map((x)=>[x.key, x.label]), ["status","状態"] ];
+      opts.forEach(([v,l])=>{ const o=document.createElement("option"); o.value=v; o.textContent=l; sel.appendChild(o); });
+      const fmatch = visFields().find((x)=>x.label===h); if (fmatch) sel.value = fmatch.key; else if (h==="状態" || h==="ステータス") sel.value = "status";
+      row.appendChild(from); row.appendChild(sel); box.appendChild(row);
+    });
+    $("#impBtn").disabled = false;
+  });
+});
+$("#impBtn").addEventListener("click",()=>{
+  if(!impRows) return; const head = impRows[0];
+  const map = head.map((_,i)=> $("#imp_"+i).value);
+  const t = todayStr(); let n = 0;
+  impRows.slice(1).forEach((row)=>{
+    const v = {}; let st = cfg.statuses[0];
+    row.forEach((cell,i)=>{ const m = map[i]; if(!m) return; if (m==="status"){ if (cfg.statuses.includes(cell)) st = cell; } else v[m] = cell; });
+    recs.unshift({ id: uid(), v, status: st, since: t, created: t, updated: t, hist:[{at:new Date().toISOString(), from:"", to:st}], img: null }); n++;
+  });
+  saveRecs(); alert(n+"件を読み込みました。"); show("list");
+});
+
+/* ---------- バックアップ ---------- */
+$("#bakOut").addEventListener("click",()=>{ download("バックアップ_"+todayStr()+".json", new Blob([JSON.stringify({cfg, recs}, null, 1)], {type:"application/json"})); });
+$("#bakFile").addEventListener("change",(e)=>{
+  const f = e.target.files[0]; if(!f) return;
+  f.text().then((t)=>{ try{ const d = JSON.parse(t); if (!d.cfg || !Array.isArray(d.recs)) throw 0; if (confirm("今のデータを、バックアップの内容で置き換えますか？")){ cfg = d.cfg; recs = d.recs; saveCfg(); saveRecs(); show("list"); } }catch(err){ alert("バックアップのファイルを読み取れませんでした。"); } });
+  e.target.value = "";
+});
+
+/* ---------- 設定 ---------- */
+function renderSettings(){
+  $("#setTitle").value = cfg.title;
+  const fe = $("#fldEditor"); fe.innerHTML = "";
+  cfg.fields.forEach((f, i)=>{
+    const row = document.createElement("div"); row.className = "fldrow";
+    row.innerHTML = '<input type="text" value="'+esc(f.label)+'" data-fi="'+i+'" class="fldLabel"><select data-fi="'+i+'" class="fldType"><option value="text">文字</option><option value="number">数値</option><option value="date">日付</option></select><button class="btn sub fldHide" data-fi="'+i+'" type="button">'+(f.hidden?"戻す":"隠す")+'</button>';
+    row.querySelector(".fldType").value = f.type; fe.appendChild(row);
+  });
+  fe.querySelectorAll(".fldHide").forEach((b)=> b.addEventListener("click",()=>{ readSettingsFields(); const f = cfg.fields[parseInt(b.dataset.fi,10)]; f.hidden = !f.hidden; renderSettings(); }));
+  $("#setStatuses").value = cfg.statuses.join("、");
+  const cb = $("#closedBox"); cb.innerHTML = "";
+  cfg.statuses.forEach((s)=>{ const lab = document.createElement("label"); lab.style.marginRight = "1rem"; lab.innerHTML = '<input type="checkbox" class="closedChk" value="'+esc(s)+'"'+(cfg.closed.includes(s)?" checked":"")+"> "+esc(s); cb.appendChild(lab); });
+  $("#setStaleDays").value = cfg.staleDays;
+  const pe = $("#profEditor"); pe.innerHTML = "";
+  cfg.profiles.forEach((p, pi)=>{
+    const card = document.createElement("div"); card.className = "card";
+    let h = '<div class="fldrow"><input type="text" class="profName" data-pi="'+pi+'" value="'+esc(p.name)+'" placeholder="宛先の名前（例：kintone用）"><button class="btn danger profDel" data-pi="'+pi+'" type="button">宛先を消す</button></div>';
+    p.cols.forEach((c, ci)=>{ h += '<div class="fldrow"><input type="text" class="profHead" data-pi="'+pi+'" data-ci="'+ci+'" value="'+esc(c.header)+'" placeholder="列の名前"><select class="profSrc" data-pi="'+pi+'" data-ci="'+ci+'">' + srcOptions().map(([v,l])=>'<option value="'+v+'"'+(c.src===v?" selected":"")+'>'+l+'</option>').join("") + '</select><button class="btn danger profColDel" data-pi="'+pi+'" data-ci="'+ci+'" type="button">列を消す</button></div>'; });
+    h += '<div class="btnrow"><button class="btn sub profColAdd" data-pi="'+pi+'" type="button">列を追加</button></div>';
+    card.innerHTML = h; pe.appendChild(card);
+  });
+  pe.querySelectorAll(".profDel").forEach((b)=> b.addEventListener("click",()=>{ readProfiles(); cfg.profiles.splice(parseInt(b.dataset.pi,10),1); renderSettings(); }));
+  pe.querySelectorAll(".profColAdd").forEach((b)=> b.addEventListener("click",()=>{ readProfiles(); cfg.profiles[parseInt(b.dataset.pi,10)].cols.push({header:"", src: (visFields()[0]||cfg.fields[0]).key}); renderSettings(); }));
+  pe.querySelectorAll(".profColDel").forEach((b)=> b.addEventListener("click",()=>{ readProfiles(); cfg.profiles[parseInt(b.dataset.pi,10)].cols.splice(parseInt(b.dataset.ci,10),1); renderSettings(); }));
+}
+function readProfiles(){
+  document.querySelectorAll(".profName").forEach((inp)=>{ cfg.profiles[parseInt(inp.dataset.pi,10)].name = inp.value; });
+  document.querySelectorAll(".profHead").forEach((inp)=>{ cfg.profiles[parseInt(inp.dataset.pi,10)].cols[parseInt(inp.dataset.ci,10)].header = inp.value; });
+  document.querySelectorAll(".profSrc").forEach((sel)=>{ cfg.profiles[parseInt(sel.dataset.pi,10)].cols[parseInt(sel.dataset.ci,10)].src = sel.value; });
+}
+$("#fldAdd").addEventListener("click",()=>{ readSettingsFields(); cfg.fields.push({key:"f"+Date.now().toString(36), label:"新しい項目", type:"text"}); renderSettings(); });
+$("#profAdd").addEventListener("click",()=>{ readProfiles(); cfg.profiles.push({name:"新しい宛先", cols:[{header: (visFields()[0]||cfg.fields[0]).label, src: (visFields()[0]||cfg.fields[0]).key}]}); renderSettings(); });
+function readSettingsFields(){
+  document.querySelectorAll(".fldLabel").forEach((inp)=>{ cfg.fields[parseInt(inp.dataset.fi,10)].label = inp.value; });
+  document.querySelectorAll(".fldType").forEach((sel)=>{ cfg.fields[parseInt(sel.dataset.fi,10)].type = sel.value; });
+}
+$("#setSave").addEventListener("click",()=>{
+  readSettingsFields(); readProfiles();
+  cfg.title = $("#setTitle").value || cfg.title;
+  const sts = $("#setStatuses").value.split(/[、,\n]/).map((s)=>s.trim()).filter(Boolean);
+  if (sts.length) cfg.statuses = sts;
+  cfg.closed = Array.from(document.querySelectorAll(".closedChk")).filter((c)=>c.checked).map((c)=>c.value);
+  cfg.staleDays = Math.max(1, parseInt($("#setStaleDays").value,10) || 7);
+  recs.forEach((r)=>{ if(!cfg.statuses.includes(r.status)){ r.status = cfg.statuses[0]; } });
+  saveCfg(); saveRecs(); alert("設定を保存しました。"); show("list");
+});
+$("#wipeBtn").addEventListener("click",()=>{ if(confirm("登録と設定をすべて消しますか？元に戻せません。")){ localStorage.removeItem(K+"cfg"); localStorage.removeItem(K+"recs"); location.href = location.pathname; } });
+
+applyFs();
+$("#appTitle").textContent = cfg.title;
+applyPlanDemo();
+show("list");
+</script>
+</body>
+</html>
