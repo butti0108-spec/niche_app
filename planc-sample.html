@@ -55,6 +55,16 @@
   .calgrid .day.sel{ background:#eef2f8; }
   .calgrid .day .n{ font-weight:700; color:var(--navy); display:block; }
   .calgrid .day.dim{ opacity:.35; }
+  #printArea{ display:none; }
+  @media print{
+    header, nav.tabs, main > section, .fab, #fsizeBox{ display:none !important; }
+    #printArea{ display:block; color:#000; }
+    #printArea table{ width:100%; border-collapse:collapse; margin:.6rem 0 1.2rem; }
+    #printArea th, #printArea td{ border:1px solid #666; padding:.3rem .5rem; text-align:left; }
+    #printArea th.n, #printArea td.n{ text-align:right; }
+    #printArea h1{ font-size:1.3rem; margin:0 0 .3rem; }
+    #printArea h2{ font-size:1.05rem; margin:1rem 0 .3rem; }
+  }
   .kv strong{ text-align:right; word-break:break-all; }
   .photoarea{ border:1px dashed var(--line); border-radius:.8rem; padding:.7rem; text-align:center; background:#fbfdff; }
   .photoarea img{ max-width:100%; max-height:14rem; border-radius:.5rem; }
@@ -99,7 +109,12 @@
     <div id="staleList"></div>
   </section>
   <section id="view-summary" class="hidden">
-    <div class="card"><table class="sum" id="sumTable"></table></div>
+    <div class="card">
+      <div class="chips" id="periodChips"></div>
+      <table class="sum" id="sumTable"></table>
+      <div class="btnrow"><button class="btn" id="printBtn" type="button">まとめを印刷する</button></div>
+      <p class="note">印刷は、表示している期間の集計と記録の一覧です。月ごとに印刷して、ファイルに綴じる使い方を想定しています。</p>
+    </div>
     <div class="card"><h3>状態ごとの件数（グラフ）</h3><div id="chartStatus"></div></div>
     <div class="card"><h3>月ごとの登録件数（グラフ）</h3><div id="chartMonth"></div></div>
   </section>
@@ -199,6 +214,7 @@
       </div>
     </div>
   </section>
+  <div id="printArea"></div>
 </main>
 <script>
 "use strict";
@@ -288,16 +304,30 @@ function staleRecs(){ return recs.filter((r)=> !cfg.closed.includes(r.status) &&
 function renderStale(){ $("#staleHead").textContent = "「"+cfg.closed.join("、")+"」以外の状態のまま、"+cfg.staleDays+"日以上変わっていない登録です。"; const list = $("#staleList"); list.innerHTML=""; const st = staleRecs(); if(!st.length) list.innerHTML = '<p class="note">滞留している登録はありません。</p>'; st.forEach((r)=> list.appendChild(recCard(r))); }
 
 /* ---------- 集計 ---------- */
+let period = "all";
+function inPeriod(r){
+  if (period === "all") return true;
+  const c = (r.created || "");
+  const now = new Date(); const ym = now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0");
+  if (period === "month") return c.startsWith(ym);
+  if (period === "prev") { const d = new Date(now.getFullYear(), now.getMonth()-1, 1); return c.startsWith(d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")); }
+  if (period === "year") return c.startsWith(String(now.getFullYear()));
+  return true;
+}
+const periodLabel = () => ({all:"全期間", month:"今月", prev:"先月", year:"今年"})[period];
 function renderSummary(){
   const numF = visFields().find((f)=>f.type==="number");
+  const pc = $("#periodChips"); pc.innerHTML = "";
+  [["all","全期間"],["month","今月"],["prev","先月"],["year","今年"]].forEach(([k,lab])=>{ const b = document.createElement("button"); b.textContent = lab; b.classList.toggle("on", period===k); b.addEventListener("click",()=>{ period = k; renderSummary(); }); pc.appendChild(b); });
+  const prs = recs.filter(inPeriod);
   let html = "<tr><th>状態</th><th class='n'>件数</th>" + (numF ? "<th class='n'>"+esc(numF.label)+"の合計</th>" : "") + "</tr>";
   let total = 0, totalN = 0;
-  cfg.statuses.forEach((s)=>{ const rs = recs.filter((r)=>r.status===s); const sum = numF ? rs.reduce((a,r)=> a + (parseFloat(r.v[numF.key])||0), 0) : 0; total += rs.length; totalN += sum; html += "<tr><td>"+esc(s)+"</td><td class='n'>"+rs.length+"</td>" + (numF ? "<td class='n'>"+sum.toLocaleString()+"</td>" : "") + "</tr>"; });
+  cfg.statuses.forEach((s)=>{ const rs = prs.filter((r)=>r.status===s); const sum = numF ? rs.reduce((a,r)=> a + (parseFloat(r.v[numF.key])||0), 0) : 0; total += rs.length; totalN += sum; html += "<tr><td>"+esc(s)+"</td><td class='n'>"+rs.length+"</td>" + (numF ? "<td class='n'>"+sum.toLocaleString()+"</td>" : "") + "</tr>"; });
   html += "<tr><td><b>合計</b></td><td class='n'><b>"+total+"</b></td>" + (numF ? "<td class='n'><b>"+totalN.toLocaleString()+"</b></td>" : "") + "</tr>";
   $("#sumTable").innerHTML = html;
   const bar = (label, val, max, suffix) => '<div class="bar"><span class="bl">'+esc(label)+'</span><span class="bt"><span class="bf" style="display:block;width:'+(max? Math.round(val/max*100):0)+'%"></span></span><span class="bv">'+val+(suffix||"")+'</span></div>';
   const maxC = Math.max(1, ...cfg.statuses.map((st)=> recs.filter((r)=>r.status===st).length));
-  $("#chartStatus").innerHTML = cfg.statuses.map((st)=> bar(st, recs.filter((r)=>r.status===st).length, maxC, "件")).join("");
+  $("#chartStatus").innerHTML = cfg.statuses.map((st)=> bar(st, prs.filter((r)=>r.status===st).length, Math.max(1, ...cfg.statuses.map((x)=> prs.filter((r)=>r.status===x).length)), "件")).join("");
   const months = {};
   recs.forEach((r)=>{ const m = (r.created || "").slice(0,7); if (m) months[m] = (months[m]||0)+1; });
   const mk = Object.keys(months).sort().slice(-6);
@@ -336,6 +366,18 @@ function renderCalendar(){
     hits.forEach((r)=> list.appendChild(recCard(r)));
   }
 }
+$("#printBtn").addEventListener("click",()=>{
+  const numF = visFields().find((f)=>f.type==="number");
+  const prs = recs.filter(inPeriod);
+  let h = "<h1>"+esc(cfg.title)+" まとめ</h1><p>期間："+periodLabel()+"／作成日："+todayStr()+"</p>";
+  h += "<h2>集計</h2><table><tr><th>状態</th><th class='n'>件数</th>"+(numF ? "<th class='n'>"+esc(numF.label)+"の合計</th>" : "")+"</tr>";
+  cfg.statuses.forEach((st)=>{ const rs = prs.filter((r)=>r.status===st); const sum = numF ? rs.reduce((a,r)=> a + (parseFloat(r.v[numF.key])||0), 0) : 0; h += "<tr><td>"+esc(st)+"</td><td class='n'>"+rs.length+"</td>"+(numF ? "<td class='n'>"+sum.toLocaleString()+"</td>" : "")+"</tr>"; });
+  h += "</table><h2>記録の一覧</h2><table><tr>"+visFields().map((f)=>"<th>"+esc(f.label)+"</th>").join("")+"<th>状態</th><th>登録日</th></tr>";
+  prs.forEach((r)=>{ h += "<tr>"+visFields().map((f)=>"<td>"+esc(r.v[f.key] ?? "")+"</td>").join("")+"<td>"+esc(r.status)+"</td><td>"+esc(r.created)+"</td></tr>"; });
+  h += "</table>";
+  $("#printArea").innerHTML = h;
+  window.print();
+});
 $("#calPrev").addEventListener("click",()=>{ const [y,m] = calYm.split("-").map(Number); const d = new Date(y, m-2, 1); calYm = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0"); calSel = null; renderCalendar(); });
 $("#calNext").addEventListener("click",()=>{ const [y,m] = calYm.split("-").map(Number); const d = new Date(y, m, 1); calYm = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0"); calSel = null; renderCalendar(); });
 
