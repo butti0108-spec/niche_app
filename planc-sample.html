@@ -457,14 +457,14 @@ $("#printBtn").addEventListener("click",()=>{
   const numF = visFields().find((f)=>f.type==="number");
   const prs = recs.filter(inPeriod);
   let h = "<h1>"+esc(cfg.title)+" まとめ</h1><p>期間："+periodLabel()+"／作成日："+todayStr()+"</p>";
-  h += "<h2>集計</h2><table><tr><th>状態</th><th class='n'>件数</th>"+(numF ? "<th class='n'>"+esc(numF.label)+"の合計</th>" : "")+"</tr>";
-  cfg.statuses.forEach((st)=>{ const rs = prs.filter((r)=>r.status===st); const sum = numF ? rs.reduce((a,r)=> a + (parseFloat(r.v[numF.key])||0), 0) : 0; h += "<tr><td>"+esc(st)+"</td><td class='n'>"+rs.length+"</td>"+(numF ? "<td class='n'>"+sum.toLocaleString()+"</td>" : "")+"</tr>"; });
   const pieCv = $("#pieChart");
   let pieHtml = "";
   if (pieCv) { try { pieHtml = '<div class="piebox"><h2>状態の内訳（円グラフ）</h2><img class="pieimg" src="' + pieCv.toDataURL("image/png") + '" alt="円グラフ"></div>'; } catch(e){} }
   const maxPc = Math.max(1, ...cfg.statuses.map((st)=> prs.filter((r)=>r.status===st).length));
   const barsHtml = '<div class="barbox"><h2>状態ごとの件数</h2>' + cfg.statuses.map((st)=>{ const c = prs.filter((r)=>r.status===st).length; return '<div class="pbar"><span class="bl">' + esc(st) + '</span><span class="bt"><span class="bf" style="width:' + Math.round(c/maxPc*100) + '%"></span></span><span class="bv">' + c + '件</span></div>'; }).join("") + "</div>";
   h += '<div class="charts">' + pieHtml + barsHtml + "</div>";
+  h += "<h2>集計</h2><table><tr><th>状態</th><th class='n'>件数</th>"+(numF ? "<th class='n'>"+esc(numF.label)+"の合計</th>" : "")+"</tr>";
+  cfg.statuses.forEach((st)=>{ const rs = prs.filter((r)=>r.status===st); const sum = numF ? rs.reduce((a,r)=> a + (parseFloat(r.v[numF.key])||0), 0) : 0; h += "<tr><td>"+esc(st)+"</td><td class='n'>"+rs.length+"</td>"+(numF ? "<td class='n'>"+sum.toLocaleString()+"</td>" : "")+"</tr>"; });
   h += "</table><h2>記録の一覧</h2><table><tr>"+visFields().map((f)=>"<th>"+esc(f.label)+"</th>").join("")+"<th>状態</th><th>登録日</th></tr>";
   prs.forEach((r)=>{ h += "<tr>"+visFields().map((f)=>"<td>"+esc(r.v[f.key] ?? "")+"</td>").join("")+"<td>"+esc(r.status)+"</td><td>"+esc(r.created)+"</td></tr>"; });
   h += "</table>";
