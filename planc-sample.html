@@ -13,7 +13,15 @@
   header{ background:var(--navy); color:#fff; padding:.7rem 1rem; display:flex; align-items:center; gap:.6rem; flex-wrap:wrap; }
   header .title{ font-weight:700; font-size:1.1rem; }
   header .spacer{ flex:1; }
-  .fsize{ display:flex; gap:.3rem; align-items:center; font-size:.78rem; }
+  .fsize{ display:flex; gap:.3rem; align-items:center; font-size:.78rem; background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.35); border-radius:999px; padding:.28rem .6rem; }
+  .fsize span{ font-weight:700; }
+  #themeBox{ margin-left:.8rem; }
+  @media (max-width: 600px){
+    .fsize{ flex:1 1 100%; }
+    .fsize span{ flex:none; }
+    .fsize button{ flex:1; white-space:nowrap; padding-left:.25rem; padding-right:.25rem; }
+    #themeBox{ margin-left:0; }
+  }
   .fsize button{ border:1px solid #fff; background:transparent; color:#fff; border-radius:999px; padding:.15rem .6rem; font-size:.78rem; cursor:pointer; }
   .fsize button.on{ background:#fff; color:var(--navy); font-weight:700; }
   .swatch{ width:1.35rem; height:1.35rem; border-radius:50%; border:2px solid rgba(255,255,255,.65); padding:0 !important; }
@@ -240,6 +248,7 @@
       <div id="editFields"></div>
       <label class="flabel">状態</label>
       <select id="editStatus"></select>
+<script>window.PLANC_PLAN="C";window.PLANC_DEMO=true;</script>
       <div class="btnrow">
         <button class="btn" id="saveBtn">保存する</button>
         <button class="btn danger" id="delBtn">この登録を消す</button>
@@ -248,7 +257,6 @@
   </section>
   <div id="printArea"></div>
 </main>
-<script>window.PLANC_PLAN="C";window.PLANC_DEMO=true;</script>
 <script>
 "use strict";
 const QP = new URLSearchParams(location.search);
