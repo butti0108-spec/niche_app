@@ -95,6 +95,8 @@
   table.sum th, table.sum td{ border-bottom:1px solid var(--line); padding:.4rem; text-align:left; }
   table.sum td.n, table.sum th.n{ text-align:right; }
   .note{ font-size:.85rem; color:var(--sub); }
+  .locked{ opacity:.45; }
+  #demoToast{ position:fixed; left:50%; bottom:1.2rem; transform:translateX(-50%); background:#122A5C; color:#fff; padding:.6rem 1.1rem; border-radius:2rem; font-size:.95rem; display:none; z-index:60; box-shadow:0 2px 10px rgba(0,0,0,.25); max-width:92vw; text-align:center; }
   .maprow{ display:flex; gap:.5rem; align-items:center; margin:.3rem 0; }
   .maprow .from{ flex:1; font-size:.9rem; }
   .maprow select{ flex:1; }
@@ -248,7 +250,6 @@
       <div id="editFields"></div>
       <label class="flabel">状態</label>
       <select id="editStatus"></select>
-<script>window.PLANC_PLAN="A";window.PLANC_DEMO=true;</script>
       <div class="btnrow">
         <button class="btn" id="saveBtn">保存する</button>
         <button class="btn danger" id="delBtn">この登録を消す</button>
@@ -256,7 +257,9 @@
     </div>
   </section>
   <div id="printArea"></div>
+  <div id="demoToast" role="status"></div>
 </main>
+<script>window.PLANC_PLAN="A";window.PLANC_DEMO=true;</script>
 <script>
 "use strict";
 const QP = new URLSearchParams(location.search);
@@ -295,7 +298,7 @@ const visFields = () => cfg.fields.filter((f)=>!f.hidden);
 let recs = loadRecs();
 
 function seed(){
-  const mk = (name, code, price, status, ago) => { const s = todayStr(Date.now() - ago*86400000); return { id: uid()+code, v:{name, code, price, day:s, memo:""}, status, since:s, created:s, updated:s, hist:[{at:s, from:"", to:status}], img:null }; };
+  const mk = (name, code, price, status, ago) => { const s = todayStr(Date.now() - ago*86400000); return { id: uid()+code, seed:true, v:{name, code, price, day:s, memo:""}, status, since:s, created:s, updated:s, hist:[{at:s, from:"", to:status}], img:null }; };
   recs = [
     mk("サンプル作品A","A-001",120000,"商談中",12),
     mk("サンプル作品B","B-002",85000,"未対応",9),
@@ -306,10 +309,12 @@ function seed(){
   ];
   cfg = JSON.parse(JSON.stringify(DEFAULT_CFG)); saveCfg(); saveRecs();
 }
-if (DEMO) { seed(); }
+if (DEMO && !localStorage.getItem(K+"seeded")) { seed(); localStorage.setItem(K+"seeded","1"); }
 if (TEST && !localStorage.getItem(K+"seeded")) { seed(); localStorage.setItem(K+"seeded","1"); }
 
 /* ---------- プラン別・見本の初期化 ---------- */
+let demoToastTimer = null;
+function demoNotice(msg){ if (!DEMO) return; const t = $("#demoToast"); if (!t) return; t.textContent = msg || "見本のため、操作できません"; t.style.display = "block"; clearTimeout(demoToastTimer); demoToastTimer = setTimeout(()=>{ t.style.display = "none"; }, 2200); }
 function applyPlanDemo(){
   document.querySelectorAll("#tabs button").forEach((b)=>{
     const v = b.dataset.view;
@@ -320,15 +325,16 @@ function applyPlanDemo(){
   if (!FEAT.profiles) { $("#expProfileSel").style.display = "none"; $("#expProfile").style.display = "none"; }
   if (PLAN !== "C") { const sl = $("#editStatus"); if (sl) { sl.style.display = "none"; const lb = sl.previousElementSibling; if (lb && lb.tagName === "LABEL") lb.style.display = "none"; } }
   if (DEMO) {
-    const bar = document.createElement("div"); bar.className = "card"; bar.style.borderColor = "var(--navy)";
-    bar.innerHTML = "<h3>これは作例（見本）です</h3><p class='note' style='font-size:.95rem'>データの追加や保存はできない形にしてあります。画面の流れと使い勝手をご確認ください。項目や並びは、お仕事に合わせて調整します。こんな機能がほしい、レイアウトをこう変えたい、といったご相談もお気軽にどうぞ。</p>";
-    const m = document.querySelector("main"); m.insertBefore(bar, m.firstChild);
-    $("#addBtn").style.display = "none";
+    const rp = document.createElement("p"); rp.style.textAlign = "right"; rp.style.marginTop = ".6rem";
+    const rb = document.createElement("button"); rb.className = "note"; rb.type = "button"; rb.textContent = "見本を元に戻す"; rb.style.cssText = "background:none;border:none;text-decoration:underline;cursor:pointer";
+    rb.addEventListener("click",()=>{ if (confirm("追加した分も含めて、見本を最初の状態に戻しますか？")) { localStorage.removeItem(K+"cfg"); localStorage.removeItem(K+"recs"); localStorage.removeItem(K+"seeded"); location.reload(); } });
+    rp.appendChild(rb);
+    const anchor = $("#toSettings").closest("p"); anchor.parentNode.insertBefore(rp, anchor.nextSibling);
     $("#toSettings").style.display = "none";
-    ["expAll","expProfile","bakOut","impBtn"].forEach((id)=>{ const b = document.getElementById(id); if (b) { b.disabled = true; b.style.opacity = ".45"; } });
-    $("#impFile").disabled = true;
-    const bf = $("#bakFile"); bf.disabled = true; const lb = document.querySelector('label[for="bakFile"]'); if (lb) { lb.style.opacity = ".45"; lb.style.pointerEvents = "none"; }
-    const sv = $("#saveBtn"); sv.disabled = true; sv.style.opacity = ".45"; sv.textContent = "見本では保存できません";
+    ["expAll","expProfile","bakOut","impBtn"].forEach((id)=>{ const b = document.getElementById(id); if (b) { b.disabled = false; b.classList.add("locked"); } });
+    $("#impFile").addEventListener("click",(e)=>{ e.preventDefault(); demoNotice(); });
+    const lb = document.querySelector('label[for="bakFile"]'); if (lb) { lb.classList.add("locked"); }
+    $("#bakFile").addEventListener("click",(e)=>{ e.preventDefault(); demoNotice(); });
     const db = $("#delBtn"); if (db) db.style.display = "none";
   }
 }
@@ -389,7 +395,7 @@ function renderList(){
   $("#listEmpty").style.display = hit.length ? "none" : "block";
 }
 $("#searchBox").addEventListener("input",(e)=>{ query = e.target.value; renderList(); });
-$("#addBtn").addEventListener("click",()=>openEdit(null));
+$("#addBtn").addEventListener("click",()=>{ if (DEMO && recs.filter((r)=>!r.seed).length >= 3) { alert("見本は3件まで追加可能です"); return; } openEdit(null); });
 
 /* ---------- 滞留 ---------- */
 function staleRecs(){ return recs.filter((r)=> !cfg.closed.includes(r.status) && daysSince(r.since) >= cfg.staleDays).sort((a,b)=> daysSince(b.since)-daysSince(a.since)); }
@@ -529,7 +535,7 @@ function openEdit(id){
   const sel = $("#editStatus"); sel.innerHTML = ""; cfg.statuses.forEach((s)=>{ const o=document.createElement("option"); o.value=s; o.textContent=s; sel.appendChild(o); });
   if (editing) sel.value = editing.status;
   renderPhoto();
-  $("#delBtn").style.display = editing ? "inline-block" : "none";
+  $("#delBtn").style.display = (editing && (!DEMO || !editing.seed)) ? "inline-block" : "none";
   show("edit");
 }
 function renderPhoto(){ const v = $("#photoView"); v.innerHTML = editImg ? '<img src="'+editImg+'" alt="写真">' : '<p class="note">写真はまだありません</p>'; }
@@ -543,6 +549,8 @@ $("#camFile").addEventListener("change",(e)=>{ handlePhotoFile(e.target.files[0]
 $("#galFile").addEventListener("change",(e)=>{ handlePhotoFile(e.target.files[0]); e.target.value=""; });
 $("#photoDel").addEventListener("click",()=>{ editImg = null; renderPhoto(); });
 $("#saveBtn").addEventListener("click",()=>{
+  if (DEMO && editing && editing.seed) { demoNotice(); return; }
+  if (DEMO && !editing && recs.filter((r)=>!r.seed).length >= 3) { alert("見本は3件まで追加可能です"); return; }
   const vals = Object.assign({}, editing ? editing.v : {}); visFields().forEach((f)=>{ vals[f.key] = $("#ef_"+f.key).value; });
   const st = $("#editStatus").value; const t = todayStr();
   if (editing){
@@ -554,7 +562,7 @@ $("#saveBtn").addEventListener("click",()=>{
   const savedId = editing ? editing.id : null;
   saveRecs(); if (savedId) openDetail(savedId); else show("list");
 });
-$("#delBtn").addEventListener("click",()=>{ if(!editing) return; if(confirm("この登録を消しますか？")){ recs = recs.filter((r)=>r.id!==editing.id); saveRecs(); show("list"); } });
+$("#delBtn").addEventListener("click",()=>{ if (DEMO && (!editing || editing.seed)) return; if(!editing) return; if(confirm("この登録を消しますか？")){ recs = recs.filter((r)=>r.id!==editing.id); saveRecs(); show("list"); } });
 $("#backBtn").addEventListener("click",()=>{ if (editing) openDetail(editing.id); else show("list"); });
 
 /* ---------- 詳細（見るだけ）・時系列 ---------- */
@@ -625,14 +633,16 @@ function srcOptions(){ return [ ...visFields().map((f)=>[f.key, f.label]), ["sta
 function renderData(){
   const sel = $("#expProfileSel"); sel.innerHTML = "";
   cfg.profiles.forEach((p,i)=>{ const o=document.createElement("option"); o.value=i; o.textContent=p.name; sel.appendChild(o); });
-  $("#expProfile").disabled = !cfg.profiles.length;
+  $("#expProfile").disabled = !DEMO && !cfg.profiles.length;
 }
 $("#expAll").addEventListener("click",()=>{
+  if (DEMO) { demoNotice(); return; }
   const head = [ ...visFields().map((f)=>f.label), "状態", "状態になってからの日数", "状態になった日", "最終更新日" ];
   const rows = [ head, ...recs.map((r)=> [ ...visFields().map((f)=> r.v[f.key] ?? ""), r.status, daysSince(r.since), r.since, r.updated ]) ];
   download("記録データ_"+todayStr()+".csv", new Blob(["\ufeff"+toCSV(rows)], {type:"text/csv"}));
 });
 $("#expProfile").addEventListener("click",()=>{
+  if (DEMO) { demoNotice(); return; }
   const p = cfg.profiles[parseInt($("#expProfileSel").value,10)]; if(!p) return;
   const rows = [ p.cols.map((c)=>c.header), ...recs.map((r)=> p.cols.map((c)=> srcValue(r, c.src))) ];
   download(p.name+"_"+todayStr()+".csv", new Blob(["\ufeff"+toCSV(rows)], {type:"text/csv"}));
@@ -641,6 +651,7 @@ $("#expProfile").addEventListener("click",()=>{
 /* ---------- CSV読み込み ---------- */
 let impRows = null;
 $("#impFile").addEventListener("change",(e)=>{
+  if (DEMO) { e.target.value = ""; return; }
   const f = e.target.files[0]; if(!f) return;
   f.text().then((t)=>{
     impRows = parseCSV(t); if(!impRows.length) return;
@@ -658,6 +669,7 @@ $("#impFile").addEventListener("change",(e)=>{
   });
 });
 $("#impBtn").addEventListener("click",()=>{
+  if (DEMO) { demoNotice(); return; }
   if(!impRows) return; const head = impRows[0];
   const map = head.map((_,i)=> $("#imp_"+i).value);
   const t = todayStr(); let n = 0;
@@ -670,8 +682,9 @@ $("#impBtn").addEventListener("click",()=>{
 });
 
 /* ---------- バックアップ ---------- */
-$("#bakOut").addEventListener("click",()=>{ download("バックアップ_"+todayStr()+".json", new Blob([JSON.stringify({cfg, recs}, null, 1)], {type:"application/json"})); });
+$("#bakOut").addEventListener("click",()=>{ if (DEMO) { demoNotice(); return; } download("バックアップ_"+todayStr()+".json", new Blob([JSON.stringify({cfg, recs}, null, 1)], {type:"application/json"})); });
 $("#bakFile").addEventListener("change",(e)=>{
+  if (DEMO) { e.target.value = ""; return; }
   const f = e.target.files[0]; if(!f) return;
   f.text().then((t)=>{ try{ const d = JSON.parse(t); if (!d.cfg || !Array.isArray(d.recs)) throw 0; if (confirm("今のデータを、バックアップの内容で置き換えますか？")){ cfg = d.cfg; recs = d.recs; saveCfg(); saveRecs(); show("list"); } }catch(err){ alert("バックアップのファイルを読み取れませんでした。"); } });
   e.target.value = "";
