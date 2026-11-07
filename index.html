@@ -1177,7 +1177,7 @@
       .vital-line .vital-btn { margin-top: 18px; }
       .gate { display: flex; align-items: center; justify-content: center; gap: 14px; text-align: center; padding: 48px 0; }
       .gate-arch { height: 56px; width: auto; flex: none; }
-      .gate-main { margin: 0; font-family: "M PLUS Rounded 1c", "Hiragino Maru Gothic ProN", "Noto Sans JP", sans-serif; font-size: clamp(19px, 5.2vw, 38px); font-weight: 700; line-height: 1.5; color: #0052B5; }
+      .gate-main { margin: 0; font-family: "M PLUS Rounded 1c", "Hiragino Maru Gothic ProN", "Noto Sans JP", sans-serif; font-size: clamp(14px, 4vw, 16px); font-weight: 700; line-height: 1.5; color: #0052B5; }
       @media (max-width: 640px) { .gate { padding: 32px 0; } }
       .jirei-sec p { font-size: 1rem; line-height: 1.9; margin: 0 0 14px; }
       .jirei-sec p:last-child { margin-bottom: 0; }
@@ -1271,7 +1271,7 @@
       .target-label::before { margin-right: 0; }
       .target-label::after { margin-left: 0; }
       /* FV headline: two designed segments scale fluidly 20px..24px, segments never split */
-      header.flyer h1 { font-size: clamp(1.25rem, 6.15vw, 1.5rem); }
+      header.flyer h1 { font-size: clamp(26px, 5.2vw, 44px); line-height: 1.35; }
       /* comparison table: amounts and plan names never split */
       .cmp thead .amt { white-space: nowrap; }
       /* stat band, prices, plan names, labels, buttons: structural one-liners */
@@ -1352,6 +1352,7 @@
           <div class="stat"><p class="lab">月額費用</p><div class="num"><span class="marker">0<small>円</small></span></div><p class="sub">買い切り・保守契約なし</p></div>
           <div class="stat"><p class="lab">試作品をお渡しするまで</p><div class="num"><span class="marker"><small>最短</small>2〜3<small>日</small></span></div><p class="sub">仕様確定から／完成・納品ではありません</p></div>
         </div>
+        <p class="free-note"><span class="marker">試作品は無料でお作りします。</span>実際に使っていただいてから、購入されるかどうかをお決めいただけます。</p>
         <figure class="fv-visual" style="margin-top:0">
           <div class="fv-panel">
             <svg viewBox="0 0 300 190" role="img" aria-label="紙の記録用紙のイラスト">
@@ -1689,6 +1690,12 @@
           </div>
         </div>
 
+        <div class="price-strip" aria-label="料金の要点">
+          <div class="ps"><p class="ps-name">プランA<span class="ps-key">記録</span></p><p class="ps-yen">50,000<small>円</small></p></div>
+          <div class="ps"><p class="ps-name">プランB<span class="ps-key">集計</span></p><p class="ps-yen">80,000<small>円</small></p></div>
+          <div class="ps"><p class="ps-name">プランC<span class="ps-key">状態管理</span></p><p class="ps-yen">100,000<small>円</small></p></div>
+          <p class="ps-note">いずれも税込・買い切りです。月額費用はかかりません。</p>
+        </div>
         <div class="cmp-box">
           <table class="cmp">
             <thead>
@@ -2150,6 +2157,39 @@ section#price .guide-block .guide-btn { margin: 8px 0 12px; }
    Q&Aブロックと同じ左位置にそろえ、狭い幅では左余白を外す */
 #flow .step-guide-link { margin: 0 0 26px 58px; }
 @media (max-width: 640px) { #flow .step-guide-link { margin-left: 0; } }
+
+  /* ---- rework 2026-11-07 (表現リワーク別版): 無料案内・料金要点・モバイル見出し ---- */
+  .free-note {
+    margin: 0 0 26px; padding: 13px 18px 11px; text-align: center;
+    background: var(--blue-soft); border-radius: 10px;
+    font-size: 1rem; font-weight: 700; line-height: 1.75;
+  }
+  .price-strip {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    border: 1.5px solid var(--ink); border-radius: 14px; overflow: hidden;
+    background: var(--surface); margin: 0 0 22px;
+  }
+  .price-strip .ps { padding: 16px 12px 13px; text-align: center; }
+  .price-strip .ps + .ps { border-left: 1px solid var(--line); }
+  .price-strip .ps-name { margin: 0; font-weight: 900; font-size: 1rem; line-height: 1.5; }
+  .price-strip .ps-key::before { content: "｜"; }
+  .price-strip .ps-yen {
+    font-family: "Shippori Mincho B1", serif; font-weight: 800;
+    font-size: 1.75rem; line-height: 1.25; color: var(--blue); margin: 2px 0 0;
+  }
+  .price-strip .ps-yen small { font-size: .5em; font-weight: 600; color: var(--ink-2); }
+  .price-strip .ps-note {
+    grid-column: 1 / -1; margin: 0; padding: 9px 14px 11px;
+    border-top: 1px solid var(--line); text-align: center;
+    font-size: 14px; color: var(--ink-2); line-height: 1.6;
+  }
+  @media (max-width: 640px) {
+    .app-head h2 { font-size: 1.5625rem; }
+    .price-strip .ps { padding: 13px 6px 10px; }
+    .price-strip .ps-yen { font-size: 1.375rem; }
+    .price-strip .ps-key { display: block; }
+    .price-strip .ps-key::before { content: none; }
+  }
 </style>
       <script>
       (function () {
