@@ -41,14 +41,14 @@
       }
       h1 {
         font-family: "Shippori Mincho B1", "Hiragino Mincho ProN", serif;
-        font-weight: 800; font-size: 1.5rem;
+        font-weight: 800; font-size: clamp(1.875rem, 5vw, 2.75rem);
         line-height: 1.45; margin: 26px 0 14px; color: var(--navy-deep);
       }
       .lead { color: var(--ink-2); margin: 0 0 10px; }
       .lead a, section a { color: var(--navy); font-weight: 700; }
 
       /* ---------- articles (規約): plain, bureaucratic by design ----------
-         条見出し 18px / 本文 16px / 注記 14px。装飾は置かず、条番号と
+         条見出し 28px / 小見出し 18px / 本文 16px / 注記 14px。装飾は置かず、条番号と
          アンカーで探せることだけに投資する。 */
       .art-index { margin: 26px 0 6px; }
       .art-index p { margin: 0 0 4px; font-weight: 700; }
@@ -58,12 +58,12 @@
       .art-index a:hover { text-decoration: underline; }
       section[id^="art"] { scroll-margin-top: 20px; }
       h2 {
-        font-size: 1.125rem; font-weight: 800;
+        font-size: 1.75rem; font-weight: 800;
         color: var(--navy-deep); line-height: 1.5;
         margin: 48px 0 10px; padding-bottom: 6px;
         border-bottom: 1px solid var(--line);
       }
-      h3 { font-size: 1rem; font-weight: 800; color: var(--navy-deep); margin: 22px 0 4px; }
+      h3 { font-size: 1.125rem; font-weight: 800; color: var(--navy-deep); margin: 22px 0 4px; }
       section p { margin: 0 0 10px; }
       section ol, section ul { margin: 0 0 10px; padding-left: 1.5em; }
       section li { margin-bottom: 5px; }

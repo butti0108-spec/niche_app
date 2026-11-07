@@ -41,7 +41,7 @@
       }
       h1 {
         font-family: "Shippori Mincho B1", "Hiragino Mincho ProN", serif;
-        font-weight: 800; font-size: 1.75rem;
+        font-weight: 800; font-size: clamp(1.875rem, 5vw, 2.75rem);
         line-height: 1.45; margin: 26px 0 12px; color: var(--navy-deep);
       }
       .lede { font-size: 1rem; color: var(--ink-2); margin: 0 0 18px; }
@@ -70,7 +70,7 @@
 
       h2 {
         font-family: "Shippori Mincho B1", "Hiragino Mincho ProN", serif;
-        font-weight: 800; font-size: 1.5rem;
+        font-weight: 800; font-size: 1.75rem;
         color: var(--navy-deep); line-height: 1.5;
         margin: 56px 0 14px; padding-bottom: 8px;
         border-bottom: 2px solid var(--navy);
@@ -180,6 +180,16 @@
         color: var(--navy); font-weight: 900;
       }
       .voice-note { font-size: 14px; color: var(--ink-3); margin: 0; line-height: 1.7; }
+
+      /* ---------- rework 2026-11-07: marker emphasis (same style as LP) ---------- */
+      .marker {
+        background: linear-gradient(transparent 52%, #ffd94d 52%, #ffd94d 94%, transparent 94%);
+        padding: 0 2px; font-weight: 900; color: var(--ink);
+        box-decoration-break: clone; -webkit-box-decoration-break: clone;
+      }
+      @media (prefers-color-scheme: dark) {
+        .marker { background: linear-gradient(transparent 52%, #8a6508 52%, #8a6508 94%, transparent 94%); color: #fff3c4; }
+      }
     </style>
   </head>
   <body>
@@ -213,11 +223,11 @@
         </li>
         <li>印刷用レポート
         </li>
-        <li>大きくて見やすい画面
+        <li><span class="marker">大きくて見やすい画面</span>
         </li>
         <li>ホーム画面に入れて、アプリとしてご利用いただけます
         </li>
-        <li>記録は、お使いの端末の中に保存されます
+        <li><span class="marker">記録は、お使いの端末の中に保存されます</span>
         </li>
         <li>CSVの書き出し・読み込み
         </li>
@@ -248,7 +258,7 @@
 
       <h2><span class="nw">この仕組みが、</span><span class="nw">あなたの</span><span class="nw">仕事だと</span></h2>
       <div class="bridge">
-        <p>このアプリの中の仕組み――<strong>その日の内容を残して、あとから名前で探して、まとめて見返す</strong>――は、記録の仕事でしたら、どのお仕事にも置き換えられます。</p>
+        <p>このアプリの中の仕組み――<span class="marker">その日の内容を残して、あとから名前で探して、まとめて見返す</span>――は、記録の仕事でしたら、どのお仕事にも置き換えられます。</p>
         <p>たとえば、施術やレッスンなら前回のお客様に何をしたかが、作品や商品を一点ずつ扱うお仕事なら、いま何がどうなっているかが、その場で分かります。</p>
         <p>「うちの記録も、こんなふうにできたら」――そう思われましたら、制作のご案内をご覧ください。まずは無料の試作品で、実際に使ってみてからご判断いただけます。</p>
       </div>
