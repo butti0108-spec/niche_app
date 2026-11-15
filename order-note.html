@@ -1,0 +1,1427 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>在庫・発注ノート</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&display=swap" rel="stylesheet" />
+    <style>
+      :root{
+        --blue:#0052B5; --blue-strong:#003E87; --blue-tint:#E4EEFA; --blue-ink:#0B3D78;
+        --bg:#F2F5F9; --surface:#FFFFFF; --surface2:#EDF1F7;
+        --ink:#17293F; --muted:#5A6B80; --line:#D9E1EC;
+        --ok:#177245; --ok-bg:#E1F2E7;
+        --low:#9A5B00; --low-bg:#FCEDCF; --low-dot:#E08A00;
+        --ord:#0052B5; --ord-bg:#E4EEFA;
+        --rec:#0B7285; --rec-bg:#DDF3F0;
+        --danger:#C0362C; --danger-bg:#FBE7E3;
+        --shadow:0 1px 3px rgba(16,42,80,.10),0 4px 14px rgba(16,42,80,.06);
+        --radius:14px;
+      }
+      @media (prefers-color-scheme: dark){
+        :root{
+          --blue:#4C93E8; --blue-strong:#8AB8F2; --blue-tint:#1B3355; --blue-ink:#BFD9FA;
+          --bg:#0D1520; --surface:#16222F; --surface2:#1D2C3D;
+          --ink:#E8EEF5; --muted:#9DB0C4; --line:#2A3C52;
+          --ok:#5FC98D; --ok-bg:#173A28;
+          --low:#F0B95A; --low-bg:#3D2E10; --low-dot:#E8A33D;
+          --ord:#8AB8F2; --ord-bg:#1B3355;
+          --rec:#5CC8BE; --rec-bg:#123A38;
+          --danger:#F08A80; --danger-bg:#40201C;
+          --shadow:0 1px 3px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.3);
+        }
+      }
+      html{ box-sizing:border-box; }
+      *,*::before,*::after{ box-sizing:inherit; }
+      body{
+        margin:0; background:var(--bg); color:var(--ink);
+        font-family:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP",sans-serif;
+        -webkit-font-smoothing:antialiased; line-height:1.55;
+      }
+      button,[role="button"],select,summary,input:not([type="checkbox"],[type="radio"]){ min-height:2.75rem; }
+      button{ font-family:inherit; cursor:pointer; }
+      input,select,textarea{ font-family:inherit; font-size:1rem; color:var(--ink); }
+      h1,h2,h3,p,ul,ol,figure{ margin:0; padding:0; }
+      ul,ol{ list-style:none; }
+      .wrap{ max-width:640px; margin:0 auto; padding:0 16px; }
+
+      /* ---------- top strip ---------- */
+      .topstrip{ background:var(--blue); color:#fff; }
+      @media (prefers-color-scheme: dark){ .topstrip{ background:#12325E; } }
+      .topstrip .wrap{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding-top:12px; padding-bottom:12px; }
+      .topstrip .shop{ font-weight:900; font-size:1.02rem; letter-spacing:.02em; }
+      .topstrip .shop small{ display:block; font-weight:500; font-size:.72rem; opacity:.85; letter-spacing:.06em; }
+      .topstrip .today{ font-size:.8rem; font-weight:700; background:rgba(255,255,255,.16); padding:6px 10px; border-radius:999px; white-space:nowrap; }
+
+      main{ padding:18px 0 110px; }
+      .view[hidden]{ display:none; }
+      .view h2.vtitle{ font-size:1.25rem; font-weight:900; margin-bottom:4px; }
+      .view .vsub{ color:var(--muted); font-size:.86rem; margin-bottom:16px; }
+
+      /* ---------- candidate banner ---------- */
+      .cand-banner{
+        display:flex; align-items:center; gap:12px; width:100%; text-align:left;
+        background:var(--low-bg); border:1.5px solid var(--low-dot); border-radius:var(--radius);
+        padding:14px 16px; margin-bottom:16px; color:var(--ink); box-shadow:var(--shadow);
+      }
+      .cand-banner .num{ font-size:1.9rem; font-weight:900; color:var(--low); line-height:1; }
+      .cand-banner .txt{ flex:1; font-size:.9rem; font-weight:700; }
+      .cand-banner .txt small{ display:block; font-weight:500; color:var(--muted); font-size:.78rem; }
+      .cand-banner .go{ font-weight:900; color:var(--blue); font-size:.85rem; white-space:nowrap; }
+      .cand-banner.none{ background:var(--ok-bg); border-color:var(--ok); }
+      .cand-banner.none .num{ color:var(--ok); }
+
+      /* ---------- summary chips ---------- */
+      .chips{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+      .chip{ display:inline-flex; align-items:center; gap:6px; background:var(--surface); border:1px solid var(--line); border-radius:999px; padding:6px 12px; font-size:.8rem; font-weight:700; min-height:2.25rem; }
+      .chip b{ font-size:.95rem; }
+      .dot{ width:9px; height:9px; border-radius:50%; flex:none; }
+      .dot.ok{ background:var(--ok); } .dot.low{ background:var(--low-dot); } .dot.ord{ background:var(--blue); } .dot.rec{ background:var(--rec); }
+
+      /* ---------- search ---------- */
+      .searchbox{ position:relative; margin-bottom:14px; }
+      .searchbox svg{ position:absolute; left:12px; top:50%; transform:translateY(-50%); width:18px; height:18px; stroke:var(--muted); }
+      .searchbox input{ width:100%; padding:10px 12px 10px 40px; border:1px solid var(--line); border-radius:12px; background:var(--surface); }
+      .searchbox input:focus{ outline:2px solid var(--blue); outline-offset:0; border-color:transparent; }
+
+      /* ---------- inventory list ---------- */
+      .inv-list{ display:flex; flex-direction:column; gap:10px; }
+      .inv-card{ background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; }
+      .inv-main{ display:flex; align-items:center; gap:12px; width:100%; background:none; border:none; text-align:left; padding:13px 14px; color:var(--ink); }
+      .inv-info{ flex:1; min-width:0; }
+      .inv-name{ font-weight:900; font-size:1rem; }
+      .inv-meta{ font-size:.75rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+      .inv-stock{ text-align:right; flex:none; }
+      .inv-stock .n{ font-size:1.45rem; font-weight:900; line-height:1.1; }
+      .inv-stock .u{ font-size:.75rem; color:var(--muted); font-weight:700; }
+      .inv-stock .th{ display:block; font-size:.68rem; color:var(--muted); }
+      .status{ display:inline-block; font-size:.72rem; font-weight:900; padding:3px 9px; border-radius:999px; margin-top:4px; }
+      .status.ok{ background:var(--ok-bg); color:var(--ok); }
+      .status.low{ background:var(--low-bg); color:var(--low); }
+      .status.ord{ background:var(--ord-bg); color:var(--ord); }
+      .status.rec{ background:var(--rec-bg); color:var(--rec); }
+      .stockbar{ height:5px; background:var(--surface2); }
+      .stockbar i{ display:block; height:100%; background:var(--ok); }
+      .stockbar i.low{ background:var(--low-dot); } .stockbar i.ord{ background:var(--blue); } .stockbar i.rec{ background:var(--rec); }
+      .inv-detail{ border-top:1px solid var(--line); padding:12px 14px 14px; background:var(--surface); }
+      .inv-detail h4{ margin:0 0 8px; font-size:.8rem; color:var(--muted); font-weight:700; }
+      .mini-rec{ display:flex; justify-content:space-between; font-size:.83rem; padding:5px 0; border-bottom:1px dashed var(--line); }
+      .mini-rec:last-of-type{ border-bottom:none; }
+      .mini-rec .t-in{ color:var(--blue); font-weight:900; } .mini-rec .t-out{ color:var(--danger); font-weight:900; }
+      .empty{ text-align:center; color:var(--muted); padding:28px 10px; font-size:.9rem; }
+
+      /* ---------- buttons ---------- */
+      .btn{ display:inline-flex; align-items:center; justify-content:center; gap:8px; border-radius:12px; border:1px solid var(--line); background:var(--surface); color:var(--ink); font-weight:700; font-size:.92rem; padding:10px 16px; min-height:2.75rem; }
+      .btn.primary{ background:var(--blue); border-color:var(--blue); color:#fff; }
+      @media (prefers-color-scheme: dark){ .btn.primary{ color:#0B1B30; background:#7FB0EE; border-color:#7FB0EE; } }
+      .btn.primary:active{ background:var(--blue-strong); }
+      .btn.ghost{ background:transparent; }
+      .btn.danger{ color:var(--danger); border-color:var(--danger); }
+      .btn.small{ min-height:2.25rem; padding:6px 12px; font-size:.82rem; border-radius:10px; }
+      .btn.block{ width:100%; }
+      .btn:disabled{ opacity:.45; cursor:not-allowed; }
+      .btnrow{ display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+
+      /* ---------- forms ---------- */
+      .card{ background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:16px; margin-bottom:14px; }
+      .card h3{ font-size:1rem; font-weight:900; margin-bottom:10px; }
+      .field{ margin-bottom:14px; }
+      .field label{ display:block; font-size:.8rem; font-weight:700; color:var(--muted); margin-bottom:6px; }
+      .field input[type="text"],.field input[type="number"],.field input[type="date"],.field select{
+        width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:12px; background:var(--surface);
+      }
+      .field input:focus,.field select:focus{ outline:2px solid var(--blue); border-color:transparent; }
+      .linkcard{ background:var(--blue-tint); border-radius:12px; padding:12px 14px; margin-bottom:14px; }
+      .linkcard .lc-title{ font-size:.72rem; font-weight:900; color:var(--blue-ink); letter-spacing:.08em; margin-bottom:8px; }
+      .linkcard dl{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:0; }
+      .linkcard dt{ font-size:.7rem; color:var(--blue-ink); opacity:.75; font-weight:700; }
+      .linkcard dd{ margin:0; font-weight:900; font-size:.95rem; color:var(--blue-ink); }
+      .linkcard .lc-stock{ margin-top:10px; padding-top:10px; border-top:1px dashed rgba(0,82,181,.3); font-size:.85rem; font-weight:700; color:var(--blue-ink); }
+      .seg{ display:flex; background:var(--surface2); border-radius:12px; padding:4px; gap:4px; }
+      .seg button{ flex:1; border:none; background:transparent; border-radius:9px; font-weight:900; font-size:.95rem; color:var(--muted); min-height:2.75rem; }
+      .seg button.on-in{ background:var(--blue); color:#fff; }
+      .seg button.on-out{ background:var(--danger); color:#fff; }
+      @media (prefers-color-scheme: dark){ .seg button.on-in{ color:#0B1B30; background:#7FB0EE; } .seg button.on-out{ background:#8E3A33; color:#F6D9D5; } }
+      .stepper{ display:flex; align-items:stretch; gap:8px; }
+      .stepper button{ width:52px; flex:none; border:1px solid var(--line); background:var(--surface); border-radius:12px; font-size:1.3rem; font-weight:900; color:var(--blue); }
+      .stepper input{ flex:1; text-align:center; font-size:1.25rem; font-weight:900; padding:8px; border:1px solid var(--line); border-radius:12px; background:var(--surface); min-width:0; }
+      .stepper .unit-label{ align-self:center; font-weight:700; color:var(--muted); flex:none; }
+
+      /* ---------- recent records ---------- */
+      .rec-row{ display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid var(--line); }
+      .rec-row:last-child{ border-bottom:none; }
+      .rec-badge{ flex:none; font-size:.72rem; font-weight:900; padding:4px 8px; border-radius:8px; }
+      .rec-badge.in{ background:var(--ord-bg); color:var(--ord); } .rec-badge.out{ background:var(--danger-bg); color:var(--danger); }
+      .rec-main{ flex:1; min-width:0; }
+      .rec-main .rn{ font-weight:700; font-size:.92rem; }
+      .rec-main .rd{ font-size:.74rem; color:var(--muted); }
+      .rec-qty{ font-weight:900; font-size:1rem; flex:none; }
+      .icon-btn{ flex:none; width:40px; height:40px; min-height:40px; border:1px solid var(--line); background:var(--surface); border-radius:10px; color:var(--danger); font-size:1rem; display:inline-flex; align-items:center; justify-content:center; }
+
+      /* ---------- stats ---------- */
+      .big-total{ display:flex; gap:10px; margin-bottom:14px; }
+      .big-total .bt{ flex:1; background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:14px; }
+      .big-total .bt .k{ font-size:.74rem; color:var(--muted); font-weight:700; }
+      .big-total .bt .v{ font-size:1.3rem; font-weight:900; margin-top:2px; }
+      .big-total .bt .v small{ font-size:.8rem; font-weight:700; }
+      .month-nav{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:12px; }
+      .month-nav .m{ font-weight:900; font-size:1.05rem; }
+      .month-nav button{ width:44px; height:44px; border:1px solid var(--line); background:var(--surface); border-radius:12px; font-size:1.1rem; color:var(--blue); font-weight:900; }
+      table.tbl{ width:100%; border-collapse:collapse; font-size:.88rem; }
+      table.tbl th{ text-align:left; font-size:.72rem; color:var(--muted); font-weight:700; padding:6px 4px; border-bottom:2px solid var(--line); }
+      table.tbl td{ padding:8px 4px; border-bottom:1px solid var(--line); }
+      table.tbl .r{ text-align:right; font-variant-numeric:tabular-nums; }
+      table.tbl tr.total td{ font-weight:900; border-bottom:none; border-top:2px solid var(--line); }
+      .chart-box{ background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:16px; margin-bottom:14px; }
+      .chart-box h3{ font-size:1rem; font-weight:900; margin-bottom:4px; }
+      .chart-box .cap{ font-size:.78rem; color:var(--muted); margin-bottom:10px; }
+      .cal{ display:grid; grid-template-columns:repeat(7,1fr); gap:4px; }
+      .cal .dow{ text-align:center; font-size:.7rem; font-weight:900; color:var(--muted); padding:4px 0; }
+      .cal .dow.sun{ color:var(--danger); } .cal .dow.sat{ color:var(--blue); }
+      .cal .day{ position:relative; border:1px solid transparent; background:var(--surface2); border-radius:10px; min-height:44px; padding:4px 2px 6px; text-align:center; font-size:.82rem; font-weight:700; color:var(--ink); width:100%; }
+      .cal .day.blank{ background:transparent; }
+      .cal .day.sel{ border-color:var(--blue); background:var(--blue-tint); }
+      .cal .day.today{ border-color:var(--line); box-shadow:inset 0 0 0 1px var(--muted); }
+      .cal .marks{ display:flex; justify-content:center; gap:3px; margin-top:2px; height:7px; }
+      .cal .marks i{ width:7px; height:7px; border-radius:50%; }
+      .cal .marks i.mi{ background:var(--blue); } .cal .marks i.mo{ background:var(--low-dot); }
+      .legend{ display:flex; gap:16px; font-size:.76rem; color:var(--muted); font-weight:700; margin-top:10px; }
+      .legend span{ display:inline-flex; align-items:center; gap:5px; }
+
+      /* ---------- order ---------- */
+      .cand-row{ display:flex; gap:10px; align-items:flex-start; padding:12px 0; border-bottom:1px solid var(--line); }
+      .cand-row:last-child{ border-bottom:none; }
+      .cand-row label.chk{ display:flex; align-items:flex-start; gap:10px; flex:1; min-width:0; cursor:pointer; padding:4px 0; }
+      .cand-row input[type="checkbox"]{ width:22px; height:22px; margin-top:2px; accent-color:var(--blue); flex:none; }
+      .cand-row .cn{ font-weight:900; }
+      .cand-row .cm{ font-size:.76rem; color:var(--muted); }
+      .cand-row .qtyin{ width:76px; flex:none; }
+      .cand-row .qtyin input{ width:100%; padding:8px; text-align:center; font-weight:900; border:1px solid var(--line); border-radius:10px; background:var(--surface); }
+      .cand-row .qtyin .qu{ display:block; text-align:center; font-size:.7rem; color:var(--muted); font-weight:700; margin-top:2px; }
+      .supplier-group{ margin-bottom:14px; }
+      .supplier-group h4{ margin:0 0 6px; font-size:.85rem; font-weight:900; color:var(--blue); }
+      .order-card{ border:1px solid var(--line); border-radius:var(--radius); padding:14px; margin-bottom:12px; background:var(--surface); box-shadow:var(--shadow); }
+      .order-head{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:6px; }
+      .order-head .od{ font-weight:900; }
+      .order-items{ font-size:.85rem; color:var(--muted); }
+
+      /* ---------- settings ---------- */
+      .master-row{ display:flex; align-items:center; gap:10px; padding:12px 0; border-bottom:1px solid var(--line); }
+      .master-row:last-child{ border-bottom:none; }
+      .master-row .mi{ flex:1; min-width:0; }
+      .master-row .mn{ font-weight:900; }
+      .master-row .mm{ font-size:.75rem; color:var(--muted); }
+      .form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:0 12px; }
+      .form-grid .wide{ grid-column:1 / -1; }
+      .note-line{ font-size:.78rem; color:var(--muted); margin-top:8px; }
+
+      /* ---------- bottom nav ---------- */
+      .tabbar{ position:fixed; left:0; right:0; bottom:0; z-index:40; background:var(--surface); border-top:1px solid var(--line); padding-bottom:env(safe-area-inset-bottom); }
+      .tabbar .wrap{ display:flex; padding-left:4px; padding-right:4px; }
+      .tabbar button{ flex:1; position:relative; background:none; border:none; color:var(--muted); font-size:.68rem; font-weight:700; padding:8px 2px 9px; display:flex; flex-direction:column; align-items:center; gap:3px; min-height:58px; }
+      .tabbar button svg{ width:23px; height:23px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+      .tabbar button.on{ color:var(--blue); }
+      .tabbar .badge{ position:absolute; top:4px; right:calc(50% - 22px); background:var(--danger); color:#fff; font-size:.66rem; font-weight:900; min-width:19px; height:19px; border-radius:999px; display:flex; align-items:center; justify-content:center; padding:0 5px; }
+      .tabbar .badge[hidden]{ display:none; }
+
+      /* ---------- toast & modal ---------- */
+      .toast{ position:fixed; left:50%; bottom:86px; transform:translateX(-50%) translateY(20px); background:var(--ink); color:var(--bg); font-weight:700; font-size:.88rem; padding:12px 18px; border-radius:12px; opacity:0; pointer-events:none; transition:.25s; z-index:60; max-width:88vw; text-align:center; box-shadow:var(--shadow); }
+      .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+      .modal-back{ position:fixed; inset:0; background:rgba(10,20,35,.55); z-index:70; display:flex; align-items:center; justify-content:center; padding:20px; }
+      .modal-back[hidden]{ display:none; }
+      .modal{ background:var(--surface); border-radius:16px; padding:20px; max-width:420px; width:100%; box-shadow:var(--shadow); }
+      .modal h3{ margin:0 0 8px; font-size:1.05rem; font-weight:900; }
+      .modal p{ font-size:.88rem; color:var(--muted); margin-bottom:16px; }
+      .modal .btnrow{ justify-content:flex-end; margin-top:0; }
+
+
+      /* ---------- plan switcher ---------- */
+      .planbar{ background:var(--surface); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:35; box-shadow:0 1px 6px rgba(16,42,80,.06); }
+      .planbar .wrap{ padding-top:10px; padding-bottom:10px; }
+      .planbar-head{ display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; margin-bottom:8px; }
+      .planbar-title{ font-weight:900; font-size:.9rem; }
+      .planbar-sub{ font-size:.72rem; color:var(--muted); }
+      .plan-seg{ display:flex; gap:6px; background:var(--surface2); border-radius:12px; padding:4px; }
+      .plan-seg button{ flex:1; border:1.5px solid transparent; background:transparent; border-radius:9px; color:var(--muted); display:flex; flex-direction:column; align-items:center; gap:0; padding:7px 2px 8px; min-height:3.4rem; line-height:1.25; }
+      .plan-seg button .pl-letter{ font-size:1.05rem; font-weight:900; }
+      .plan-seg button .pl-price{ font-size:.92rem; font-weight:900; }
+      .plan-seg button .pl-name{ font-size:.68rem; font-weight:700; }
+      .plan-seg button.on{ background:var(--blue); color:#fff; border-color:var(--blue); }
+      @media (prefers-color-scheme: dark){ .plan-seg button.on{ background:#7FB0EE; border-color:#7FB0EE; color:#0B1B30; } }
+      .plan-note{ font-size:.79rem; color:var(--muted); margin-top:8px; }
+      .plan-note b{ color:var(--ink); }
+      .cand-banner.locked{ background:var(--surface2); border:1.5px dashed var(--muted); box-shadow:none; }
+      .cand-banner.locked .num{ color:var(--muted); }
+      .linkcard.locked{ background:var(--surface2); }
+      .linkcard.locked .lc-title{ color:var(--muted); }
+      .lockbox{ background:var(--surface); border:1.5px dashed var(--muted); border-radius:var(--radius); padding:30px 18px 26px; text-align:center; box-shadow:var(--shadow); }
+      .lockbox svg{ width:42px; height:42px; stroke:var(--muted); fill:none; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; margin-bottom:10px; }
+      .lockbox h3{ font-size:1.08rem; font-weight:900; margin-bottom:8px; }
+      .lockbox p{ font-size:.87rem; color:var(--muted); max-width:420px; margin:0 auto 16px; }
+
+      /* ---------- print preview (in-page) ---------- */
+      .pp-back{ position:fixed; inset:0; background:rgba(10,20,35,.62); z-index:80; overflow:auto; padding:16px 12px 32px; }
+      .pp-back[hidden]{ display:none; }
+      .pp-actions{ max-width:640px; margin:0 auto 10px; display:flex; justify-content:space-between; align-items:center; gap:10px; }
+      .pp-actions .pp-note{ color:#fff; font-size:.8rem; font-weight:700; }
+      .pp-paper{ background:#fff; color:#111; max-width:640px; margin:0 auto; border-radius:6px; padding:22px 20px; box-shadow:var(--shadow); }
+      .pp-paper h1{ font-size:1.25rem; margin:0 0 10px; border-bottom:2.5px solid #0052B5; padding-bottom:8px; }
+      .pp-paper .ps-meta{ font-size:.8rem; color:#333; margin-bottom:14px; }
+      .pp-paper h2{ font-size:.95rem; margin:16px 0 6px; color:#0052B5; }
+      .pp-paper table{ width:100%; border-collapse:collapse; font-size:.85rem; }
+      .pp-paper th,.pp-paper td{ border:1px solid #999; padding:6px 8px; text-align:left; }
+      .pp-paper th{ background:#E4EEFA; }
+      .pp-paper .r{ text-align:right; }
+      .pp-paper .grand{ font-size:1.02rem; font-weight:900; text-align:right; margin-top:12px; }
+      .pp-paper .ps-foot{ margin-top:18px; font-size:.75rem; color:#555; border-top:1px solid #ccc; padding-top:8px; }
+      /* ---------- print sheet ---------- */
+      #printSheet{ display:none; }
+      @media print{
+        body{ background:#fff; }
+        .topstrip, .planbar, main, .tabbar, .toast, .modal-back, .pp-back{ display:none !important; }
+        #printSheet{ display:block; color:#000; font-family:"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif; padding:10mm; }
+        #printSheet h1{ font-size:20pt; margin:0 0 4mm; border-bottom:2.5pt solid #0052B5; padding-bottom:3mm; }
+        #printSheet .ps-meta{ font-size:10pt; color:#333; margin-bottom:6mm; }
+        #printSheet h2{ font-size:12pt; margin:6mm 0 2mm; color:#0052B5; }
+        #printSheet table{ width:100%; border-collapse:collapse; font-size:10.5pt; }
+        #printSheet th,#printSheet td{ border:1px solid #999; padding:2mm 2.5mm; text-align:left; }
+        #printSheet th{ background:#E4EEFA; }
+        #printSheet .r{ text-align:right; }
+        #printSheet .grand{ font-size:13pt; font-weight:bold; text-align:right; margin-top:5mm; }
+        #printSheet .ps-foot{ margin-top:10mm; font-size:9pt; color:#555; border-top:1px solid #ccc; padding-top:3mm; }
+      }
+      @media (prefers-reduced-motion: reduce){ .toast{ transition:none; } }
+    </style>
+  </head>
+  <body>
+    <div class="topstrip">
+      <div class="wrap">
+        <div class="shop">カフェ・ルミエール<small>見本データで動く試作アプリ</small></div>
+        <div class="today" id="todayLabel"></div>
+      </div>
+    </div>
+
+    <div class="planbar">
+      <div class="wrap">
+        <div class="planbar-head"><span class="planbar-title">プラン切替</span><span class="planbar-sub">押すと、そのプランで使える機能だけの姿に切り替わります</span></div>
+        <div class="plan-seg" role="group" aria-label="プラン切替">
+          <button type="button" data-plan="A"><span class="pl-letter">A</span><span class="pl-price">5万円</span><span class="pl-name">記録だけ</span></button>
+          <button type="button" data-plan="B"><span class="pl-letter">B</span><span class="pl-price">8万円</span><span class="pl-name">集計と帳票</span></button>
+          <button type="button" data-plan="C"><span class="pl-letter">C</span><span class="pl-price">10万円</span><span class="pl-name">自動で発注リスト</span></button>
+        </div>
+        <p class="plan-note" id="planNote"></p>
+      </div>
+    </div>
+
+    <main>
+      <!-- ======== ホーム ======== -->
+      <section class="view" id="view-home">
+        <div class="wrap">
+          <button class="cand-banner" id="candBanner" type="button"></button>
+          <div class="chips" id="summaryChips"></div>
+          <div class="searchbox">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.8-3.8"/></svg>
+            <input type="search" id="homeSearch" placeholder="商品名・仕入先でさがす" aria-label="在庫を検索" />
+          </div>
+          <div class="inv-list" id="invList"></div>
+          <div class="btnrow" id="homePrintRow"></div>
+          <div class="card" id="homeCsvCard" hidden style="margin-top:14px">
+            <h3>記録データのCSV</h3>
+            <p class="note-line" style="margin:0 0 6px">日付・商品・入荷出庫・数量・単価を書き出します。書き出したファイルは、そのまま読み込んで取り込めます（Aプランでも使えます）。</p>
+            <div class="btnrow">
+              <button class="btn" id="csvExport2" type="button">CSVを書き出す</button>
+              <label class="btn" for="csvFile2" style="margin:0">CSVを読み込む</label>
+              <input type="file" id="csvFile2" accept=".csv,text/csv" hidden />
+            </div>
+            <p class="note-line" id="csvMsg2"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======== 記録する ======== -->
+      <section class="view" id="view-record" hidden>
+        <div class="wrap">
+          <h2 class="vtitle">記録する</h2>
+          <p class="vsub">入荷と、出庫（使った分・売れた分）を記録すると、在庫数がその場で増減します。記録を続けると、Cプランでは発注リストが自動で出来上がります。</p>
+          <div class="card">
+            <div class="field">
+              <label for="recProduct">商品</label>
+              <select id="recProduct"></select>
+            </div>
+            <div class="linkcard" id="recLink"></div>
+            <div class="field">
+              <label>入荷 ／ 出庫</label>
+              <div class="seg" role="group" aria-label="入荷か出庫か">
+                <button type="button" id="segIn" class="on-in">入荷</button>
+                <button type="button" id="segOut">出庫</button>
+              </div>
+              <p class="note-line" style="margin-top:8px">「出庫」は <b>使った分・売れた分</b> のことです。お店によって呼び方は変わります — 食材や材料なら「使った分」、商品なら「販売して売れた分（何個売れたか）」をここに記録します。記録するたびに在庫が減り、Cプランでは基準を割ると発注候補に自動で上がります。</p>
+            </div>
+            <div class="field">
+              <label for="recDate">日付</label>
+              <input type="date" id="recDate" />
+            </div>
+            <div class="field">
+              <label for="recQty">数量</label>
+              <div class="stepper">
+                <button type="button" id="qtyMinus" aria-label="数量を減らす">−</button>
+                <input type="number" id="recQty" value="1" min="1" inputmode="numeric" />
+                <button type="button" id="qtyPlus" aria-label="数量を増やす">＋</button>
+                <span class="unit-label" id="recUnit"></span>
+              </div>
+            </div>
+            <button class="btn primary block" id="recSave" type="button">この内容で記録する</button>
+          </div>
+          <div class="card">
+            <h3>最近の記録</h3>
+            <div id="recentList"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======== 集計 ======== -->
+      <section class="view" id="view-stats" hidden>
+        <div class="wrap">
+          <h2 class="vtitle">集計</h2>
+          <p class="vsub">仕入金額（入荷 × 単価）の月次集計と、入荷・発注のカレンダーです。</p>
+          <div id="statsLock" hidden>
+            <div class="lockbox">
+              <svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>
+              <h3>集計はBプランからです</h3>
+              <p>月ごとの仕入金額のグラフと、入荷・発注のカレンダーは、Bプラン（8万円）から使えます。Aプランでは、記録・在庫一覧・CSV書き出しが使えます。</p>
+              <button class="btn primary" id="toPlanB" type="button">Bプラン（8万円）で見てみる</button>
+            </div>
+          </div>
+          <div id="statsContent">
+          <div class="chart-box">
+            <h3>月ごとの仕入金額</h3>
+            <p class="cap">入荷した数量に商品マスタの単価をかけて集計しています。</p>
+            <div id="monthChart"></div>
+          </div>
+          <div class="month-nav">
+            <button type="button" id="monthPrev" aria-label="前の月">‹</button>
+            <span class="m" id="monthLabel"></span>
+            <button type="button" id="monthNext" aria-label="次の月">›</button>
+          </div>
+          <div class="big-total">
+            <div class="bt"><div class="k" id="btMonthLabel">仕入金額</div><div class="v" id="btAmount">—</div></div>
+            <div class="bt"><div class="k">入荷 ／ 出庫の回数</div><div class="v" id="btCounts">—</div></div>
+          </div>
+          <div class="card">
+            <h3>商品別の仕入（この月）</h3>
+            <div id="monthBreakdown"></div>
+          </div>
+          <div class="card">
+            <h3>カレンダー</h3>
+            <div class="cal" id="calendar"></div>
+            <div class="legend">
+              <span><i class="dot" style="background:var(--blue)"></i>入荷があった日</span>
+              <span><i class="dot" style="background:var(--low-dot)"></i>発注した日</span>
+            </div>
+            <div id="dayDetail" style="margin-top:12px"></div>
+          </div>
+          <div class="card">
+            <h3>印刷</h3>
+            <p class="note-line" style="margin:0 0 6px">表示中の月の集計を、紙で見られる形に整えて印刷できます（Bプランから使えます）。</p>
+            <div class="btnrow">
+              <button class="btn primary" id="printStats" type="button">集計レポートを印刷する</button>
+            </div>
+          </div>
+          <div class="card">
+            <h3>記録データのCSV</h3>
+            <p class="note-line" style="margin:0 0 6px">日付・商品・入荷出庫・数量・単価を書き出します。書き出したファイルは、そのまま読み込んで取り込めます。</p>
+            <div class="btnrow">
+              <button class="btn" id="csvExport" type="button">CSVを書き出す</button>
+              <label class="btn" for="csvFile" style="margin:0">CSVを読み込む</label>
+              <input type="file" id="csvFile" accept=".csv,text/csv" hidden />
+            </div>
+            <p class="note-line" id="csvMsg"></p>
+          </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======== 発注 ======== -->
+      <section class="view" id="view-order" hidden>
+        <div class="wrap">
+          <h2 class="vtitle">発注</h2>
+          <p class="vsub" id="orderSub">発注書を作れます。</p>
+          <div id="orderLock" hidden>
+            <div class="lockbox">
+              <svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>
+              <h3>発注書の作成はBプランからです</h3>
+              <p>発注書を作って印刷する「帳票」は、Bプラン（8万円）から使えます。Aプランでは、記録・在庫一覧・CSVが使えます。Cプラン（10万円）では、出庫（使った分・売れた分）を記録していくと、発注候補が自動で上がって発注リストが出来上がります。</p>
+              <div class="btnrow" style="justify-content:center">
+                <button class="btn primary" id="toPlanBFromOrder" type="button">Bプラン（8万円）で見てみる</button>
+                <button class="btn" id="toPlanC" type="button">Cプラン（10万円）で見てみる</button>
+              </div>
+            </div>
+          </div>
+          <div id="orderContent">
+          <div class="card" id="orderCNotice" hidden style="border:1.5px dashed var(--muted);background:var(--surface2);box-shadow:none">
+            <h3 style="font-size:.95rem">Cプランとの違い</h3>
+            <p style="font-size:.86rem;margin:0 0 10px">発注候補の自動抽出と、単価・仕入先の自動入力はCプランからです。<br>Bプランでは、商品を自分で選んで、単価・仕入先を手入力して発注書を作ります。Cプランでは、出庫（使った分・売れた分）を記録していくと、在庫が基準を割った商品が自動で候補に並び、選ぶだけで単価・仕入先・単位が連動して発注書が埋まります。</p>
+            <button class="btn primary small" id="toPlanC2" type="button">Cプラン（10万円）の姿を見てみる</button>
+          </div>
+          <div class="card" id="candCard">
+            <h3>発注候補 <span style="font-size:.74rem;color:var(--muted);font-weight:700">— 記録から自動で上がっています</span></h3>
+            <p class="note-line" style="margin:0 0 8px">出庫（使った分・売れた分）を記録して在庫が発注基準を割ると、ここに自動で並びます。チェックして発注リストを作ると、単価・仕入先・単位が自動で入ります（項目連携）。</p>
+            <div id="candList"></div>
+            <div class="btnrow">
+              <button class="btn primary" id="makeList" type="button">チェックした商品で発注リストを作る</button>
+            </div>
+          </div>
+          <div class="card" id="manualCard" hidden>
+            <h3>発注書を作る（手動で選ぶ）</h3>
+            <p class="note-line" style="margin:0 0 12px">商品を選んで、数量・単価・仕入先を自分で入力して追加してください。Bプランでは単価・仕入先は自動で出ません（自動入力はCプランの項目連携です）。</p>
+            <div class="field"><label for="manualProduct">商品</label><select id="manualProduct"></select></div>
+            <div class="form-grid">
+              <div class="field"><label for="manualQty">数量</label><input type="number" id="manualQty" value="10" min="1" inputmode="numeric" /></div>
+              <div class="field"><label for="manualPrice">単価（円）・手入力</label><input type="number" id="manualPrice" min="0" inputmode="numeric" placeholder="例：220" /></div>
+              <div class="field wide"><label for="manualSupplier">仕入先・手入力</label><input type="text" id="manualSupplier" placeholder="例：神奈川乳業" /></div>
+            </div>
+            <button class="btn" id="addManual" type="button">＋ この商品を発注書に追加する</button>
+            <div id="manualList" style="margin-top:12px"></div>
+            <div class="btnrow">
+              <button class="btn primary" id="makeManualList" type="button">追加した商品で発注書を作る</button>
+            </div>
+          </div>
+          <div class="card" id="draftCard" hidden>
+            <h3>発注リスト</h3>
+            <div id="draftBody"></div>
+            <div class="btnrow">
+              <button class="btn primary" id="confirmOrder" type="button">発注済みにする</button>
+              <button class="btn" id="printDraft" type="button">印刷する</button>
+              <button class="btn ghost" id="clearDraft" type="button">やめる</button>
+            </div>
+          </div>
+          <div>
+            <h3 style="font-size:1rem;font-weight:900;margin-bottom:10px">発注の履歴</h3>
+            <div id="orderHistory"></div>
+          </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======== 設定 ======== -->
+      <section class="view" id="view-settings" hidden>
+        <div class="wrap">
+          <h2 class="vtitle">設定</h2>
+          <p class="vsub">商品マスタ（商品名・単位・仕入先・単価・発注基準数）を管理します。</p>
+          <div class="card" id="masterFormCard" hidden>
+            <h3 id="masterFormTitle">商品を追加</h3>
+            <div class="form-grid">
+              <div class="field wide"><label for="mfName">商品名</label><input type="text" id="mfName" placeholder="例：カフェオレベース" /></div>
+              <div class="field"><label for="mfUnit">単位</label><input type="text" id="mfUnit" placeholder="例：本" /></div>
+              <div class="field"><label for="mfSupplier">仕入先</label><input type="text" id="mfSupplier" placeholder="例：神奈川乳業" /></div>
+              <div class="field"><label for="mfPrice">単価（円）</label><input type="number" id="mfPrice" min="0" inputmode="numeric" placeholder="例：320" /></div>
+              <div class="field"><label for="mfThreshold">発注基準数</label><input type="number" id="mfThreshold" min="0" inputmode="numeric" placeholder="例：5" /></div>
+              <div class="field"><label for="mfOpening">期首在庫（10/1時点）</label><input type="number" id="mfOpening" min="0" inputmode="numeric" placeholder="例：10" /></div>
+            </div>
+            <div class="btnrow">
+              <button class="btn primary" id="mfSave" type="button">保存する</button>
+              <button class="btn ghost" id="mfCancel" type="button">キャンセル</button>
+            </div>
+          </div>
+          <div class="card">
+            <h3>商品マスタ</h3>
+            <div id="masterList"></div>
+            <div class="btnrow">
+              <button class="btn primary" id="addProduct" type="button">＋ 商品を追加する</button>
+            </div>
+          </div>
+          <div class="card">
+            <h3>見本データ</h3>
+            <p class="note-line" style="margin:0">入力した内容はこの端末の中だけに保存されます。はじめの状態に戻したいときは、見本データへ戻してください。</p>
+            <div class="btnrow">
+              <button class="btn danger" id="resetData" type="button">見本データへ戻す</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ======== bottom tabs ======== -->
+    <nav class="tabbar" aria-label="画面切替">
+      <div class="wrap">
+        <button type="button" data-view="home" class="on">
+          <svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg>
+          ホーム
+        </button>
+        <button type="button" data-view="record">
+          <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          記録する
+        </button>
+        <button type="button" data-view="stats">
+          <svg viewBox="0 0 24 24"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-8"/><path d="M22 20H2"/></svg>
+          集計
+        </button>
+        <button type="button" data-view="order">
+          <svg viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.6"/><circle cx="17" cy="20" r="1.6"/><path d="M2 3h3l2.6 12.5h10.8L21 7H6"/></svg>
+          発注<span class="badge" id="orderBadge" hidden></span>
+        </button>
+        <button type="button" data-view="settings">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M19 12a7 7 0 00-.14-1.4l2-1.55-2-3.46-2.36.95a7 7 0 00-2.42-1.4L13.7 2.6h-3.4l-.38 2.54a7 7 0 00-2.42 1.4l-2.36-.95-2 3.46 2 1.55a7 7 0 000 2.8l-2 1.55 2 3.46 2.36-.95a7 7 0 002.42 1.4l.38 2.54h3.4l.38-2.54a7 7 0 002.42-1.4l2.36.95 2-3.46-2-1.55c.1-.45.14-.92.14-1.4z"/></svg>
+          設定
+        </button>
+      </div>
+    </nav>
+
+    <div class="toast" id="toast" role="status"></div>
+
+    <div class="modal-back" id="modalBack" hidden>
+      <div class="modal" role="alertdialog" aria-labelledby="modalTitle" aria-describedby="modalText">
+        <h3 id="modalTitle"></h3>
+        <p id="modalText"></p>
+        <div class="btnrow">
+          <button class="btn ghost" id="modalCancel" type="button">キャンセル</button>
+          <button class="btn danger" id="modalOk" type="button">実行する</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="pp-back" id="printPreview" hidden>
+      <div class="pp-actions">
+        <span class="pp-note">印刷用の表示です（紙に出すときは、ブラウザの印刷機能をご利用ください）</span>
+        <button class="btn small" id="printPreviewClose" type="button">閉じる</button>
+      </div>
+      <div class="pp-paper" id="printPreviewBody"></div>
+    </div>
+
+    <div id="printSheet"></div>
+
+    <script>
+    'use strict';
+    /* ================= data ================= */
+    var KEY = 'zaikoHatchuNote.v1';
+    var uidC = 0;
+    function uid(p){ uidC++; return p + Date.now().toString(36) + uidC.toString(36); }
+    function pad(n){ return (n<10?'0':'')+n; }
+    function todayStr(){ var d=new Date(); return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+    function fmtYen(n){ return '¥' + Math.round(n).toLocaleString('ja-JP'); }
+    function fmtDate(s){ if(!s) return ''; var p=s.split('-'); return (+p[1])+'月'+(+p[2])+'日'; }
+    function monthLabel(mk){ var p=mk.split('-'); return p[0]+'年'+(+p[1])+'月'; }
+
+    function seed(){
+      var P = [
+        ['p1','コーヒー豆','袋','横浜珈琲商会',2400,3,4],
+        ['p2','ミルク','本','神奈川乳業',220,10,14],
+        ['p3','テイクアウトカップ','パック','パッケージ横浜',680,5,8],
+        ['p4','グラニュー糖','袋','ベイシュガー',450,4,6],
+        ['p5','紅茶（アールグレイ）','缶','横浜珈琲商会',1800,2,3],
+        ['p6','バニラシロップ','本','カフェサプライ関東',950,3,4],
+        ['p7','食パン','斤','ベーカリー港',380,6,8],
+        ['p8','バター','個','神奈川乳業',520,5,6],
+        ['p9','いちごジャム','瓶','カフェサプライ関東',620,3,4],
+        ['p10','卵','パック','たまご工房みなと',340,6,2],
+        ['p11','生クリーム','本','神奈川乳業',410,6,8],
+        ['p12','ストロー','パック','パッケージ横浜',300,4,8]
+      ];
+      var products = P.map(function(r){
+        return { id:r[0], name:r[1], unit:r[2], supplier:r[3], price:r[4], threshold:r[5], opening:r[6], received:(r[0]==='p1') };
+      });
+      var priceOf = {}; products.forEach(function(p){ priceOf[p.id]=p.price; });
+      var R = [
+        ['2026-10-03','p1','in',5],['2026-10-10','p1','out',2],['2026-10-17','p1','out',2],['2026-10-24','p1','in',5],['2026-10-31','p1','out',2],['2026-11-06','p1','out',2],['2026-11-13','p1','in',2],
+        ['2026-10-02','p2','in',20],['2026-10-05','p2','out',8],['2026-10-09','p2','out',7],['2026-10-13','p2','in',15],['2026-10-16','p2','out',8],['2026-10-20','p2','out',6],['2026-10-23','p2','in',15],['2026-10-27','p2','out',9],['2026-10-30','p2','out',7],['2026-11-03','p2','in',12],['2026-11-06','p2','out',8],['2026-11-10','p2','out',9],['2026-11-13','p2','out',8],
+        ['2026-10-04','p3','in',10],['2026-10-11','p3','out',5],['2026-10-18','p3','out',4],['2026-10-25','p3','out',3],['2026-11-01','p3','out',2],['2026-11-08','p3','out',1],
+        ['2026-10-06','p4','in',8],['2026-10-15','p4','out',2],['2026-10-22','p4','out',1],['2026-11-05','p4','out',2],
+        ['2026-10-07','p5','in',3],['2026-10-14','p5','out',1],['2026-10-21','p5','out',2],['2026-10-28','p5','out',1],['2026-11-04','p5','out',1],
+        ['2026-10-08','p6','in',4],['2026-10-19','p6','out',1],['2026-10-29','p6','out',1],['2026-11-09','p6','out',1],
+        ['2026-10-02','p7','in',10],['2026-10-05','p7','out',4],['2026-10-09','p7','in',8],['2026-10-12','p7','out',5],['2026-10-16','p7','out',4],['2026-10-19','p7','in',8],['2026-10-23','p7','out',5],['2026-10-26','p7','out',4],['2026-10-30','p7','in',6],['2026-11-02','p7','out',5],['2026-11-06','p7','out',4],['2026-11-09','p7','in',6],['2026-11-12','p7','out',5],['2026-11-14','p7','out',6],
+        ['2026-10-06','p8','in',6],['2026-10-13','p8','out',2],['2026-10-20','p8','out',2],['2026-10-27','p8','in',4],['2026-11-03','p8','out',3],['2026-11-10','p8','out',2],
+        ['2026-10-09','p9','in',3],['2026-10-18','p9','out',1],['2026-10-26','p9','out',2],['2026-11-07','p9','out',2],
+        ['2026-10-03','p10','in',12],['2026-10-07','p10','out',4],['2026-10-10','p10','in',10],['2026-10-14','p10','out',5],['2026-10-17','p10','out',4],['2026-10-21','p10','in',10],['2026-10-24','p10','out',5],['2026-10-28','p10','out',4],['2026-10-31','p10','in',8],['2026-11-04','p10','out',6],['2026-11-07','p10','out',4],['2026-11-11','p10','in',8],['2026-11-14','p10','out',6],
+        ['2026-10-04','p11','in',8],['2026-10-08','p11','out',3],['2026-10-15','p11','out',3],['2026-10-22','p11','in',6],['2026-10-29','p11','out',4],['2026-11-05','p11','out',3],['2026-11-12','p11','out',4],
+        ['2026-10-05','p12','in',6],['2026-10-16','p12','out',2],['2026-10-30','p12','out',1],['2026-11-11','p12','out',1]
+      ];
+      var records = R.map(function(r,i){
+        return { id:'seed'+i, date:r[0], pid:r[1], type:r[2], qty:r[3], price:priceOf[r[1]] };
+      });
+      var orders = [
+        { id:'seed-o1', date:'2026-10-23', status:'received', receivedDate:'2026-10-24',
+          items:[ {pid:'p1',qty:5,price:2400}, {pid:'p8',qty:4,price:520} ] },
+        { id:'seed-o2', date:'2026-11-14', status:'ordered', receivedDate:null,
+          items:[ {pid:'p2',qty:20,price:220} ] }
+      ];
+      return { products:products, records:records, orders:orders };
+    }
+
+    function load(){
+      try{
+        var raw = localStorage.getItem(KEY);
+        if(!raw) return null;
+        var d = JSON.parse(raw);
+        if(!d || !Array.isArray(d.products) || !Array.isArray(d.records) || !Array.isArray(d.orders)) return null;
+        return d;
+      }catch(e){ return null; }
+    }
+    var S = load() || seed();
+    function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+    save();
+    var currentPlan = 'C';
+
+    /* ================= helpers ================= */
+    function prod(pid){ for(var i=0;i<S.products.length;i++) if(S.products[i].id===pid) return S.products[i]; return null; }
+    function stockOf(pid){
+      var p = prod(pid); if(!p) return 0;
+      var n = p.opening || 0;
+      S.records.forEach(function(r){ if(r.pid===pid) n += (r.type==='in' ? r.qty : -r.qty); });
+      return n;
+    }
+    function pendingPids(){
+      var set = {};
+      S.orders.forEach(function(o){ if(o.status==='ordered') o.items.forEach(function(it){ set[it.pid]=true; }); });
+      return set;
+    }
+    function statusOf(p){
+      var pend = pendingPids();
+      if(pend[p.id]) return { key:'ord', label:'発注済み' };
+      if(stockOf(p.id) <= p.threshold) return { key:'low', label:'残りわずか' };
+      if(p.received) return { key:'rec', label:'入荷済み' };
+      return { key:'ok', label:'在庫あり' };
+    }
+    function candidates(){
+      var pend = pendingPids();
+      return S.products.filter(function(p){ return !pend[p.id] && stockOf(p.id) <= p.threshold; });
+    }
+    function suggestQty(p){ return Math.max(p.threshold*2 - stockOf(p.id), 1); }
+    function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+    function sortedRecords(){ return S.records.slice().sort(function(a,b){ if(a.date!==b.date) return a.date<b.date?1:-1; return 0; }); }
+
+    var toastTimer = null;
+    function toast(msg){
+      var t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 2600);
+    }
+    var modalCb = null;
+    function askConfirm(title, text, okLabel, cb){
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalText').textContent = text;
+      document.getElementById('modalOk').textContent = okLabel || '実行する';
+      modalCb = cb;
+      document.getElementById('modalBack').hidden = false;
+    }
+    document.getElementById('modalCancel').addEventListener('click', function(){ document.getElementById('modalBack').hidden = true; modalCb = null; });
+    document.getElementById('modalOk').addEventListener('click', function(){ document.getElementById('modalBack').hidden = true; if(modalCb) modalCb(); modalCb = null; });
+
+    /* ================= navigation ================= */
+    var currentView = 'home';
+    function showView(v){
+      currentView = v;
+      ['home','record','stats','order','settings'].forEach(function(k){
+        document.getElementById('view-'+k).hidden = (k !== v);
+      });
+      var btns = document.querySelectorAll('.tabbar button[data-view]');
+      btns.forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-view') === v); });
+      window.scrollTo(0,0);
+      if(v==='order') renderOrder();
+      if(v==='stats') renderStats();
+    }
+    document.querySelectorAll('.tabbar button[data-view]').forEach(function(b){
+      b.addEventListener('click', function(){ showView(b.getAttribute('data-view')); });
+    });
+
+    /* ================= home ================= */
+    var expandedPid = null;
+    function renderHome(){
+      var cands = (currentPlan === 'C') ? candidates() : [];
+      var banner = document.getElementById('candBanner');
+      if(currentPlan !== 'C'){
+        banner.className = 'cand-banner locked';
+        banner.innerHTML = '<span class="num">C</span><span class="txt">発注候補の自動抽出・状態の色分けはCプランからです<small>' + (currentPlan === 'A' ? 'Aプランでは、在庫数の一覧と記録だけが使えます。発注書はBプランからです。' : 'Bプランでは、発注書を手動で作れます。自動で候補が上がるのはCプランです。') + '</small></span><span class="go">発注へ ›</span>';
+      } else if(cands.length > 0){
+        banner.className = 'cand-banner';
+        banner.innerHTML = '<span class="num">'+cands.length+'</span><span class="txt">発注候補があります<small>基準を割った商品が '+cands.length+' 件あります。発注画面でまとめて発注できます。</small></span><span class="go">発注へ ›</span>';
+      } else {
+        banner.className = 'cand-banner none';
+        banner.innerHTML = '<span class="num">0</span><span class="txt">発注候補はありません<small>すべての商品が発注基準を上回っています。</small></span><span class="go">発注へ ›</span>';
+      }
+      var counts = { ok:0, low:0, ord:0, rec:0 };
+      S.products.forEach(function(p){ counts[statusOf(p).key]++; });
+      if(currentPlan !== 'C'){
+        var totalStock = S.products.reduce(function(a,p){ return a + stockOf(p.id); }, 0);
+        document.getElementById('summaryChips').innerHTML =
+          '<span class="chip">全商品 <b>'+S.products.length+'</b></span>' +
+          '<span class="chip">在庫の合計 <b>'+totalStock+'</b></span>' +
+          '<span class="chip">状態の色分けはCプランから</span>';
+      } else {
+        document.getElementById('summaryChips').innerHTML =
+          '<span class="chip">全商品 <b>'+S.products.length+'</b></span>' +
+          '<span class="chip"><i class="dot ok"></i>在庫あり <b>'+counts.ok+'</b></span>' +
+          '<span class="chip"><i class="dot low"></i>残りわずか <b>'+counts.low+'</b></span>' +
+          '<span class="chip"><i class="dot ord"></i>発注済み <b>'+counts.ord+'</b></span>' +
+          '<span class="chip"><i class="dot rec"></i>入荷済み <b>'+counts.rec+'</b></span>';
+      }
+      var badge = document.getElementById('orderBadge');
+      if(cands.length > 0){ badge.hidden = false; badge.textContent = cands.length; } else { badge.hidden = true; badge.textContent = ''; }
+
+      var q = (document.getElementById('homeSearch').value || '').trim();
+      var orderRank = { low:0, ord:1, rec:2, ok:3 };
+      var list = S.products.filter(function(p){
+        if(!q) return true;
+        return p.name.indexOf(q) >= 0 || p.supplier.indexOf(q) >= 0;
+      }).slice().sort(function(a,b){
+        var d = orderRank[statusOf(a).key] - orderRank[statusOf(b).key];
+        if(d) return d;
+        return (stockOf(a.id)/Math.max(a.threshold,1)) - (stockOf(b.id)/Math.max(b.threshold,1));
+      });
+      var box = document.getElementById('invList');
+      if(!list.length){ box.innerHTML = '<p class="empty">「'+esc(q)+'」に合う商品がありません。</p>'; return; }
+      box.innerHTML = list.map(function(p){
+        var st = statusOf(p), stock = stockOf(p.id);
+        var pct = Math.max(0, Math.min(100, stock / Math.max(p.threshold*2,1) * 100));
+        var isC = (currentPlan === 'C');
+        var html = '<div class="inv-card">' +
+          '<button type="button" class="inv-main" data-expand="'+p.id+'" aria-expanded="'+(expandedPid===p.id)+'">' +
+            '<span class="inv-info"><span class="inv-name">'+esc(p.name)+'</span>' +
+            (isC ? '<br><span class="inv-meta">'+esc(p.supplier)+' ・ '+fmtYen(p.price)+'／'+esc(p.unit)+'</span><br><span class="status '+st.key+'">'+st.label+'</span>' : '') +
+            '</span>' +
+            '<span class="inv-stock"><span class="n">'+stock+'</span> <span class="u">'+esc(p.unit)+'</span>' + (isC ? '<span class="th">基準 '+p.threshold+esc(p.unit)+'</span>' : '') + '</span>' +
+          '</button>' +
+          (isC ? '<div class="stockbar"><i class="'+st.key+'" style="width:'+pct+'%"></i></div>' : '');
+        if(expandedPid === p.id){
+          var recs = sortedRecords().filter(function(r){ return r.pid===p.id; }).slice(0,3);
+          html += '<div class="inv-detail"><h4>最近の記録</h4>';
+          if(recs.length){
+            html += recs.map(function(r){
+              return '<div class="mini-rec"><span>'+fmtDate(r.date)+'</span><span class="'+(r.type==='in'?'t-in':'t-out')+'">'+(r.type==='in'?'入荷':'出庫')+'</span><span>'+r.qty+esc(p.unit)+'</span></div>';
+            }).join('');
+          } else { html += '<p class="note-line">まだ記録がありません。</p>'; }
+          html += '<div class="btnrow"><button type="button" class="btn small primary" data-gorecord="'+p.id+'">この商品を記録する</button></div></div>';
+        }
+        html += '</div>';
+        return html;
+      }).join('');
+      box.querySelectorAll('[data-expand]').forEach(function(b){
+        b.addEventListener('click', function(){
+          var id = b.getAttribute('data-expand');
+          expandedPid = (expandedPid === id) ? null : id;
+          renderHome();
+        });
+      });
+      box.querySelectorAll('[data-gorecord]').forEach(function(b){
+        b.addEventListener('click', function(){
+          setRecordProduct(b.getAttribute('data-gorecord'));
+          showView('record');
+        });
+      });
+      renderHomeTools();
+    }
+    document.getElementById('candBanner').addEventListener('click', function(){ showView('order'); });
+    document.getElementById('homeSearch').addEventListener('input', renderHome);
+
+    /* ================= record ================= */
+    var recType = 'in';
+    function renderRecordSelect(){
+      var sel = document.getElementById('recProduct');
+      var cur = sel.value;
+      sel.innerHTML = S.products.map(function(p){ return '<option value="'+p.id+'">'+esc(p.name)+'</option>'; }).join('');
+      if(cur && prod(cur)) sel.value = cur;
+      updateLinkCard();
+    }
+    function setRecordProduct(pid){
+      var sel = document.getElementById('recProduct');
+      if(prod(pid)) sel.value = pid;
+      updateLinkCard();
+    }
+    function updateLinkCard(){
+      var p = prod(document.getElementById('recProduct').value);
+      var box = document.getElementById('recLink');
+      if(!p){ box.innerHTML = '<p class="note-line">商品がありません。設定画面で商品を追加してください。</p>'; document.getElementById('recUnit').textContent=''; return; }
+      if(currentPlan !== 'C'){
+        box.className = 'linkcard locked';
+        box.innerHTML = '<div class="lc-title">商品情報の自動表示はCプランからです</div>' +
+          '<p class="note-line" style="margin:0">Cプランでは、商品を選ぶと単位・仕入先・単価と現在の在庫が自動で表示されます。' + currentPlan + 'プランでは、商品・数量・入荷／出庫だけで記録します。</p>';
+        document.getElementById('recUnit').textContent = '';
+        return;
+      }
+      box.className = 'linkcard';
+      var st = statusOf(p);
+      box.innerHTML =
+        '<div class="lc-title">選択中の商品の情報（マスタから自動表示）</div>' +
+        '<dl><div><dt>単位</dt><dd>'+esc(p.unit)+'</dd></div>' +
+        '<div><dt>仕入先</dt><dd>'+esc(p.supplier)+'</dd></div>' +
+        '<div><dt>単価</dt><dd>'+fmtYen(p.price)+'</dd></div></dl>' +
+        '<div class="lc-stock">現在の在庫： '+stockOf(p.id)+' '+esc(p.unit)+'（発注基準 '+p.threshold+esc(p.unit)+' ・ '+st.label+'）</div>';
+      document.getElementById('recUnit').textContent = p.unit;
+    }
+    document.getElementById('recProduct').addEventListener('change', updateLinkCard);
+    function setRecType(t){
+      recType = t;
+      document.getElementById('segIn').className = (t==='in') ? 'on-in' : '';
+      document.getElementById('segOut').className = (t==='out') ? 'on-out' : '';
+    }
+    document.getElementById('segIn').addEventListener('click', function(){ setRecType('in'); });
+    document.getElementById('segOut').addEventListener('click', function(){ setRecType('out'); });
+    document.getElementById('qtyMinus').addEventListener('click', function(){
+      var i = document.getElementById('recQty'); i.value = Math.max(1, (parseInt(i.value,10)||1) - 1);
+    });
+    document.getElementById('qtyPlus').addEventListener('click', function(){
+      var i = document.getElementById('recQty'); i.value = (parseInt(i.value,10)||0) + 1;
+    });
+    document.getElementById('recSave').addEventListener('click', function(){
+      var p = prod(document.getElementById('recProduct').value);
+      if(!p){ toast('商品を選んでください'); return; }
+      var qty = parseInt(document.getElementById('recQty').value, 10);
+      var date = document.getElementById('recDate').value || todayStr();
+      if(!qty || qty < 1){ toast('数量を1以上で入力してください'); return; }
+      var before = stockOf(p.id);
+      if(recType === 'out' && qty > before){ toast(p.name+' の在庫は '+before+p.unit+' です。出庫数が多すぎます'); return; }
+      S.records.push({ id:uid('r'), date:date, pid:p.id, type:recType, qty:qty, price:p.price });
+      if(recType === 'in') p.received = true; else p.received = false;
+      save();
+      renderAll();
+      toast(p.name+' を '+qty+p.unit+' '+(recType==='in'?'入荷':'出庫')+'しました（在庫 '+before+' → '+stockOf(p.id)+p.unit+'）');
+    });
+    function renderRecent(){
+      var box = document.getElementById('recentList');
+      var recs = sortedRecords().slice(0,10);
+      if(!recs.length){ box.innerHTML = '<p class="empty">まだ記録がありません。</p>'; return; }
+      box.innerHTML = recs.map(function(r){
+        var p = prod(r.pid); if(!p) return '';
+        return '<div class="rec-row"><span class="rec-badge '+(r.type==='in'?'in':'out')+'">'+(r.type==='in'?'入荷':'出庫')+'</span>' +
+          '<span class="rec-main"><span class="rn">'+esc(p.name)+'</span><br><span class="rd">'+r.date.replace(/-/g,'/')+(currentPlan==='C' ? ' ・ 単価 '+fmtYen(r.price) : '')+'</span></span>' +
+          '<span class="rec-qty">'+(r.type==='in'?'+':'−')+r.qty+esc(p.unit)+'</span>' +
+          '<button type="button" class="icon-btn" data-delrec="'+r.id+'" aria-label="この記録を削除">×</button></div>';
+      }).join('');
+      box.querySelectorAll('[data-delrec]').forEach(function(b){
+        b.addEventListener('click', function(){
+          var id = b.getAttribute('data-delrec');
+          askConfirm('記録を削除しますか？', 'この記録を取り消すと、在庫数が元に戻ります。', '削除する', function(){
+            S.records = S.records.filter(function(r){ return r.id !== id; });
+            save(); renderAll(); toast('記録を削除しました');
+          });
+        });
+      });
+    }
+
+    /* ================= stats ================= */
+    function monthKeys(){
+      var set = {};
+      S.records.forEach(function(r){ set[r.date.slice(0,7)] = true; });
+      S.orders.forEach(function(o){ set[o.date.slice(0,7)] = true; });
+      var ks = Object.keys(set).sort();
+      return ks.length ? ks : [todayStr().slice(0,7)];
+    }
+    var statsMonth = null, statsDay = null;
+    function purchaseByMonth(){
+      var m = {};
+      S.records.forEach(function(r){ if(r.type==='in'){ var k=r.date.slice(0,7); m[k]=(m[k]||0)+r.qty*r.price; } });
+      return m;
+    }
+    function renderStats(){
+      if(currentPlan === 'A') return;
+      var keys = monthKeys();
+      if(!statsMonth || keys.indexOf(statsMonth) < 0) statsMonth = keys[keys.length-1];
+      /* chart */
+      var pm = purchaseByMonth();
+      var chartMonths = Object.keys(pm).sort();
+      var chartBox = document.getElementById('monthChart');
+      if(!chartMonths.length){
+        chartBox.innerHTML = '<p class="empty">入荷の記録がまだありません。</p>';
+      } else {
+        var max = 0; chartMonths.forEach(function(k){ max = Math.max(max, pm[k]); });
+        var W = 340, H = 190, base = 158, top = 34, bw = Math.min(64, (W-40)/chartMonths.length - 18);
+        var svg = '<svg viewBox="0 0 '+W+' '+H+'" width="100%" role="img" aria-label="月ごとの仕入金額の棒グラフ">';
+        svg += '<line x1="16" y1="'+base+'" x2="'+(W-8)+'" y2="'+base+'" stroke="var(--line)" stroke-width="1.5"/>';
+        chartMonths.forEach(function(k, i){
+          var cx = 30 + (i + 0.5) * ((W-40)/chartMonths.length);
+          var h = max ? Math.max(4, (pm[k]/max) * (base-top)) : 4;
+          var y = base - h;
+          svg += '<rect x="'+(cx-bw/2)+'" y="'+y+'" width="'+bw+'" height="'+h+'" rx="5" fill="'+(k===statsMonth?'var(--blue)':'#9DB9D9')+'"/>';
+          svg += '<text x="'+cx+'" y="'+(y-7)+'" text-anchor="middle" font-size="11.5" font-weight="700" fill="var(--ink)">'+fmtYen(pm[k])+'</text>';
+          svg += '<text x="'+cx+'" y="'+(base+18)+'" text-anchor="middle" font-size="11.5" font-weight="700" fill="var(--muted)">'+(+k.split('-')[1])+'月</text>';
+          svg += '<text x="'+cx+'" y="'+(base+33)+'" text-anchor="middle" font-size="9.5" fill="var(--muted)">'+k.split('-')[0]+'年</text>';
+        });
+        svg += '</svg>';
+        chartBox.innerHTML = svg;
+      }
+      /* month detail */
+      document.getElementById('monthLabel').textContent = monthLabel(statsMonth);
+      var idx = keys.indexOf(statsMonth);
+      document.getElementById('monthPrev').disabled = idx <= 0;
+      document.getElementById('monthNext').disabled = idx >= keys.length-1;
+      var inRecs = S.records.filter(function(r){ return r.date.slice(0,7)===statsMonth && r.type==='in'; });
+      var outRecs = S.records.filter(function(r){ return r.date.slice(0,7)===statsMonth && r.type==='out'; });
+      var total = inRecs.reduce(function(a,r){ return a + r.qty*r.price; }, 0);
+      document.getElementById('btMonthLabel').textContent = monthLabel(statsMonth)+'の仕入金額';
+      document.getElementById('btAmount').innerHTML = fmtYen(total);
+      document.getElementById('btCounts').innerHTML = inRecs.length+' <small>回</small> ／ '+outRecs.length+' <small>回</small>';
+      var byProd = {};
+      inRecs.forEach(function(r){ if(!byProd[r.pid]) byProd[r.pid]={qty:0,amt:0}; byProd[r.pid].qty+=r.qty; byProd[r.pid].amt+=r.qty*r.price; });
+      var rows = Object.keys(byProd).map(function(pid){ var p=prod(pid); return { name:p?p.name:'（削除済み）', unit:p?p.unit:'', qty:byProd[pid].qty, amt:byProd[pid].amt }; })
+        .sort(function(a,b){ return b.amt-a.amt; });
+      var bd = document.getElementById('monthBreakdown');
+      if(!rows.length){ bd.innerHTML = '<p class="empty">この月の入荷はありません。</p>'; }
+      else {
+        bd.innerHTML = '<table class="tbl"><thead><tr><th>商品</th><th class="r">数量</th><th class="r">金額</th></tr></thead><tbody>' +
+          rows.map(function(r){ return '<tr><td>'+esc(r.name)+'</td><td class="r">'+r.qty+esc(r.unit)+'</td><td class="r">'+fmtYen(r.amt)+'</td></tr>'; }).join('') +
+          '<tr class="total"><td>合計</td><td></td><td class="r">'+fmtYen(total)+'</td></tr></tbody></table>';
+      }
+      renderCalendar();
+    }
+    function renderCalendar(){
+      var cal = document.getElementById('calendar');
+      var y = +statsMonth.split('-')[0], m = +statsMonth.split('-')[1];
+      var first = new Date(y, m-1, 1).getDay();
+      var days = new Date(y, m, 0).getDate();
+      var inDays = {}, ordDays = {};
+      S.records.forEach(function(r){ if(r.type==='in') inDays[r.date]=true; });
+      S.orders.forEach(function(o){ ordDays[o.date]=true; });
+      var dows = ['日','月','火','水','木','金','土'];
+      var html = dows.map(function(d,i){ return '<div class="dow'+(i===0?' sun':i===6?' sat':'')+'">'+d+'</div>'; }).join('');
+      for(var b=0;b<first;b++) html += '<div class="day blank"></div>';
+      for(var d=1; d<=days; d++){
+        var ds = y+'-'+pad(m)+'-'+pad(d);
+        var marks = '';
+        if(inDays[ds] || ordDays[ds]) marks = '<span class="marks">'+(inDays[ds]?'<i class="mi"></i>':'')+(ordDays[ds]?'<i class="mo"></i>':'')+'</span>';
+        else marks = '<span class="marks"></span>';
+        html += '<button type="button" class="day'+(statsDay===ds?' sel':'')+(ds===todayStr()?' today':'')+'" data-day="'+ds+'">'+d+marks+'</button>';
+      }
+      cal.innerHTML = html;
+      cal.querySelectorAll('[data-day]').forEach(function(b){
+        b.addEventListener('click', function(){ statsDay = b.getAttribute('data-day'); renderCalendar(); renderDayDetail(); });
+      });
+      renderDayDetail();
+    }
+    function renderDayDetail(){
+      var box = document.getElementById('dayDetail');
+      if(!statsDay || statsDay.slice(0,7) !== statsMonth){ box.innerHTML = '<p class="note-line">日をタップすると、その日の入荷・発注が見られます。</p>'; return; }
+      var recs = S.records.filter(function(r){ return r.date===statsDay; });
+      var ords = S.orders.filter(function(o){ return o.date===statsDay; });
+      var html = '<h4 style="margin:0 0 6px;font-size:.88rem;font-weight:900">'+fmtDate(statsDay)+' の記録</h4>';
+      if(!recs.length && !ords.length) html += '<p class="note-line">この日の入荷・出庫・発注はありません。</p>';
+      recs.forEach(function(r){
+        var p = prod(r.pid);
+        html += '<div class="mini-rec"><span>'+(p?esc(p.name):'（削除済み）')+'</span><span class="'+(r.type==='in'?'t-in':'t-out')+'">'+(r.type==='in'?'入荷':'出庫')+'</span><span>'+r.qty+(p?esc(p.unit):'')+'</span></div>';
+      });
+      ords.forEach(function(o){
+        var names = o.items.map(function(it){ var p=prod(it.pid); return (p?p.name:'?')+' ×'+it.qty; }).join('、');
+        html += '<div class="mini-rec"><span>発注（'+(o.status==='ordered'?'発注済み':'入荷済み')+'）</span><span style="flex:1;text-align:right">'+esc(names)+'</span></div>';
+      });
+      box.innerHTML = html;
+    }
+    document.getElementById('monthPrev').addEventListener('click', function(){
+      var keys = monthKeys(), i = keys.indexOf(statsMonth);
+      if(i > 0){ statsMonth = keys[i-1]; statsDay = null; renderStats(); }
+    });
+    document.getElementById('monthNext').addEventListener('click', function(){
+      var keys = monthKeys(), i = keys.indexOf(statsMonth);
+      if(i < keys.length-1){ statsMonth = keys[i+1]; statsDay = null; renderStats(); }
+    });
+
+    /* ================= CSV ================= */
+    function csvEscape(v){ v = String(v); if(/[",\n]/.test(v)) return '"'+v.replace(/"/g,'""')+'"'; return v; }
+    function doCsvExport(msgId){
+      var lines = ['日付,商品,入荷出庫,数量,単価,金額'];
+      var recs = S.records.slice().sort(function(a,b){ return a.date<b.date?-1:a.date>b.date?1:0; });
+      recs.forEach(function(r){
+        var p = prod(r.pid); if(!p) return;
+        lines.push([r.date, csvEscape(p.name), r.type==='in'?'入荷':'出庫', r.qty, r.price, r.qty*r.price].join(','));
+      });
+      var blob = new Blob(['\uFEFF' + lines.join('\r\n')], { type:'text/csv;charset=utf-8' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'zaiko-records-' + todayStr() + '.csv';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(function(){ URL.revokeObjectURL(a.href); }, 2000);
+      document.getElementById(msgId).textContent = recs.length + ' 件の記録を書き出しました。';
+    }
+    document.getElementById('csvExport').addEventListener('click', function(){ doCsvExport('csvMsg'); });
+    document.getElementById('csvExport2').addEventListener('click', function(){ doCsvExport('csvMsg2'); });
+    function parseCSV(text){
+      var rows = [], row = [], cur = '', inQ = false;
+      text = text.replace(/^\uFEFF/, '');
+      for(var i=0;i<text.length;i++){
+        var c = text[i];
+        if(inQ){
+          if(c === '"'){ if(text[i+1] === '"'){ cur += '"'; i++; } else inQ = false; }
+          else cur += c;
+        } else if(c === '"'){ inQ = true; }
+        else if(c === ','){ row.push(cur); cur = ''; }
+        else if(c === '\n'){ row.push(cur); rows.push(row); row = []; cur = ''; }
+        else if(c !== '\r'){ cur += c; }
+      }
+      if(cur !== '' || row.length){ row.push(cur); rows.push(row); }
+      return rows;
+    }
+    function handleCsvFile(f, msgId){
+      if(!f) return;
+      var reader = new FileReader();
+      reader.onload = function(){
+        var rows = parseCSV(String(reader.result || ''));
+        var added = 0, skipped = 0;
+        rows.forEach(function(r, idx){
+          if(idx === 0 && r[0] && r[0].indexOf('日付') >= 0) return;
+          if(r.length < 5){ if(r.join('').trim()) skipped++; return; }
+          var date = (r[0]||'').trim().replace(/\//g,'-');
+          var name = (r[1]||'').trim();
+          var type = (r[2]||'').trim() === '出庫' ? 'out' : 'in';
+          var qty = parseInt(r[3], 10);
+          var price = parseInt(r[4], 10);
+          var p = null;
+          S.products.forEach(function(x){ if(x.name === name) p = x; });
+          if(!/^\d{4}-\d{2}-\d{2}$/.test(date) || !p || !qty || qty < 1){ skipped++; return; }
+          S.records.push({ id:uid('r'), date:date, pid:p.id, type:type, qty:qty, price:(isNaN(price)?p.price:price) });
+          if(type === 'in') p.received = true;
+          added++;
+        });
+        save(); renderAll();
+        document.getElementById(msgId).textContent = '読み込みました： ' + added + ' 件を取り込み' + (skipped ? '、' + skipped + ' 件は対象外でした（商品名がマスタに無い行など）' : '') + '。';
+        toast('CSVから ' + added + ' 件を取り込みました');
+      };
+      reader.readAsText(f, 'UTF-8');
+    }
+    document.getElementById('csvFile').addEventListener('change', function(ev){ var f = ev.target.files[0]; ev.target.value=''; if(f) handleCsvFile(f, 'csvMsg'); });
+    document.getElementById('csvFile2').addEventListener('change', function(ev){ var f = ev.target.files[0]; ev.target.value=''; if(f) handleCsvFile(f, 'csvMsg2'); });
+    /* ================= order ================= */
+    var checkedSet = {}, qtyMap = {}, draft = null, manualItems = [];
+    function renderManual(){
+      var sel = document.getElementById('manualProduct');
+      if(sel){
+        var cur = sel.value;
+        sel.innerHTML = S.products.map(function(p){ return '<option value="'+p.id+'">'+esc(p.name)+'（'+esc(p.unit)+'）</option>'; }).join('');
+        if(cur && prod(cur)) sel.value = cur;
+      }
+      var box = document.getElementById('manualList');
+      if(!box) return;
+      if(!manualItems.length){ box.innerHTML = '<p class="note-line">まだ追加されていません。上のフォームから商品を追加してください。</p>'; return; }
+      box.innerHTML = '<table class="tbl"><thead><tr><th>商品</th><th>仕入先（手入力）</th><th class="r">数量</th><th class="r">単価</th><th></th></tr></thead><tbody>' +
+        manualItems.map(function(it,idx){
+          var p = prod(it.pid);
+          return '<tr><td>'+(p?esc(p.name):'?')+'</td><td>'+esc(it.supplier||'')+'</td><td class="r">'+it.qty+(p?esc(p.unit):'')+'</td><td class="r">'+fmtYen(it.price)+'</td><td class="r"><button type="button" class="btn small danger" data-delmanual="'+idx+'">削除</button></td></tr>';
+        }).join('') + '</tbody></table>';
+      box.querySelectorAll('[data-delmanual]').forEach(function(b){
+        b.addEventListener('click', function(){ manualItems.splice(parseInt(b.getAttribute('data-delmanual'),10),1); renderManual(); });
+      });
+    }
+    function renderOrder(){
+      if(currentPlan === 'A') return;
+      if(currentPlan === 'B'){ renderManual(); var dcB = document.getElementById('draftCard'); if(draft && draft.items.length){ dcB.hidden = false; document.getElementById('draftBody').innerHTML = orderListHTML(draft.items); } else { dcB.hidden = true; } renderOrderHistory(); return; }
+      var cands = candidates();
+      var box = document.getElementById('candList');
+      if(!cands.length){
+        box.innerHTML = '<p class="empty">いま発注候補はありません。<br>在庫が発注基準を割ると、ここに自動で上がります。</p>';
+      } else {
+        box.innerHTML = cands.map(function(p){
+          var stock = stockOf(p.id);
+          if(!(p.id in qtyMap)) qtyMap[p.id] = suggestQty(p);
+          return '<div class="cand-row">' +
+            '<label class="chk"><input type="checkbox" data-chk="'+p.id+'" aria-label="'+esc(p.name)+'を発注する" '+(checkedSet[p.id]?'checked':'')+' />' +
+            '<span><span class="cn">'+esc(p.name)+'</span><br><span class="cm">在庫 '+stock+esc(p.unit)+' ／ 基準 '+p.threshold+esc(p.unit)+' ・ '+esc(p.supplier)+' ・ '+fmtYen(p.price)+'</span></span></label>' +
+            '<span class="qtyin"><input type="number" min="1" value="'+qtyMap[p.id]+'" data-qty="'+p.id+'" inputmode="numeric" aria-label="'+esc(p.name)+'の発注数" /><span class="qu">'+esc(p.unit)+'</span></span></div>';
+        }).join('');
+        box.querySelectorAll('[data-chk]').forEach(function(c){
+          c.addEventListener('change', function(){ checkedSet[c.getAttribute('data-chk')] = c.checked; });
+        });
+        box.querySelectorAll('[data-qty]').forEach(function(inp){
+          inp.addEventListener('input', function(){ qtyMap[inp.getAttribute('data-qty')] = Math.max(1, parseInt(inp.value,10)||1); });
+        });
+      }
+      var dc = document.getElementById('draftCard');
+      if(draft && draft.items.length){
+        dc.hidden = false;
+        document.getElementById('draftBody').innerHTML = orderListHTML(draft.items);
+      } else { dc.hidden = true; }
+      renderOrderHistory();
+    }
+    function groupBySupplier(items){
+      var g = {}, order = [];
+      items.forEach(function(it){
+        var p = prod(it.pid); var sup = it.supplier || (p ? p.supplier : '（不明）');
+        if(!g[sup]){ g[sup] = []; order.push(sup); }
+        g[sup].push(it);
+      });
+      return order.map(function(sup){ return { supplier:sup, items:g[sup] }; });
+    }
+    function orderListHTML(items){
+      var total = 0;
+      var html = groupBySupplier(items).map(function(g){
+        var s = '<div class="supplier-group"><h4>'+esc(g.supplier)+'</h4><table class="tbl"><tbody>';
+        g.items.forEach(function(it){
+          var p = prod(it.pid); var amt = it.qty * it.price; total += amt;
+          s += '<tr><td>'+(p?esc(p.name):'?')+'</td><td class="r">'+it.qty+(p?esc(p.unit):'')+'</td><td class="r">'+fmtYen(it.price)+'</td><td class="r">'+fmtYen(amt)+'</td></tr>';
+        });
+        return s + '</tbody></table></div>';
+      }).join('');
+      html += '<p style="text-align:right;font-weight:900;font-size:1.05rem">合計 '+fmtYen(total)+'</p>';
+      return html;
+    }
+    document.getElementById('makeList').addEventListener('click', function(){
+      var items = [];
+      candidates().forEach(function(p){
+        if(checkedSet[p.id]) items.push({ pid:p.id, qty:Math.max(1, qtyMap[p.id] || suggestQty(p)), price:p.price });
+      });
+      if(!items.length){ toast('発注する商品にチェックを入れてください'); return; }
+      draft = { items:items };
+      renderOrder();
+      document.getElementById('draftCard').scrollIntoView({ behavior:'smooth', block:'start' });
+    });
+    document.getElementById('addManual').addEventListener('click', function(){
+      var pid = document.getElementById('manualProduct').value;
+      var p = prod(pid); if(!p){ toast('商品を選んでください'); return; }
+      var qty = parseInt(document.getElementById('manualQty').value,10);
+      var price = parseInt(document.getElementById('manualPrice').value,10);
+      var supplier = document.getElementById('manualSupplier').value.trim();
+      if(!qty || qty<1){ toast('数量を1以上で入力してください'); return; }
+      if(isNaN(price) || price<0){ toast('単価を入力してください（Bでは手入力です）'); return; }
+      if(!supplier){ toast('仕入先を入力してください（Bでは手入力です）'); return; }
+      manualItems.push({ pid:pid, qty:qty, price:price, supplier:supplier });
+      renderManual(); toast(p.name+' を発注書に追加しました');
+    });
+    document.getElementById('makeManualList').addEventListener('click', function(){
+      if(!manualItems.length){ toast('先に商品を追加してください'); return; }
+      draft = { items: manualItems.slice() };
+      renderOrder();
+      document.getElementById('draftCard').scrollIntoView({ behavior:'smooth', block:'start' });
+    });
+    document.getElementById('clearDraft').addEventListener('click', function(){ draft = null; renderOrder(); });
+    document.getElementById('confirmOrder').addEventListener('click', function(){
+      if(!draft) return;
+      S.orders.push({ id:uid('o'), date:todayStr(), status:'ordered', receivedDate:null, items:draft.items });
+      draft = null; checkedSet = {}; manualItems = [];
+      save(); renderAll();
+      toast('発注済みにしました。在庫一覧の状態が「発注済み」に変わります');
+      renderOrderHistory();
+    });
+    function renderOrderHistory(){
+      var box = document.getElementById('orderHistory');
+      var ords = S.orders.slice().sort(function(a,b){ return a.date<b.date?1:-1; });
+      if(!ords.length){ box.innerHTML = '<p class="empty">発注の履歴はまだありません。</p>'; return; }
+      box.innerHTML = ords.map(function(o){
+        var total = o.items.reduce(function(a,it){ return a + it.qty*it.price; }, 0);
+        var names = o.items.map(function(it){ var p=prod(it.pid); return (p?esc(p.name):'?')+' ×'+it.qty; }).join('、');
+        return '<div class="order-card"><div class="order-head"><span class="od">'+fmtDate(o.date)+' の発注</span>' +
+          '<span class="status '+(o.status==='ordered'?'ord':'rec')+'">'+(o.status==='ordered'?'発注済み':'入荷済み')+'</span></div>' +
+          '<p class="order-items">'+names+'<br>合計 '+fmtYen(total)+(o.receivedDate ? ' ・ '+fmtDate(o.receivedDate)+' 入荷' : '')+'</p>' +
+          '<div class="btnrow">' +
+          (o.status==='ordered' ? '<button type="button" class="btn small primary" data-receive="'+o.id+'">入荷した</button>' : '') +
+          '<button type="button" class="btn small" data-printorder="'+o.id+'">印刷する</button></div></div>';
+      }).join('');
+      box.querySelectorAll('[data-receive]').forEach(function(b){
+        b.addEventListener('click', function(){
+          var o = null; S.orders.forEach(function(x){ if(x.id===b.getAttribute('data-receive')) o=x; });
+          if(!o) return;
+          o.status = 'received'; o.receivedDate = todayStr();
+          o.items.forEach(function(it){
+            S.records.push({ id:uid('r'), date:todayStr(), pid:it.pid, type:'in', qty:it.qty, price:it.price });
+            var p = prod(it.pid); if(p) p.received = true;
+          });
+          save(); renderAll();
+          toast('入荷を記録しました。在庫数が増えています');
+        });
+      });
+      box.querySelectorAll('[data-printorder]').forEach(function(b){
+        b.addEventListener('click', function(){
+          var o = null; S.orders.forEach(function(x){ if(x.id===b.getAttribute('data-printorder')) o=x; });
+          if(o){ buildPrint(o.items, o.date); doPrint(); }
+        });
+      });
+    }
+    document.getElementById('printDraft').addEventListener('click', function(){
+      if(draft){ buildPrint(draft.items, todayStr()); doPrint(); }
+    });
+    function buildPrint(items, dateStr){
+      var total = 0;
+      var groups = groupBySupplier(items).map(function(g){
+        var s = '<h2>仕入先：'+esc(g.supplier)+'</h2><table><thead><tr><th>商品</th><th class="r">数量</th><th class="r">単価</th><th class="r">金額</th></tr></thead><tbody>';
+        g.items.forEach(function(it){
+          var p = prod(it.pid); var amt = it.qty*it.price; total += amt;
+          s += '<tr><td>'+(p?esc(p.name):'?')+'</td><td class="r">'+it.qty+' '+(p?esc(p.unit):'')+'</td><td class="r">'+fmtYen(it.price)+'</td><td class="r">'+fmtYen(amt)+'</td></tr>';
+        });
+        return s + '</tbody></table>';
+      }).join('');
+      document.getElementById('printSheet').innerHTML =
+        '<h1>発注リスト</h1>' +
+        '<p class="ps-meta">カフェ・ルミエール　／　発注日：'+esc(dateStr)+'　／　このリストは「在庫・発注ノート」で作成しました</p>' +
+        groups +
+        '<p class="grand">合計　'+fmtYen(total)+'</p>' +
+        '<p class="ps-foot">納品時に数量をご確認ください。不足・破損があった場合は、その日のうちに仕入先へご連絡ください。</p>';
+    }
+    function doPrint(){
+      document.getElementById('printPreviewBody').innerHTML = document.getElementById('printSheet').innerHTML;
+      document.getElementById('printPreview').hidden = false;
+      document.getElementById('printPreview').scrollTop = 0;
+    }
+    document.getElementById('printPreviewClose').addEventListener('click', function(){ document.getElementById('printPreview').hidden = true; });
+    document.getElementById('printPreview').addEventListener('click', function(ev){ if(ev.target === this) this.hidden = true; });
+
+    /* ================= settings ================= */
+    var editingPid = null;
+    function renderSettings(){
+      var box = document.getElementById('masterList');
+      box.innerHTML = S.products.map(function(p){
+        return '<div class="master-row"><span class="mi"><span class="mn">'+esc(p.name)+'</span><br><span class="mm">'+esc(p.supplier)+' ・ '+fmtYen(p.price)+'／'+esc(p.unit)+' ・ 発注基準 '+p.threshold+esc(p.unit)+' ・ 現在庫 '+stockOf(p.id)+esc(p.unit)+'</span></span>' +
+          '<button type="button" class="btn small" data-edit="'+p.id+'">変更</button>' +
+          '<button type="button" class="btn small danger" data-del="'+p.id+'">削除</button></div>';
+      }).join('') || '<p class="empty">商品がありません。</p>';
+      box.querySelectorAll('[data-edit]').forEach(function(b){
+        b.addEventListener('click', function(){ openMasterForm(b.getAttribute('data-edit')); });
+      });
+      box.querySelectorAll('[data-del]').forEach(function(b){
+        b.addEventListener('click', function(){
+          var p = prod(b.getAttribute('data-del')); if(!p) return;
+          askConfirm('「'+p.name+'」を削除しますか？', 'この商品の入荷・出庫の記録も一緒に削除されます。元には戻せません。', '削除する', function(){
+            var id = p.id;
+            S.products = S.products.filter(function(x){ return x.id !== id; });
+            S.records = S.records.filter(function(r){ return r.pid !== id; });
+            S.orders.forEach(function(o){ o.items = o.items.filter(function(it){ return it.pid !== id; }); });
+            S.orders = S.orders.filter(function(o){ return o.items.length > 0; });
+            if(expandedPid === id) expandedPid = null;
+            save(); renderAll(); toast('「'+p.name+'」を削除しました');
+          });
+        });
+      });
+    }
+    function openMasterForm(pid){
+      editingPid = pid || null;
+      var p = pid ? prod(pid) : null;
+      document.getElementById('masterFormTitle').textContent = p ? '商品を変更' : '商品を追加';
+      document.getElementById('mfName').value = p ? p.name : '';
+      document.getElementById('mfUnit').value = p ? p.unit : '';
+      document.getElementById('mfSupplier').value = p ? p.supplier : '';
+      document.getElementById('mfPrice').value = p ? p.price : '';
+      document.getElementById('mfThreshold').value = p ? p.threshold : '';
+      document.getElementById('mfOpening').value = p ? p.opening : 0;
+      document.getElementById('masterFormCard').hidden = false;
+      document.getElementById('masterFormCard').scrollIntoView({ behavior:'smooth', block:'start' });
+    }
+    document.getElementById('addProduct').addEventListener('click', function(){ openMasterForm(null); });
+    document.getElementById('mfCancel').addEventListener('click', function(){ document.getElementById('masterFormCard').hidden = true; editingPid = null; });
+    document.getElementById('mfSave').addEventListener('click', function(){
+      var name = document.getElementById('mfName').value.trim();
+      var unit = document.getElementById('mfUnit').value.trim();
+      var supplier = document.getElementById('mfSupplier').value.trim();
+      var price = parseInt(document.getElementById('mfPrice').value, 10);
+      var threshold = parseInt(document.getElementById('mfThreshold').value, 10);
+      var opening = parseInt(document.getElementById('mfOpening').value, 10);
+      if(!name || !unit || !supplier){ toast('商品名・単位・仕入先を入力してください'); return; }
+      if(isNaN(price) || price < 0 || isNaN(threshold) || threshold < 0){ toast('単価と発注基準数は0以上の数字で入力してください'); return; }
+      if(isNaN(opening) || opening < 0) opening = 0;
+      if(editingPid){
+        var p = prod(editingPid);
+        p.name = name; p.unit = unit; p.supplier = supplier; p.price = price; p.threshold = threshold; p.opening = opening;
+        toast('「'+name+'」を変更しました');
+      } else {
+        S.products.push({ id:uid('p'), name:name, unit:unit, supplier:supplier, price:price, threshold:threshold, opening:opening, received:false });
+        toast('「'+name+'」を追加しました');
+      }
+      editingPid = null;
+      document.getElementById('masterFormCard').hidden = true;
+      save(); renderAll();
+    });
+    document.getElementById('resetData').addEventListener('click', function(){
+      askConfirm('見本データへ戻しますか？', '追加・変更した商品や記録はすべて消えて、はじめの見本データに戻ります。', '戻す', function(){
+        S = seed();
+        expandedPid = null; checkedSet = {}; qtyMap = {}; draft = null; manualItems = []; statsMonth = null; statsDay = null; editingPid = null;
+        document.getElementById('masterFormCard').hidden = true;
+        document.getElementById('homeSearch').value = '';
+        document.getElementById('csvMsg').textContent = '';
+        save(); renderAll();
+        toast('見本データに戻しました');
+      });
+    });
+
+    /* ================= plans ================= */
+    var PLAN_NOTES = {
+      A: '<b>Aプラン（5万円）・記録とCSV</b>　記録する（入荷／使った分・売れた分）／在庫の一覧と検索／CSVが使えます。集計と発注書（帳票）はBプランから、状態管理と項目連携はCプランからです。',
+      B: '<b>Bプラン（8万円）・A＋集計と帳票</b>　月次グラフ・カレンダー・印刷に加え、発注書を手動で作って印刷できます。ただし単価・仕入先は手入力で、発注候補の自動抽出はありません。自動で発注リストが出来上がるのはCプランからです。',
+      C: '<b>Cプラン（10万円）・全部入り＋状態管理・項目連携</b>　使った分・売れた分を記録していくと、在庫が基準を割った商品が発注候補に自動で上がり、選ぶと単価・仕入先・単位が連動して発注書が自動で埋まります。状態の色分けもCだけです。'
+    };
+    var ORDER_SUBS = {
+      A: '発注書の作成はBプランからです。',
+      B: '商品を自分で選んで、単価・仕入先を手入力して発注書を作ります（帳票）。候補の自動抽出はCプランからです。',
+      C: '使った分・売れた分を記録していくと、基準を割った商品が自動で候補に上がり、発注リストが出来上がります。'
+    };
+    function applyPlan(plan){
+      currentPlan = plan;
+      document.querySelectorAll('.plan-seg button[data-plan]').forEach(function(b){
+        b.classList.toggle('on', b.getAttribute('data-plan') === plan);
+      });
+      document.getElementById('planNote').innerHTML = PLAN_NOTES[plan];
+      document.getElementById('statsLock').hidden = (plan !== 'A');
+      document.getElementById('statsContent').hidden = (plan === 'A');
+      document.getElementById('orderLock').hidden = (plan !== 'A');
+      document.getElementById('orderContent').hidden = (plan === 'A');
+      document.getElementById('orderSub').textContent = ORDER_SUBS[plan];
+      document.getElementById('candCard').hidden = (plan !== 'C');
+      document.getElementById('manualCard').hidden = (plan !== 'B');
+      document.getElementById('orderCNotice').hidden = (plan !== 'B');
+      renderAll();
+    }
+    document.querySelectorAll('.plan-seg button[data-plan]').forEach(function(b){
+      b.addEventListener('click', function(){ applyPlan(b.getAttribute('data-plan')); });
+    });
+    document.getElementById('toPlanB').addEventListener('click', function(){ applyPlan('B'); });
+    document.getElementById('toPlanC').addEventListener('click', function(){ applyPlan('C'); showView('order'); });
+    document.getElementById('toPlanBFromOrder').addEventListener('click', function(){ applyPlan('B'); });
+    document.getElementById('toPlanC2').addEventListener('click', function(){ applyPlan('C'); });
+    function renderHomeTools(){
+      var row = document.getElementById('homePrintRow');
+      if(currentPlan === 'A'){
+        row.innerHTML = '<button class="btn" type="button" disabled>在庫一覧の印刷はBプランからです</button>';
+      } else {
+        row.innerHTML = '<button class="btn" type="button" id="printHome">在庫一覧を印刷する</button>';
+        document.getElementById('printHome').addEventListener('click', function(){ buildPrintInventory(); doPrint(); });
+      }
+      document.getElementById('homeCsvCard').hidden = (currentPlan !== 'A');
+    }
+    function buildPrintInventory(){
+      var isC = (currentPlan === 'C');
+      var rows = S.products.map(function(p){
+        var st = statusOf(p);
+        return '<tr><td>'+esc(p.name)+'</td><td>'+esc(p.supplier)+'</td><td class="r">'+stockOf(p.id)+' '+esc(p.unit)+'</td>' +
+          (isC ? '<td>'+st.label+'</td><td class="r">'+p.threshold+esc(p.unit)+'</td>' : '') +
+          '<td class="r">'+fmtYen(p.price)+'</td></tr>';
+      }).join('');
+      document.getElementById('printSheet').innerHTML =
+        '<h1>在庫一覧</h1>' +
+        '<p class="ps-meta">カフェ・ルミエール　／　'+todayStr().replace(/-/g,'/')+' 時点　／　この一覧は「在庫・発注ノート」で作成しました</p>' +
+        '<table><thead><tr><th>商品</th><th>仕入先</th><th class="r">在庫数</th>' + (isC ? '<th>状態</th><th class="r">発注基準</th>' : '') + '<th class="r">単価</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+        '<p class="ps-foot">在庫数は、期首在庫に入荷・出庫の記録を反映した数です。</p>';
+    }
+    function buildPrintStats(){
+      var inRecs = S.records.filter(function(r){ return r.date.slice(0,7)===statsMonth && r.type==='in'; });
+      var outRecs = S.records.filter(function(r){ return r.date.slice(0,7)===statsMonth && r.type==='out'; });
+      var total = inRecs.reduce(function(a,r){ return a + r.qty*r.price; }, 0);
+      var byProd = {};
+      inRecs.forEach(function(r){ if(!byProd[r.pid]) byProd[r.pid]={qty:0,amt:0}; byProd[r.pid].qty+=r.qty; byProd[r.pid].amt+=r.qty*r.price; });
+      var rows = Object.keys(byProd).map(function(pid){ var p=prod(pid); return { name:p?p.name:'（削除済み）', unit:p?p.unit:'', qty:byProd[pid].qty, amt:byProd[pid].amt }; })
+        .sort(function(a,b){ return b.amt-a.amt; })
+        .map(function(r){ return '<tr><td>'+esc(r.name)+'</td><td class="r">'+r.qty+esc(r.unit)+'</td><td class="r">'+fmtYen(r.amt)+'</td></tr>'; }).join('');
+      if(!rows) rows = '<tr><td colspan="3">この月の入荷はありません。</td></tr>';
+      document.getElementById('printSheet').innerHTML =
+        '<h1>集計レポート（'+monthLabel(statsMonth)+'）</h1>' +
+        '<p class="ps-meta">カフェ・ルミエール　／　仕入金額は入荷した数量に商品マスタの単価をかけて集計しています</p>' +
+        '<table><thead><tr><th>商品</th><th class="r">数量</th><th class="r">金額</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+        '<p class="grand">仕入金額 合計　'+fmtYen(total)+'</p>' +
+        '<p class="ps-foot">入荷 '+inRecs.length+' 回 ／ 出庫 '+outRecs.length+' 回（'+monthLabel(statsMonth)+'）</p>';
+    }
+    document.getElementById('printStats').addEventListener('click', function(){ buildPrintStats(); doPrint(); });
+
+    /* ================= init ================= */
+    function renderAll(){
+      renderHome();
+      renderRecordSelect();
+      renderRecent();
+      if(currentView === 'stats') renderStats();
+      if(currentView === 'order') renderOrder();
+      renderSettings();
+    }
+    document.getElementById('todayLabel').textContent = (function(){
+      var d = new Date(); var dow = ['日','月','火','水','木','金','土'][d.getDay()];
+      return (d.getMonth()+1)+'月'+d.getDate()+'日（'+dow+'）';
+    })();
+    document.getElementById('recDate').value = todayStr();
+    setRecType('in');
+    applyPlan('C');
+    </script>
+  </body>
+</html>
