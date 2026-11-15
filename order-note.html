@@ -511,7 +511,7 @@
       <section class="view" id="view-settings" hidden>
         <div class="wrap">
           <h2 class="vtitle">設定</h2>
-          <p class="vsub">商品マスタ（商品名・単位・仕入先・単価・発注基準数）を管理します。</p>
+          <p class="vsub">商品マスタ（商品名・単位・仕入先・単価・基準在庫数）を管理します。</p>
           <div class="card" id="masterFormCard" hidden>
             <h3 id="masterFormTitle">商品を追加</h3>
             <div class="form-grid">
@@ -519,8 +519,8 @@
               <div class="field"><label for="mfUnit">単位</label><input type="text" id="mfUnit" placeholder="例：本" /></div>
               <div class="field"><label for="mfSupplier">仕入先</label><input type="text" id="mfSupplier" placeholder="例：神奈川乳業" /></div>
               <div class="field"><label for="mfPrice">単価（円）</label><input type="number" id="mfPrice" min="0" inputmode="numeric" placeholder="例：320" /></div>
-              <div class="field"><label for="mfThreshold">発注基準数</label><input type="number" id="mfThreshold" min="0" inputmode="numeric" placeholder="例：5" /></div>
-              <div class="field"><label for="mfOpening">期首在庫（10/1時点）</label><input type="number" id="mfOpening" min="0" inputmode="numeric" placeholder="例：10" /></div>
+              <div class="field"><label for="mfThreshold">基準在庫数</label><input type="number" id="mfThreshold" min="0" inputmode="numeric" placeholder="例：5" /></div>
+              <div class="field"><label for="mfOpening">月初の在庫数（10/1時点）</label><input type="number" id="mfOpening" min="0" inputmode="numeric" placeholder="例：10" /></div>
             </div>
             <div class="btnrow">
               <button class="btn primary" id="mfSave" type="button">保存する</button>
@@ -1303,7 +1303,7 @@
       var threshold = parseInt(document.getElementById('mfThreshold').value, 10);
       var opening = parseInt(document.getElementById('mfOpening').value, 10);
       if(!name || !unit || !supplier){ toast('商品名・単位・仕入先を入力してください'); return; }
-      if(isNaN(price) || price < 0 || isNaN(threshold) || threshold < 0){ toast('単価と発注基準数は0以上の数字で入力してください'); return; }
+      if(isNaN(price) || price < 0 || isNaN(threshold) || threshold < 0){ toast('単価と基準在庫数は0以上の数字で入力してください'); return; }
       if(isNaN(opening) || opening < 0) opening = 0;
       if(editingPid){
         var p = prod(editingPid);
@@ -1385,7 +1385,7 @@
         '<h1>在庫一覧</h1>' +
         '<p class="ps-meta">カフェ・ルミエール　／　'+todayStr().replace(/-/g,'/')+' 時点　／　この一覧は「在庫・発注ノート」で作成しました</p>' +
         '<table><thead><tr><th>商品</th><th>仕入先</th><th class="r">在庫数</th>' + (isC ? '<th>状態</th><th class="r">発注基準</th>' : '') + '<th class="r">単価</th></tr></thead><tbody>' + rows + '</tbody></table>' +
-        '<p class="ps-foot">在庫数は、期首在庫に入荷・出庫の記録を反映した数です。</p>';
+        '<p class="ps-foot">在庫数は、月初の在庫数に入荷・出庫の記録を反映した数です。</p>';
     }
     function buildPrintStats(){
       var inRecs = S.records.filter(function(r){ return r.date.slice(0,7)===statsMonth && r.type==='in'; });
